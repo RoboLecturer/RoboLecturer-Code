@@ -6,14 +6,14 @@ We will have around 3 people per module.
 
 We will aim to finish assignments a week before their deadline, so we can overlook and discuss, and integrate all sections before submission
 
-##Design report deadline Feb 9.
+## Design report deadline Feb 9.
 
-##Technical presintation deadline March 23rd
+## Technical presintation deadline March 23rd
 
-##Final report deadline March 30th
+## Final report deadline March 30th
 
 
-###First two weeks (by Feb 2):
+### First two weeks (by Feb 2):
 
 Create an MVP that we can integrate and test. 
 
@@ -27,7 +27,7 @@ Finish parts up to last year's standard. Each module "team" Start looking at the
 
 Have all our extra features implemented and integrated, start working on a presentation, should not take a long time to do that. By then, each team would have written at least some of their section, which we need fully done by March 25th the altes so that the report can be integrated.
 
-###Last Week:
+### Last Week:
 
 Integrate Final report, review it, and submit it.
 
