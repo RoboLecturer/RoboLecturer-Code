@@ -31,5 +31,18 @@ Have all our extra features implemented and integrated, start working on a prese
 
 Integrate Final report, review it, and submit it.
 
+# Resources
+
+### Web Interface
+
+Some useful resources:
+* http://wiki.ros.org/rosbridge_suite/Tutorials/RunningRosbridge
+* http://wiki.ros.org/roslibjs/Tutorials/BasicRosFunctionality
+* http://robotwebtools.org/
+
+Note:
+* Topics are intended for unidirectional, streaming communication. Nodes that need to perform remote procedure calls, i.e. receive a response to a request, should use services instead.
+
+
 
 
