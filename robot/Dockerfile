@@ -1,0 +1,34 @@
+#Select suitable ROS distribution here - packaged inside Ubuntu container
+FROM ros:melodic-robot 
+
+#Update and install pip3
+RUN sudo apt-get update
+RUN sudo apt-get install python3-pip --assume-yes
+RUN sudo apt-get -y install nano
+
+#Install catkin tools
+RUN git clone https://github.com/catkin/catkin_tools.git
+WORKDIR /catkin_tools
+RUN sudo pip3 install -r requirements.txt --upgrade
+RUN sudo python3 setup.py install --record install_manifest.txt
+
+#Create catkins workspace and install ROS dependencies
+RUN mkdir -p /root/catkin_ws/src
+WORKDIR /root/catkin_ws/src
+RUN catkin create pkg robot_gui_bridge --catkin-deps rosbridge_server
+WORKDIR /root/catkin_ws
+RUN rosdep install --from-paths src --ignore-src -r -y
+
+#Adding webserver launch file and running
+RUN mkdir /root/catkin_ws/src/robot_gui_bridge/launch
+COPY ./websocket.launch /root/catkin_ws/src/robot_gui_bridge/launch
+# RUN source /opt/ros/melodic/setup.bash
+# RUN catkin build
+# RUN source devel/setup.bash
+#RUN roslaunch robot_gui_bridge websocket.launch
+
+
+
+EXPOSE 8080
+ENTRYPOINT ["/ros_entrypoint.sh"]
+CMD ["bash"]
