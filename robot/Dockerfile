@@ -25,10 +25,13 @@ COPY ./websocket.launch /root/catkin_ws/src/robot_gui_bridge/launch
 # RUN source /opt/ros/melodic/setup.bash
 # RUN catkin build
 # RUN source devel/setup.bash
-#RUN roslaunch robot_gui_bridge websocket.launch
+
+#Entrypoint
+#docker run -p 9000:9090 -it ros_server
+#roslaunch rosbridge_server rosbridge_websocket.launch _port:=9090 websocket_external_port:=9000 --screen &
+#roscore & //runs roscore master in the background
 
 
-
-EXPOSE 8080
+EXPOSE 9000
 ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
