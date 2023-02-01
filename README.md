@@ -3,7 +3,7 @@
 ## 1. Overview
 Each subgroup should have an instance of Linux on their machine - both virtual machines and dual-boots are fine. The latest Linux kernel that runs ROS is Ubuntu 20.04 which runs ROS Noetic. Noetic is recommended because it supports Python 3 officially. The default Python version for Ubuntu 20.04 is Python 3.8, but it can support Python 3.10 (see [here](https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/) to install). 
 
-After installing ROS, [set up a catkin workspace](#22-setting-up-catkin-workspace) and place your scripts inside. To ask Pepper to do something, or to receive some information from Pepper, use the API in your own scripts: call ```Action.Request()``` or ```Info.Request()``` . For example, this example script requests for Pepper to say "Hello World".
+After installing ROS, [set up a catkin workspace](#22-setting-up-catkin-workspace) and place your scripts inside. To ask Pepper to do something, or to receive some information from Pepper, use the API in your own scripts: call ```Action.Request()```,```Info.Request()``` or ```Info.Send()```. For example, this example script requests for Pepper to say "Hello World".
 ```
 #!/usr/bin/env python3
 import PepperAPI
