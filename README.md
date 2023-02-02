@@ -16,31 +16,18 @@ if __name__ == "__main__":
 	Action.Request("ALTextToSpeech", ["Hello World"])
 ```
 
-The list of Pepper's APIs can be found [here](http://doc.aldebaran.com/2-5/naoqi/index.html).
+The list of Pepper's APIs can be found [here](http://doc.aldebaran.com/2-5/naoqi/index.html). API names to send/receive data between the subteams can be defined by you (e.g. RLContent).
 
 ## 2. Setup
-To install Linux, either 
-- set up [WSL](https://techcommunity.microsoft.com/t5/windows-11/how-to-install-the-linux-windows-subsystem-in-windows-11/m-p/2701207) (for Windows)
-- create a virtual machine (ISO image for Ubuntu 20.04 can be found [here](https://releases.ubuntu.com/20.04.5/)) or 
-- dual-boot into Linux
-
-### 2.1. ROS installation
-The detailed instructions can be found in the [wiki page](http://wiki.ros.org/noetic/Installation/Ubuntu). The basic steps are, for ROS Noetic:
-```
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-sudo apt install curl
-curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
-sudo apt update
-sudo apt install ros-noetic-desktop-fullecho "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
-source ~/.bashrc
-```
+### 2.1. Linux and ROS installation
+See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/LinuxSetup.md)** for the full details.
 
 ### 2.2. Setting up catkin workspace
 The basic steps are:
-- Create a workspace folder
-- Create a ```src/``` folder in the workspace
-- Run ```catkin_make``` while in the workspace folder
-- Run ```source devel/setup.bash``` while in the workspace folder
+1. Create a workspace folder
+2. Create a ```src/``` folder in the workspace
+3. Run ```catkin_make``` while in the workspace folder
+4. Run ```source devel/setup.bash``` while in the workspace folder
 ```
 mkdir -p <workspace_name>/src
 cd <workspace_name>
@@ -49,18 +36,15 @@ catkin_make
 # After catkin_make has finished
 source devel/setup.bash
 ```
-
-Now you can add your python scripts. To do so, 
-- Create a package folder in ```<workspace_name>/src```
-- Add a folder ```scripts/``` in your package folder
-- Add your python scripts, as well as the ```PepperAPI.py``` file in the ```scripts/``` folder
+5. Create catkin package
 ```
-# While in your workspace
-mkdir -p src/<package_name>/scripts
-cd src/<package_name>/scripts
-cp /path/to/PepperAPI.py ./
-cp /path/to/myScript.py ./
+cd src
+catkin_create_pkg <package_name> <dependencies> # eg. "catkin_create_pkg nlp_pkg rospy std_msgs"
+cd ..
+source devel/setup.bash
 ```
+6. ```cd``` to your package folder and create a folder ```scripts```.
+7. Upload your python scripts and the ```PepperAPI.py``` script.
 
 The final directory listing should be:
 ```
@@ -69,14 +53,16 @@ The final directory listing should be:
 |    +----devel
 |    |         setup.bash
 |    \----src
-|    |         CMakeList.txt
+|    |         CMakeLists.txt
 |    |    \----<package name>
+|    |    |         CMakeLists.txt
+|    |    |         packages.xml
 |    |    |    \----scripts
 |    |    |              PepperAPI.py
 |    |    |              myScript.py
 ```
 
-Once the scripts have been added, ```cd``` back to your workspace folder and call ```catkin_make``` again. Then, run ```source devel/setup.bash``` to update the environment variables. 
+Whenever scripts are updated, update the python-ros dependences in ```packages.xml```, ```cd``` back to your workspace folder and call ```catkin_make``` again. Then, run ```source devel/setup.bash``` to update the environment variables. 
 
 ### 2.3. Setting the correct ROS variables
 There are two variable you need to ensure are correct in order to connect to the master using ROS: 
