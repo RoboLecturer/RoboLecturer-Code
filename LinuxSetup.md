@@ -9,9 +9,9 @@ Since we basically only need ROS, we can just grab the docker image for ROS Noet
 - [Install ROS with Docker](#12-install-ros-with-docker)
 - [Install ROS manually](#13-install-ros-manually)
 2. [Windows Subsystem Linux (WSL)](#2-windows-subsystem-linux-wsl)
-- [Install WSL](#11-install-wsl)
-- [Install ROS with Docker for WSL](#12-install-ros-with-docker-for-wsl)
-- [Installing ROS manually for WSL](#13-install-ros-manually-for-wsl)
+- [Install WSL](#21-install-wsl)
+- [Install ROS with Docker for WSL](#22-install-ros-with-docker-for-wsl)
+- [Installing ROS manually for WSL](#23-install-ros-manually-for-wsl)
 
 ## 1. VirtualBox
 ### 1.1. Install VirtualBox
