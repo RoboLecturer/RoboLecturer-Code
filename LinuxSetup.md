@@ -1,4 +1,4 @@
-# Linux Setup For ROSa
+# Linux Setup For ROS
 You'll need a Linux machine, even if you choose to initialize your environment with Docker. [Windows Subsystem Linux (WSL)](#2-windows-subsystem-linux-wsl) is easier to setup but only gives you a terminal interface. [VirtualBox](#1-virtualbox) (or other VMs) gives you a GUI for easier navigation, but requires the installation of the desktop image and may be much slower if your computer isn't great.
 
 Since we basically only need ROS, we can just grab the docker image for ROS Noetic. But honestly, it was much easier to just install ROS Noetic than installing Docker, especially if you're using WSL.
