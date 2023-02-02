@@ -1,4 +1,14 @@
 # ROS - Python Documentation
+## Contents
+1. [Overview](#1-overview)
+2. [Setup](#2-setup)
+- [Linux and ROS installation](#21-linux-and-ros-installation)
+- [Setting up catkin workspace](#22-setting-up-catkin-workspace)
+- [Setting ROS variables](#23-setting-ROS-variables)
+4. [Running your scripts](#3-running-your-scripts)
+- [Basic steps](#31-basic-steps)
+- [Using the API](#32-using-the-api)
+6. [FAQs](#4-faqs)
 
 ## 1. Overview
 Each subgroup should have an instance of Linux on their machine - both virtual machines and dual-boots are fine. The latest Linux kernel that runs ROS is Ubuntu 20.04 which runs ROS Noetic. Noetic is recommended because it supports Python 3 officially. The default Python version for Ubuntu 20.04 is Python 3.8, but it can support Python 3.10 (see [here](https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/) to install). 
@@ -64,7 +74,7 @@ The final directory listing should be:
 
 Whenever scripts are updated, update the python-ros dependences in ```packages.xml```, ```cd``` back to your workspace folder and call ```catkin_make``` again. Then, run ```source devel/setup.bash``` to update the environment variables. 
 
-### 2.3. Setting the correct ROS variables
+### 2.3. Setting ROS variables
 There are two variable you need to ensure are correct in order to connect to the master using ROS: 
 - ```ROS_MASTER_URI```: URI for ROS server on master machine
 - ```ROS_IP```: Your machine's IP address
