@@ -3,6 +3,10 @@
 ## Project setup
 ```
 npm install
+
+$ sudo apt-get update
+$ sudo apt-get install ghostscript
+$ sudo apt-get install graphicsmagick
 ```
 
 ### Compiles and hot-reloads for development
