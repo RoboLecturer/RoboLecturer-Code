@@ -1,0 +1,2 @@
+hcr:vision
+-DCATKIN_DEVEL_PREFIX=/home/vinayakunnithan/python_catkin/devel -DCMAKE_INSTALL_PREFIX=/home/vinayakunnithan/python_catkin/install -G Unix Makefiles
