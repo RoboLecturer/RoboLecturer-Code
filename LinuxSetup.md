@@ -43,7 +43,7 @@ If you want to work with the Docker container, you have to install Docker on bot
 ```
 docker run --name=<container-name> -p 45100:45100 -p 45101:45101 -it osrf/ros:noetic-desktop-full bash
 ```
-3. Since you'll be using our defined API, you don't need to worry about the ROS wrapping part, but if you just want to test connectio with the master, your publish node must be initiated with **xmlrpc_port=45100** and **tcpros_port=45101**. A sample script ```publisher.py``` is:
+3. Since you'll be using our defined API, you don't need to worry about the ROS wrapping part. But if you just want to test connectio with the master, your publish node must be initiated with **xmlrpc_port=45100** and **tcpros_port=45101**. A sample script ```publisher.py``` is:
 ```
 import rospy
 from std_msgs.msg import String
