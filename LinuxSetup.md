@@ -88,6 +88,7 @@ export PATH="$PATH:$HOME/.local/bin
 ```
 3. Download the image [here](https://imperiallondon-my.sharepoint.com/:u:/g/personal/rcc22_ic_ac_uk/EWee1KKcSwdIhISsV-WGkZMBm5T-fMnaxEGU-Occr3naWg?e=8LmF1S), extract the **ros-dev.tar** image from the gzip file, load it, then run in a container.
 ```
+cd /mnt/c/Users/<YOURUSERNAME>/Downloads/
 tar -xzvf ros-dev.tar.gz
 docker load -i ros-dev.tar
 docker run --name=<container-name> --net=host -it ros-dev
