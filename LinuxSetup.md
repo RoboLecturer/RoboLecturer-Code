@@ -50,12 +50,12 @@ from std_msgs.msg import String
 
 if __name__ == "__main__:
   rospy.init_node("my_node", xmlrpc_port=45100, tcpros_port=45101)
-  pub - rospy.Publisher("talking", String, queue_size=10)
+  pub = rospy.Publisher("my_topic", String, queue_size=10)
   while not rospy.is_shutdown():
     pub.publish("Hello World")
     rospy.Rate(1).sleep()
 ```
-On a separate master/slave machine, the command ```rostopic echo /talking``` can be used to verify communication between nodes is working.
+On a separate master/slave machine, the command ```rostopic echo /my_topic``` can be used to verify communication between nodes is working.
 
 ## 3. VirtualBox
 ### 3.1. Install VirtualBox
