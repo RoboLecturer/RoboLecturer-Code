@@ -77,7 +77,7 @@ Since these environment variables have to be set each time you open a new termin
 export ROS_MASTER_URI=http://192.168.0.101:11311
 export ROS_IP=<your_ip_address>
 ```
-**Note:** if you load and run the image in the repo, this has already been done to your ```.bashrc``.
+**Note:** if you load and run the image in the repo, this has already been done to your ```.bashrc```.
 
 ## 3. Running your scripts
 ### 3.1. Basic steps
