@@ -1,5 +1,7 @@
 #Select suitable ROS distribution here - packaged inside Ubuntu container
-FROM ros:melodic-robot 
+#FROM ros:melodic-robot
+FROM ros:noetic-ros-base-focal
+
 
 #Update and install pip3
 RUN sudo apt-get update
@@ -30,6 +32,7 @@ COPY ./websocket.launch /root/catkin_ws/src/robot_gui_bridge/launch
 #docker run -p 9000:9090 -it ros_server
 #roslaunch rosbridge_server rosbridge_websocket.launch _port:=9090 websocket_external_port:=9000 --screen &
 #roscore & //runs roscore master in the background
+#export ROS_MASTER_URI=http://192.168.0.101:11311
 
 
 EXPOSE 9000
