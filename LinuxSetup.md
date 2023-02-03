@@ -44,7 +44,7 @@ If you want to work with the Docker container, you have to install Docker on bot
 1. Install Docker Dekstop for MacOS
 2. Your docker image must be run with port forwarding for 45100 and 45101. An example command is:
 ```
-docker run --name=<container-name> -p 45100:45100 -p 45101:45101 -it osrf/ros:noetic-desktop-full bash
+docker run --name=<container-name> -p 45100:45100 -p 45101:45101 -it ros-dev
 ```
 3. Since you'll be using our defined API, you don't need to worry about the ROS wrapping part. But if you just want to test connectio with the master, your publish node must be initiated with **xmlrpc_port=45100** and **tcpros_port=45101**. A sample script ```publisher.py``` is:
 ```
@@ -85,20 +85,20 @@ newgrp docker
 ```
 export PATH="$PATH:$HOME/.local/bin
 ```
-3. Pull and run the ROS image with
+3. Extract the **ros-dev.tar** image from the **ros-dev-tar.gz** file, load the image, and run in a container.
 ```
-docker pull osrf/ros:noetic-desktop-full
-docker run --name=<container-name> --net=host -it osrf/ros:noetic-desktop-full bash
+tar -xzvf ros-dev.tar.gz
+docker load -i ros-dev.tar
+docker run --name=<container-name> --net=host -it ros-dev
 ```
 The above command is only for the first run. For subsequent runs, the created container can be accessed with
 ```
 docker start <container-name> # just run once
 docker exec -it <container-name> bash # run for each terminal you open
 ```
-4. Update and install essential packages
+4. If you want to install more packages, update the container
 ```
 apt-get -y update
-apt install vim nano net-tools
 ```
 
 **Useful commands**
