@@ -1,71 +1,28 @@
 # Linux Setup For ROS
-You'll need a Linux machine, even if you choose to initialize your environment with Docker. [Windows Subsystem Linux (WSL)](#2-windows-subsystem-linux-wsl) is easier to setup but only gives you a terminal interface. [VirtualBox](#1-virtualbox) (or other VMs) gives you a GUI for easier navigation, but requires the installation of the desktop image and may be much slower if your computer isn't great.
-
-Since we basically only need ROS, we can just grab the docker image for ROS Noetic. But honestly, it was much easier to just install ROS Noetic than installing Docker, especially if you're using WSL.
+There're 3 options depending on your OS: Docker for Mac, WSL (Windows Subsystem Linux) for Windows, or VirtualBox (for both).
 
 ## Contents
-1. [VirtualBox](#1-virtualbox)
-- [Install VirtualBox](#11-install-virtualbox)
-- [Install ROS with Docker](#12-install-ros-with-docker)
-- [Install ROS manually](#13-install-ros-manually)
-2. [Windows Subsystem Linux (WSL)](#2-windows-subsystem-linux-wsl)
-- [Install WSL](#21-install-wsl)
-- [Install ROS with Docker for WSL](#22-install-ros-with-docker-for-wsl)
-- [Installing ROS manually for WSL](#23-install-ros-manually-for-wsl)
+1. [Windows Subsystem Linux (WSL)](#1-windows-subsystem-linux-wsl)
+2. [Docker for MacOS](#2-docker-for-macos)
+3. [VirtualBox](#3-virtualbox)
 
-## 1. VirtualBox
-### 1.1. Install VirtualBox
-1. Install the latest VirtualBox (with Guest Additions) and the [Ubuntu 20.04 desktop image](https://releases.ubuntu.com/20.04.5/).
-2. Create the virtual machine and install Ubuntu (see [here](https://www.ktexperts.com/how-to-install-ubuntu-20-04-1-lts-on-windows-using-virtualbox/)).
-
-### 1.2. Install ROS with Docker
-1. Install Docker
+## 1. Windows Subsystem Linux (WSL)
+### 1.1. Install WSL
+1. Install WSL by running this command in Windows Powershell (administrator):
 ```
-sudo apt-get update -y
-sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo apt-key fingerprint 0EBFCD88
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt-get update -y
-sudo apt-get install -y docker-ce
-sudo usermod -aG docker $USER
+wsl --install
 ```
-2. Add ```$HOME/.local/bin``` to path (if not already added) with
+2. Install Ubuntu 20.04 from the app store and open it.
+3. Start Ubuntu 20.04, then downgrade the WSL version to WSL1 by running this command in Windows Powershell (administrator):
 ```
-export PATH="$PATH:$HOME/.local/bin
-```
-3. Open a new terminal and check that docker is running with
-```
-docker info
-```
-4. Pull and run the ROS image with
-```
-docker pull osrf/ros:noetic-desktop-full
-docker run --name=ros-dev [--net=host] -it osrf/ros:noetic-desktop-full bash
-```
-The above command is only for the first run. For subsequent runs, the created container can be accessed with
-```
-docker start ros-dev # just run once
-docker exec -it ros-dev bash # run for each terminal you open
-```
-5. Source ROS
-```
-echo source "/opt/ros/noetic/setup.bash" >> ~/.bashrc
-source ~/.bashrc
-```
-6. Update and install essential packages
-```
-apt-get -y update
-apt install vim net-tools
+# after starting Ubuntu at least once
+wsl --set-version Ubuntu-20.04 1
 ```
 
-**Useful commands**
-- Copy files from your laptop to the docker image:
-```
-docker cp [-r] SRC_PATH ros-dev:DEST_PATH
-```
+### 1.2. Install ROS
+You can install ROS manually or install Docker then pull the Docker image for ROS Noetic.
 
-### 1.3. Install ROS manually
+If you want to install ROS manually:
 The detailed instructions can be found in the [wiki page](http://wiki.ros.org/noetic/Installation/Ubuntu). The basic steps are, for ROS Noetic:
 ```
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
@@ -76,23 +33,73 @@ sudo apt install ros-noetic-desktop-fullecho "source /opt/ros/noetic/setup.bash"
 source ~/.bashrc
 ```
 
-## 2. Windows Subsystem Linux (WSL)
-### 2.1. Installing WSL
-1. Install WSL by running this command in Windows Powershell (administrator):
+If you want to work with the Docker container, you have to install Docker on both your Windows machine and WSL.
+1. For Docker Desktop for Windows, under Settings>General, check "Expose daemon on tcp://localhost:2375 without TLS"
+2. To install Docker in WSL, follow the instructions in [section 3.2](#32-install-ros).
+
+# 2. Docker for MacOS
+1. Install Docker Dekstop for MacOS
+2. Your docker image must be run with port forwarding for 45100 and 45101. An example command is:
 ```
-wsl --install
+docker run --name=<container-name> -p 45100:45100 -p 45101:45101 -it osrf/ros:noetic-desktop-full bash
 ```
-2. Install Ubuntu 20.04 from the app store and open it.
-3. Downgrade the WSL version to WSL1 by running this command in Windows Powershell (administrator):
+3. Since you'll be using our defined API, you don't need to worry about the ROS wrapping part, but if you just want to test connectio with the master, your publish node must be initiated with **xmlrpc_port=45100** and **tcpros_port=45101**. A sample script ```publisher.py``` is:
 ```
-# after starting Ubuntu at least once
-wsl --set-version Ubuntu-20.04 1
+import rospy
+from std_msgs.msg import String
+
+if __name__ == "__main__:
+  rospy.init_node("my_node", xmlrpc_port=45100, tcpros_port=45101)
+  pub - rospy.Publisher("talking", String, queue_size=10)
+  while not rospy.is_shutdown():
+    pub.publish("Hello World")
+    rospy.Rate(1).sleep()
+```
+On a separate master/slave machine, the command ```rostopic echo /talking``` can be used to verify communication between nodes is working.
+
+## 3. VirtualBox
+### 3.1. Install VirtualBox
+1. Install the latest VirtualBox (with Guest Additions) and the [Ubuntu 20.04 desktop image](https://releases.ubuntu.com/20.04.5/).
+2. Create the virtual machine and install Ubuntu (see [here](https://www.ktexperts.com/how-to-install-ubuntu-20-04-1-lts-on-windows-using-virtualbox/)).
+3. For connecting to the Master, you need to enable "Bridged Adapter" under "Network" settings.
+
+### 3.2. Install ROS
+As with WSL, you can either install ROS manually or install Docker and pull the Docker image. This section describes how to do the latter.
+
+1. Install Docker
+```
+sudo apt-get update -y
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update -y
+sudo apt-get install -y docker-ce
+sudo usermod -aG docker $USER
+newgrp docker
+```
+2. Add ```$HOME/.local/bin``` to path (if not already added) with
+```
+export PATH="$PATH:$HOME/.local/bin
+```
+3. Pull and run the ROS image with
+```
+docker pull osrf/ros:noetic-desktop-full
+docker run --name=<container-name> --net=host -it osrf/ros:noetic-desktop-full bash
+```
+The above command is only for the first run. For subsequent runs, the created container can be accessed with
+```
+docker start <container-name> # just run once
+docker exec -it <container-name> bash # run for each terminal you open
+```
+4. Update and install essential packages
+```
+apt-get -y update
+apt install vim nano net-tools
 ```
 
-### 2.2. Installing ROS with Docker for WSL
-1. Install Docker Desktop for Windows
-2. Launch Docker Desktop. Open Settings, and under General, check "Expose daemon on tcp://localhost:2375 without TLS"
-3. Launch Ubuntu 20.04 and install Docker as per the instructions for [Docker installation for VirtualBox](#12-install-ros-with-docker)
-
-### 2.3. Installing ROS manually for WSL
-Same as the [ROS installation for VirtualBox](#12-install-ros-manually).
+**Useful commands**
+- Copy files from your laptop to the docker image:
+```
+docker cp [-r] SRC_PATH <container-name>:DEST_PATH
+```
