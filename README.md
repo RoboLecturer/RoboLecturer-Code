@@ -30,7 +30,8 @@ The list of Pepper's APIs can be found [here](http://doc.aldebaran.com/2-5/naoqi
 See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/LinuxSetup.md)** for the full details.
 
 ### 2.2. Setting up your workspace
-**Note: if you load and run the image in the repo, a sample workspace and package has already been created.**
+**Note:** if you load and run the image in the repo, a sample workspace and package has already been created.
+
 The basic steps are:
 ```
 mkdir -p ~/<workspace_name>/src         # create workspace folder with "src" folder inside
@@ -76,7 +77,7 @@ Since these environment variables have to be set each time you open a new termin
 export ROS_MASTER_URI=http://192.168.0.101:11311
 export ROS_IP=<your_ip_address>
 ```
-**Note: if you load and run the image in the repo, this has already been done to you ```.bashrc``.**
+**Note:** if you load and run the image in the repo, this has already been done to your ```.bashrc``.
 
 ## 3. Running your scripts
 ### 3.1. Basic steps
