@@ -11,7 +11,7 @@
 4. [FAQs](#4-faqs)
 
 ## 1. Overview
-Install your version of ROS. ROS Noetic (Ubuntu 20.04) is recommended since it supports Python 3 officially. The default Python version for Ubuntu 20.04 is Python 3.8, but it should support Python 3.10 (see [here](https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/) to install). 
+Install your version of ROS. ROS Noetic (Ubuntu 20.04) is recommended since it supports Python 3 officially. The default Python version for Ubuntu 20.04 is Python 3.8, but it should support Python 3.10 (see [here](https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/) to install). For Docker users, a sample image is hosted [here](https://imperiallondon-my.sharepoint.com/:u:/g/personal/rcc22_ic_ac_uk/EWee1KKcSwdIhISsV-WGkZMBm5T-fMnaxEGU-Occr3naWg?e=8LmF1S). It's basically the ros-noetic-desktop-full image with some helpful tools installed and a sample workspace and package.
 
 After installing ROS, [set up a workspace](#22-setting-up-your-workspace) and place your scripts inside. To ask Pepper to do something, or to receive some information from Pepper, use the API in your own scripts: call ```Action.Request()```,```Info.Request()``` or ```Info.Send()```. For example, this script requests for Pepper to say "Hello World".
 ```
@@ -31,7 +31,7 @@ The list of Pepper's APIs can be found [here](http://doc.aldebaran.com/2-5/naoqi
 See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/LinuxSetup.md)** for the full details.
 
 ### 2.2. Setting up your workspace
-**Note:** if you load and run the image in the repo, a sample workspace and package has already been created.
+**Note:** if you load and run the [provided image](https://imperiallondon-my.sharepoint.com/:u:/g/personal/rcc22_ic_ac_uk/EWee1KKcSwdIhISsV-WGkZMBm5T-fMnaxEGU-Occr3naWg?e=8LmF1S), a sample workspace and package has already been created.
 
 The basic steps are:
 ```
@@ -78,7 +78,7 @@ Since these environment variables have to be set each time you open a new termin
 export ROS_MASTER_URI=http://192.168.0.101:11311
 export ROS_IP=<your_ip_address>
 ```
-**Note:** if you load and run the image in the repo, this has already been done to your ```.bashrc```.
+**Note:** if you load and run the [provided image](https://imperiallondon-my.sharepoint.com/:u:/g/personal/rcc22_ic_ac_uk/EWee1KKcSwdIhISsV-WGkZMBm5T-fMnaxEGU-Occr3naWg?e=8LmF1S), this has already been done to your ```.bashrc```.
 
 ## 3. Running your scripts
 ### 3.1. Basic steps
