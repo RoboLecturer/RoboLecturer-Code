@@ -10,19 +10,17 @@
 - [Using the API](#32-using-the-api)
 
 ## 1. Overview
-Each subgroup should have an instance of Linux on their machine - both virtual machines and dual-boots are fine. The latest Linux kernel that runs ROS is Ubuntu 20.04 which runs ROS Noetic. Noetic is recommended because it supports Python 3 officially. The default Python version for Ubuntu 20.04 is Python 3.8, but it can support Python 3.10 (see [here](https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/) to install). 
+Install your version of ROS. ROS Noetic (Ubuntu 20.04) is recommended since it supports Python 3 officially. The default Python version for Ubuntu 20.04 is Python 3.8, but it should support Python 3.10 (see [here](https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/) to install). 
 
-After installing ROS, [set up a catkin workspace](#22-setting-up-catkin-workspace) and place your scripts inside. To ask Pepper to do something, or to receive some information from Pepper, use the API in your own scripts: call ```Action.Request()```,```Info.Request()``` or ```Info.Send()```. For example, this example script requests for Pepper to say "Hello World".
+After installing ROS, [set up a workspace](#22-setting-up-your-workspace) and place your scripts inside. To ask Pepper to do something, or to receive some information from Pepper, use the API in your own scripts: call ```Action.Request()```,```Info.Request()``` or ```Info.Send()```. For example, this script requests for Pepper to say "Hello World".
 ```
 #!/usr/bin/env python3
 import PepperAPI
 from PepperAPI import Action
 
-if __name__ == "__main__":
-	# Initialize the API
-	PepperAPI.init() 
-	# Request action
-	Action.Request("ALTextToSpeech", ["Hello World"])
+if __name__ == "__main__":	
+	PepperAPI.init()                                           # initialize the API	
+	Action.Request("ALTextToSpeech", {"value":"Hello World"})  # request action
 ```
 
 The list of Pepper's APIs can be found [here](http://doc.aldebaran.com/2-5/naoqi/index.html). API names to send/receive data between the subteams can be defined by you (e.g. RLContent).
@@ -31,7 +29,7 @@ The list of Pepper's APIs can be found [here](http://doc.aldebaran.com/2-5/naoqi
 ### 2.1. Linux and ROS installation
 See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/LinuxSetup.md)** for the full details.
 
-### 2.2. Setting up catkin workspace
+### 2.2. Setting up your workspace
 The basic steps are:
 ```
 mkdir -p ~/<workspace_name>/src         # create workspace folder with "src" folder inside
