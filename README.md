@@ -3,7 +3,7 @@
 1. [Overview](#1-overview)
 2. [Setup](#2-setup)
 - [Linux and ROS installation](#21-linux-and-ros-installation)
-- [Setting up catkin workspace](#22-setting-up-catkin-workspace)
+- [Setting up your workspace](#22-setting-up-your-workspace)
 - [Setting ROS variables](#23-setting-ROS-variables)
 3. [Running your scripts](#3-running-your-scripts)
 - [Basic steps](#31-basic-steps)
