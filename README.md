@@ -2,12 +2,13 @@
 ## Contents
 1. [Overview](#1-overview)
 2. [Setup](#2-setup)
-- [Linux and ROS installation](#21-linux-and-ros-installation)
-- [Setting up your workspace](#22-setting-up-your-workspace)
-- [Setting ROS variables](#23-setting-ROS-variables)
+   1. [Linux and ROS installation](#21-linux-and-ros-installation)
+   2. [Setting up your workspace](#22-setting-up-your-workspace)
+   3. [Setting ROS variables](#23-setting-ROS-variables)
 3. [Running your scripts](#3-running-your-scripts)
-- [Basic steps](#31-basic-steps)
-- [Using the API](#32-using-the-api)
+   1. [Basic steps](#31-basic-steps)
+   2. [Using the API](#32-using-the-api)
+4. [FAQs](#4-faqs)
 
 ## 1. Overview
 Install your version of ROS. ROS Noetic (Ubuntu 20.04) is recommended since it supports Python 3 officially. The default Python version for Ubuntu 20.04 is Python 3.8, but it should support Python 3.10 (see [here](https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/) to install). 
@@ -142,3 +143,10 @@ Parameters:
 Returns:
 - **Value** : *Undef*
   Value will also be dependent on which API you're accessing.
+  
+  
+## 4. FAQs
+- **ERROR: Unable to communicate with master!** when running ROS commands
+  1. If the line ```source /opt/ros/noetic/setup.bash``` is not in your ```~/.bashrc```, run it, then add it to your ```~/.bashrc``` so you can avoid doing it everytime you open a terminal.
+  2. Run ```source ~/<workspace_name>/devel/setup.bash```.
+  3. Your ```ROS_MASTER_URI``` may be different from that of the Master running roscore.
