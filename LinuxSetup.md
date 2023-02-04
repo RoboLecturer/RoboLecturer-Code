@@ -45,9 +45,9 @@ If you want to work with the Docker container, you have to install Docker on bot
 1. Install Docker Dekstop for MacOS
 2. Your docker image must be run with port forwarding for 45100 and 45101. An example command is:
 ```
-docker run --name=<container-name> -p 45100:45100 -p 45101:45101 -it ros-dev
+docker run --name=<container-name> -p 45100-45200:45100-45200 -it ros-dev
 ```
-3. Since you'll be using our defined API, you don't need to worry about the ROS wrapping part. But if you just want to test connectio with the master, your publish node must be initiated with **xmlrpc_port=45100** and **tcpros_port=45101**. A sample script ```publisher.py``` is:
+3. Since you'll be using our defined API, you don't need to worry about the ROS wrapping part. But if you just want to test connectio with the master, your publish node must be initiated with the **xmlrpc_port** and **tcpros_port** within the 45100~45200 range. A sample script ```publisher.py``` is:
 ```
 import rospy
 from std_msgs.msg import String
