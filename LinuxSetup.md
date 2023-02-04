@@ -43,7 +43,7 @@ If you want to work with the Docker container, you have to install Docker on bot
 
 # 2. Docker for MacOS
 1. Install Docker Dekstop for MacOS
-2. Your docker image must be run with port forwarding for 45100 and 45101. An example command is:
+2. Your docker image must be run with port forwarding for the range 45100 to 45200. This range allows for each machine to have up to 50 different scripts that can call the API, as each script must have a new node, and a node cannot be initialised with the same ports as another. An example command is:
 ```
 docker run --name=<container-name> -p 45100-45200:45100-45200 -it ros-dev
 ```
