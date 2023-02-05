@@ -1,0 +1,8 @@
+prefix=/home/vinayakunnithan/python_catkin/install
+
+Name: hcr
+Description: Description of hcr
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
