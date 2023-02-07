@@ -1,38 +1,47 @@
 from .Publisher import *
 from .Subscriber import *
 
-def Request(api, params):
+def Request(api_name, api_params):
 
+	# Data class defined to store data from ROS Subscribers 
+	# in return value of Info.Request()
 	class Data:
-		RLTest = None
+		RLSimpleMsg = None
+
+	# Callbacks for API
 
 	"""
-	Subscribe to RLTest
-	value: [msg]
+	Receive string message
+	@param api_params: {
+		"listen_once": if True, unregister once msg is received
+	}
 	"""
-	if api == "RLTest":
+	if api_name == "RLSimpleMsg":
 		
-		def tts_callback(data):
-			Data.RLTest = data.data
-			rospy.loginfo(Data.RLTest)
+		def callback(data):
+			Data.RLSimpleMsg = data.data
+			rospy.loginfo(Data.RLSimpleMsg)
 		
-		_ = TTS_Subscriber("tts_topic", tts_callback, params["listen_once"])
+		_ = SimpleMsgSubscriber("simple_msg_topic", callback, api_params["listen_once"])
 
-		return Data.RLTest
+		return Data.RLSimpleMsg
 		
 	return
 
 
-def Send(api, params):
+def Send(api_name, api_params):
 
+	# Callbacks for API
 
 	"""
-	Publish test message
-	value: [msg]
+	Publish simple string message
+	@param api_params: {
+		"value": message to be sent
+	}
 	"""
-	if api == "RLTest":
-		msg = params["value"]
-		tts_publisher.publish(msg)
+	if api_name == "RLSimpleMsg":
+		msg = api_params["value"]
+		simple_msg_publisher.publish(msg)
 
 	return
 

@@ -1,11 +1,10 @@
 import rospy
 from std_msgs.msg import String
 
-"""
-Parent subscriber class
-"""
+# Parent subscriber class
 class Subscriber:	
 	def __init__(self, topic, payload_type, callback, listen_once=False):
+		self.topic = topic
 		self.subscriber = None
 		self.spin = True
 
@@ -16,19 +15,20 @@ class Subscriber:
 				self.subscriber.unregister()
 
 		self.subscriber = rospy.Subscriber(topic, payload_type, finalCallback)
-		# implementation of rospy.spin()
-		while self.spin:
+		self.log()
+		# my implementation of rospy.spin()
+		while self.spin and not rospy.is_shutdown():
 			rospy.rostime.wallsleep(0.5)
 
-"""
-Child subscriber classes
-"""
-class TTS_Subscriber(Subscriber, object):
-	def __init__(self, topic, callback, listen_once=False):
-		super(TTS_Subscriber, self).__init__(topic, String, callback, listen_once)
+	# Log information about subscriber
+	def log(self):
+		print("[Subscriber] topic=%s, spin=%s" % (self.topic, self.spin))
 
-"""
-Initiate subscribers
-"""
-# def init(node):
-# 	rospy.init_node(node, anonymous=True)
+# Child subscriber classes
+class SimpleMsgSubscriber(Subscriber, object):
+	def __init__(self, topic, callback, listen_once=False):
+		super(SimpleMsgSubscriber, self).__init__(topic, String, callback, listen_once)
+
+	def log(self):
+		print("[SimpleMsgSubscriber] topic=%s, spin=%s" % (self.topic, self.spin))
+

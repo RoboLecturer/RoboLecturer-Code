@@ -1,29 +1,29 @@
 import rospy
 from std_msgs.msg import String
 
-"""
-Parent publisher class
-"""
-class Publisher:	
+# Parent publisher class
+class Publisher:
 	def __init__(self, topic, payload_type):
-		self.publisher = rospy.Publisher(topic, payload_type, queue_size=10)
+		self.topic = topic
+		self.publisher = rospy.Publisher(self.topic, payload_type, queue_size=10)
+		self.log()
 
-"""
-Child publisher classes
-"""
-class TTS_Publisher(Publisher, object):
+	# Log info about publisher
+	def log(self):
+		print("[Publisher] topic=%s" % self.topic)
+
+# Child publisher classes
+class SimpleMsgPublisher(Publisher, object):
 	def __init__(self, topic):
-		super(TTS_Publisher, self).__init__(topic, String)
+		super(SimpleMsgPublisher, self).__init__(topic, String)
 
 	def publish(self, message):
 		self.publisher.publish(message)
 		rospy.loginfo("Publish: %s" % message)
 
+	def log(self):
+		print("[SimpleMsgPublisher] topic=%s" % self.topic)
 
-"""
-Initiate publishers
-"""
-tts_publisher = TTS_Publisher("tts_topic")
 
-# def init(node):
-# 	rospy.init_node(node, anonymous=True)
+# Initiate publishers
+simple_msg_publisher = SimpleMsgPublisher("simple_msg_topic")
