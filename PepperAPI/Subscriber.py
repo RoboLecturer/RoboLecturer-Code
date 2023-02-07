@@ -1,9 +1,11 @@
 import rospy
 from std_msgs.msg import String
+from api.msg import Coords
 
 # Parent subscriber class
 class Subscriber:	
-	def __init__(self, topic, payload_type, callback, listen_once=False):
+	def __init__(self, name, topic, payload_type, callback, listen_once=False):
+		self.name = name
 		self.topic = topic
 		self.subscriber = None
 		self.spin = True
@@ -22,13 +24,26 @@ class Subscriber:
 
 	# Log information about subscriber
 	def log(self):
-		print("[Subscriber] topic=%s, spin=%s" % (self.topic, self.spin))
+		print("[%s] topic=%s, spin=%s" % (self.name, self.topic, self.spin))
+
 
 # Child subscriber classes
-class SimpleMsgSubscriber(Subscriber, object):
+"""receive simple string msg"""
+class StringSubscriber(Subscriber, object):
 	def __init__(self, topic, callback, listen_once=False):
-		super(SimpleMsgSubscriber, self).__init__(topic, String, callback, listen_once)
+		super(StringSubscriber, self).__init__(
+			"StringSubscriber", 
+			topic, 
+			String, 
+			callback, 
+			listen_once)
 
-	def log(self):
-		print("[SimpleMsgSubscriber] topic=%s, spin=%s" % (self.topic, self.spin))
-
+"""receive array of xy float coordinates"""
+class CoordsSubscriber(Subscriber, object):
+	def __init__(self, topic, callback):
+		super(CoordsSubscriber, self).__init__(
+			"CoordsSubscriber", 
+			topic, 
+			Coords,
+			callback, 
+			listen_once=True)

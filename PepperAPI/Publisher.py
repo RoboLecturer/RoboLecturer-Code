@@ -1,29 +1,47 @@
 import rospy
 from std_msgs.msg import String
+from api.msg import Coords
 
 # Parent publisher class
 class Publisher:
-	def __init__(self, topic, payload_type):
+	def __init__(self, name, topic, payload_type):
+		self.name = name
 		self.topic = topic
 		self.publisher = rospy.Publisher(self.topic, payload_type, queue_size=10)
 		self.log()
 
 	# Log info about publisher
 	def log(self):
-		print("[Publisher] topic=%s" % self.topic)
+		print("[%s] topic=%s" % (self.name, self.topic))
 
 # Child publisher classes
-class SimpleMsgPublisher(Publisher, object):
+"""publish string msg"""
+class StringPublisher(Publisher, object):
 	def __init__(self, topic):
-		super(SimpleMsgPublisher, self).__init__(topic, String)
+		super(StringPublisher, self).__init__(
+			"StringPublisher",
+			topic, 
+			String)
 
 	def publish(self, message):
 		self.publisher.publish(message)
 		rospy.loginfo("Publish: %s" % message)
 
-	def log(self):
-		print("[SimpleMsgPublisher] topic=%s" % self.topic)
+
+"""publish array of xy float coordinates"""
+class CoordsPublisher(Publisher, object):
+	def __init__(self, topic):
+		super(CoordsPublisher, self).__init__(
+			"CoordsPublisher",
+			topic,
+			Coords)
+
+	def publish(self, coords):
+		msg = Coords()
+		msg.x, msg.y = coords[0], coords[1]
+		self.publisher.publish(msg)
 
 
 # Initiate publishers
-simple_msg_publisher = SimpleMsgPublisher("simple_msg_topic")
+simple_msg_publisher = StringPublisher("simple_msg_topic")
+hand_location_publisher = CoordsPublisher("hand_location_topic")
