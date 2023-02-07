@@ -4,9 +4,10 @@
 2. [Setup](#2-setup)
    1. [Linux and ROS installation](#21-linux-and-ros-installation)
    2. [Setting up your workspace](#22-setting-up-your-workspace)
-   3. [Setting ROS variables](#23-setting-ROS-variables)
-3. [Running your scripts](#3-running-your-scripts)
-   1. [Basic steps](#31-basic-steps)
+   3. [Setting ROS variables](#23-setting-ros-variables)
+   4. [Running your scripts](#24-running-your-scripts)
+3. [PepperAPI](#3-pepperapi)
+   1. [Importing the API](#31-importing-the-api)
    2. [Using the API](#32-using-the-api)
 4. [FAQs](#4-faqs)
 
@@ -20,7 +21,7 @@ import PepperAPI
 from PepperAPI import Action
 
 if __name__ == "__main__":	
-	PepperAPI.init()                                           # initialize the API	
+	PepperAPI.init("speech_node")                              # initialize the API	
 	Action.Request("ALTextToSpeech", {"value":"Hello World"})  # request action
 ```
 
@@ -31,9 +32,9 @@ The list of Pepper's APIs can be found [here](http://doc.aldebaran.com/2-5/naoqi
 See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/LinuxSetup.md)** for the full details.
 
 ### 2.2. Setting up your workspace
-**Note:** if you load and run the [provided image](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh), a sample workspace and package has already been created.
+**Note:** if you load and run the [provided image](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh), a sample workspace and package has been created for you.
 
-The basic steps are:
+To create your package, the basic steps are:
 ```
 mkdir -p ~/<workspace_name>/src         # create workspace folder with "src" folder inside
 cd <workspace_name>/src
@@ -43,8 +44,7 @@ catkin_make                             # run catkin_make
 source devel/setup.bash
 ```
 
-Your Python scripts will be placed in your package folder. The **PepperAPI** package folder should be in the same directory as your Python scripts.
-The final directory listing should be:
+Your Python scripts will be placed in your package folder. The directory listing should be:
 ```
 <workspace_name>
 |    +----build
@@ -55,11 +55,10 @@ The final directory listing should be:
 |    |    |    +----src
 |    |    |         CMakeLists.txt
 |    |    |         packages.xml
-|    |    |    +----PepperAPI
 |    |    |         myScript.py
 ```
 
-Whenever scripts are updated, you should run ```catkin_make``` to rebuild your package in case your package dependencies have changed.
+Whenever scripts are updated, you should update your package dependencies in **package.xml** and run ```catkin_make``` to rebuild your package.
 ```
 cd ~/<workspace_name>
 catkin_make
@@ -80,8 +79,7 @@ export ROS_IP=<your_ip_address>
 ```
 **Note:** if you load and run the [provided image](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh), this has already been done to your ```.bashrc```.
 
-## 3. Running your scripts
-### 3.1. Basic steps
+### 2.4. Running your scripts
 ```
 cd ~/<workspace_name>
 source devel/setup.bash
@@ -91,31 +89,40 @@ python3 myScript.py
 
 Note: Every time you open a terminal, you have to run ```source <workspace_path>/devel/setup.bash``` in order to import the necessary environment variables to run ROS.
 
-### 3.2. Using the API
-The only two functions you'll need are ```Action.Request()``` to request for Pepper to do something, ```Info.Request()``` to request data from Pepper or other modules, or ```Info.Send()``` to send data to other modules.
+## 3. PepperAPI
+### 3.1. Importing the API
+The PepperAPI calls custom ROS msgs, hence we've include the entire **[api](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/api)** package folder to be placed in your workspace/src folder and built with catkin_make. Then, copy the **[PepperAPI](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/api/scripts/PepperAPI)** folder under **api>scripts>PepperAPI** to the same directory as your scripts.
 
-To get the API, place the **PepperAPI** package folder in the same directory as your script, import it in your script, then run ```PepperAPI.init()``` to initialize.
+The directory listing should be:
+```
+<workspace_name>
+|    +----build
+|    +----devel
+|    |         setup.bash
+|    \----src
+|    |    +----api
+|    |    \----<package name>
+|    |    |    +----src
+|    |    |         CMakeLists.txt
+|    |    |         packages.xml
+|    |    |    +----PepperAPI
+|    |    |         myScript.py
+```
 
-A sample script is below:
+Once set up, you can import and use PepperAPI in your scripts. **Note**: the "node" argument for ```PepperAPI.init()``` should be the same in all your scripts. I.e, each module should use only one name (e.g. cv_node, nlp_node, etc).
 ```
 import PepperAPI
-from PepperAPI import Action, Info
+from PepperAPI import Info
 
-"""
-Request for STT, process the input, then request for TTS to play the processed message
-"""
-def myFunc():
-	input, output = None, None
-	input = Info.Request("ALAudioDevice", {})
-	"""
-	process mic input message
-	"""
-	Action.Request("ALTextToSpeech", {"value": output})
-
-if __name__ == "__main__":
-	PepperAPI.init()
-	myFunc()
+if __name__ == "__main__":	
+	PepperAPI.init("cv_node")                        # initialize the API with your module
+	Info.Send("RLCoords", {"value":[26.54, 58.20]})  # send xy-coords
 ```
+
+### 3.2. Using the API
+**Note**: This API is only for sending/receiving info between Pepper and your module, or between your module and other modules. For CV, Web, Speech(?) modules that require communication with your camera, mic or web browser, please set that up individually.
+
+The only three functions you'll need are ```Action.Request()``` to request for Pepper to do something, ```Info.Request()``` to request data from Pepper or other modules, or ```Info.Send()``` to send data to other modules.
 
 **```Action.Request(name, params)```**: Request for Pepper to perform an action \\
 Parameters:
