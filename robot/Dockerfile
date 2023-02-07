@@ -25,6 +25,7 @@ RUN rosdep install --from-paths src --ignore-src -r -y
 RUN mkdir /root/catkin_ws/src/robot_gui_bridge/launch
 COPY ./websocket.launch /root/catkin_ws/src/robot_gui_bridge/launch
 COPY ./scripts/publish.py /root/catkin_ws/src/robot_gui_bridge/publish.py
+COPY ./scripts/web_interface.py /root/catkin_ws/src/robot_gui_bridge/web_interface.py
 RUN export ROS_MASTER_URI=http://192.168.0.101:11311
 RUN sudo apt install net-tools
 

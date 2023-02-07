@@ -3,7 +3,7 @@
 This docker image makes use of the ROS Melodic distrbution in a Ubuntu 18.0.4 environment.
 
 * `docker build -t ros_server .`
-* `docker run -it -p 45100:45100 -p 45101:45101 ros_server`  (-it opens interactive shell by default)
+* `docker run -it -p 45100:45100 -p 45101:45101 -p 9000:9090 ros_server `  (-it opens interactive shell by default)
 * Run the following commands in the directory `~/catkins_ws` of the docker container shell:
     ```bash
     catkin build

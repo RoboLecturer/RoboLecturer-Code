@@ -7,11 +7,13 @@
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
+    "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "noEmit":true,
     "types": [
       "webpack-env"
     ],
@@ -26,15 +28,32 @@
       "dom.iterable",
       "scripthost"
     ]
+
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
+    "src/**/*.js",
     "tests/**/*.ts",
     "tests/**/*.tsx"
- ],
+  ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "always",
+        "named": "never",
+        "asyncArrow": "always"
+      }
+    ],
+    "quotes": "off",
+    "semi": "off",
+    "comma-dangle": "off",
+    "camelcase": "off"
+  }
 }
