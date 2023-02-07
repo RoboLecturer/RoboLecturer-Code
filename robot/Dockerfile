@@ -1,6 +1,6 @@
 #Select suitable ROS distribution here - packaged inside Ubuntu container
-#FROM ros:melodic-robot
-FROM ros:noetic-ros-base-focal
+FROM ros:melodic-robot
+#FROM ros:noetic-ros-base-focal
 
 
 #Update and install pip3
@@ -24,7 +24,11 @@ RUN rosdep install --from-paths src --ignore-src -r -y
 #Adding webserver launch file and running
 RUN mkdir /root/catkin_ws/src/robot_gui_bridge/launch
 COPY ./websocket.launch /root/catkin_ws/src/robot_gui_bridge/launch
-# RUN source /opt/ros/melodic/setup.bash
+COPY ./scripts/publish.py /root/catkin_ws/src/robot_gui_bridge/publish.py
+RUN export ROS_MASTER_URI=http://192.168.0.101:11311
+RUN sudo apt install net-tools
+
+
 # RUN catkin build
 # RUN source devel/setup.bash
 
@@ -36,5 +40,12 @@ COPY ./websocket.launch /root/catkin_ws/src/robot_gui_bridge/launch
 
 
 EXPOSE 9000
-ENTRYPOINT ["/ros_entrypoint.sh"]
+#ENTRYPOINT ["/ros_entrypoint.sh"]
 CMD ["bash"]
+
+
+#ip=$(hostname -I)
+# export ROS_IP=$ip
+# export ROS_MASTER_URI=http://172.17.0.2:11311
+# echo $ROS_IP
+# echo $ROS_MASTER_URI
