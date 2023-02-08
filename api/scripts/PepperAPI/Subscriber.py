@@ -1,5 +1,6 @@
-import rospy
+import rospy, cv2
 from std_msgs.msg import String
+from sensor_msgs.msg import Image
 from api.msg import Coords
 
 # Parent subscriber class
@@ -8,6 +9,7 @@ class Subscriber:
 		self.name = name
 		self.topic = topic
 		self.subscriber = None
+		self.listen_once = listen_once
 		self.spin = True
 
 		def finalCallback(data):
@@ -24,7 +26,7 @@ class Subscriber:
 
 	# Log information about subscriber
 	def log(self):
-		print("[%s] topic=%s, spin=%s" % (self.name, self.topic, self.spin))
+		print("[%s] topic=%s, listen_once=%s" % (self.name, self.topic, self.listen_once))
 
 
 # Child subscriber classes
@@ -45,5 +47,15 @@ class CoordsSubscriber(Subscriber, object):
 			"CoordsSubscriber", 
 			topic, 
 			Coords,
+			callback, 
+			listen_once=True)
+
+"""receive image"""
+class ImageSubscriber(Subscriber, object):
+	def __init__(self, topic, callback):
+		super(ImageSubscriber, self).__init__(
+			"ImageSubscriber", 
+			topic, 
+			Image,
 			callback, 
 			listen_once=True)

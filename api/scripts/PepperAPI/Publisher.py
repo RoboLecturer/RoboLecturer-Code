@@ -1,6 +1,8 @@
 import rospy
 from std_msgs.msg import String
+from sensor_msgs.msg import Image
 from api.msg import Coords
+from cv_bridge import CvBridge
 
 # Parent publisher class
 class Publisher:
@@ -42,6 +44,21 @@ class CoordsPublisher(Publisher, object):
 		self.publisher.publish(msg)
 
 
+"""publish image"""
+class ImagePublisher(Publisher, object):
+	def __init__(self, topic):
+		super(ImagePublisher, self).__init__(
+			"ImagePublisher",
+			topic,
+			Image)
+
+	def publish(self, image):
+		br = CvBridge()
+		self.publisher.publish(br.cv2_to_imgmsg(image))
+		rospy.loginfo("Published image")
+
+
 # Initiate publishers
 simple_msg_publisher = StringPublisher("simple_msg_topic")
 hand_location_publisher = CoordsPublisher("hand_location_topic")
+image_publisher = ImagePublisher("image_topic")
