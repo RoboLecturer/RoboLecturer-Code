@@ -12,6 +12,7 @@ import routes from './router/nodeRouter.js';
 // const upload = multer({ dest: "PDFs/" });
 app.use(json());
 app.use('/', routes);
+app.use(express.static('static'))
   
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;

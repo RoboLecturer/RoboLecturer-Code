@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>RoboLecturer Lecture Upload</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
+.w3-sidebar {
+  z-index: 3;
+  width: 250px;
+  top: 43px;
+  bottom: 0;
+  height: inherit;
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+    <a class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1" href="javascript:void(0)" onclick="w3_open()"><i class="fa fa-bars"></i></a>
+    <a href="uploadForm.html" class="w3-bar-item w3-button w3-theme-l1">Upload Lecture</a>
+    <a href="generateJSON.html" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Generate Quiz</a>
+  </div>
+</div>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+<!-- <div class="w3-main" style="margin-left:250px"> -->
+
+  <div class="w3-row w3-padding-64">
+    <div class="w3-twothird w3-container">
+      <h1 class="w3-text-teal">Lecture Upload</h1>
+      <div>
+        <label>Lecture File Name:</label>
+        <input type="text" id="quizName">
+     </div>
+     <div id="questionContainer">
+        <div>
+           <label>Quiz Prompt:</label>
+           <input type="text" name="prompt[]">
+        </div>
+        <div>
+           <label>Quiz Answer:</label>
+               <input type="text" name="answer[]">
+            </div>
+            <div>
+               <label>Quiz Questions:</label>
+               <input type="text" name="options[]">
+               <input type="text" name="options[]">
+               <input type="text" name="options[]">
+               <input type="text" name="options[]">
+            </div>
+         </div>
+         <button onclick="addQuestion()">Add Question</button>
+         <button onclick="downloadJSON()">Download JSON</button> 
+    </div>
+
+  </div>
+  
+  
+
+  </div>
+
+
+<!-- END MAIN -->
+</div>
+
+<script>
+// Get the Sidebar
+var mySidebar = document.getElementById("mySidebar");
+
+// Get the DIV with overlay effect
+var overlayBg = document.getElementById("myOverlay");
+
+// Toggle between showing and hiding the sidebar, and add overlay effect
+function w3_open() {
+  if (mySidebar.style.display === 'block') {
+    mySidebar.style.display = 'none';
+    overlayBg.style.display = "none";
+  } else {
+    mySidebar.style.display = 'block';
+    overlayBg.style.display = "block";
+  }
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+  mySidebar.style.display = "none";
+  overlayBg.style.display = "none";
+}
+</script>
+<script>
+  var count = 1
+   function addQuestion() {
+      count += 1
+      // Get the question container
+      var questionContainer = document.getElementById("questionContainer");
+      
+      // Create the new question elements
+      var newQuestion = document.createElement("div");
+      newQuestion.innerHTML = `
+         <div>
+            <label>Quiz Prompt:</label>
+            <input type="text" name="prompt[]">
+         </div>
+         <div>
+            <label>Quiz Answer:</label>
+            <input type="text" name="answer[]">
+         </div>
+         <div>
+            <label>Quiz Questions:</label>
+            <input type="text" name="options[]">
+            <input type="text" name="options[]">
+            <input type="text" name="options[]">
+            <input type="text" name="options[]">
+         </div>
+      `;
+      
+      // Append the new question to the container
+      questionContainer.appendChild(newQuestion);
+   }
+   
+   function downloadJSON() {
+// Get the quiz name and question count
+var quizName = document.getElementById("quizName").value;
+var questionContainer = document.getElementById("questionContainer");
+var questionCount = questionContainer.childNodes.length / 3;
+
+// Get the questions
+var prompts = document.getElementsByName("prompt[]");
+var answers = document.getElementsByName("answer[]");
+var options = document.getElementsByName("options[]");
+
+var questions = [];
+for (var i = 0; i < questionCount; i++) {
+if (i >= prompts.length || i >= answers.length) {
+   continue;
+}
+
+var question = {};
+question["prompt"] = prompts[i].value;
+question["answer"] = answers[i].value;
+
+var questionOptions = [];
+for (var j = 0; j < 4; j++) {
+   if (i * 4 + j >= options.length) {
+      continue;
+   }
+   questionOptions.push(options[i * 4 + j].value);
+}
+question["options"] = questionOptions;
+
+questions.push(question);
+}
+// Create the JSON object
+var quizJSON = {
+"quiz_name": quizName,
+"question_count": count,
+"questions": questions
+};
+
+// Download the JSON file
+var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(quizJSON));
+var downloadLink = document.createElement("a");
+downloadLink.setAttribute("href", "data:" + data);
+downloadLink.setAttribute("download", quizName + ".json");
+downloadLink.click();
+}
+</script>
+</body>
+</html>

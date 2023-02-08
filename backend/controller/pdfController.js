@@ -65,7 +65,10 @@ export function parsePDF(req, res) {
 }
 
 export function uploadPDF(req, res) {
-    console.log(req.file);
-    res.json({ message: "Successfully uploaded files" });
+    // console.log(req.file);
+    // log errs eventually
+    res.send({ message: 'Upload successful!' });
+
+    // res.json({ message: "Successfully uploaded files" });
 }
 
