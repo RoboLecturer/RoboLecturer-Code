@@ -1,6 +1,13 @@
 import rospy
 import rosnode
 
+# Globals
+ROBOT_IP = "192.168.0.102"
+ROBOT_PORT = 9559
+PEPPER_USER = "nao"
+PEPPER_PASSWORD = "BioARTLab123"
+PEPPER_AUDIO_PATH = "/home/nao/audio_files/"
+
 def init(node):
 	# XMLRPC & TCPROS ports to start from 45100 & 45101
 	_xmlrpc, _tcpros = 45100, 45101
