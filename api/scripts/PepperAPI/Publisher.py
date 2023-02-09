@@ -57,8 +57,20 @@ class ImagePublisher(Publisher, object):
 		self.publisher.publish(br.cv2_to_imgmsg(image))
 		rospy.loginfo("Published image")
 
+"""publish msgs to kinematics to initiate action"""
+class ActionRequestPublisher(Publisher, object):
+	def __init__(self, topic):
+		super(ActionRequestPublisher, self).__init__(
+			"ActionRequestPublisher",
+			topic,
+			String)
+
+	def publish(self, msg):
+		self.publisher.publish(msg)
+                rospy.loginfo("Published: %s" % msg)
 
 # Initiate publishers
 simple_msg_publisher = StringPublisher("simple_msg_topic")
 hand_location_publisher = CoordsPublisher("hand_location_topic")
 image_publisher = ImagePublisher("image_topic")
+play_audio_publisher = ActionRequestPublisher("play_audio_topic")
