@@ -24,7 +24,7 @@ def Request(api_name, api_params):
 		
 	if api_name == "ALAudioPlayer":
 		soundfile_path = api_params["path"]
-		filename = sounfile_path.split("/")[-1]
+		filename = soundfile_path.split("/")[-1]
 		pepper_path = "/home/user/" + filename
 		transport = paramiko.Transport((ROBOT_IP, 22))
 		transport.connect(username="nao", password="BioARTLab123")
