@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import PepperAPI
-from PepperAPI import Info
-import rospy
+from PepperAPI import Action, Info
+import rospy, cv2
 
 if __name__ == "__main__":
 	# Initialise API module
@@ -10,6 +10,13 @@ if __name__ == "__main__":
 
 	# Publish info
 	# Info.Send("RLSimpleMsg", {"value": "Hello World"})
-	Info.Send("RLHandLocation", {"value":[1.23, 5.42]})
+	# Info.Send("RLHandLocation", {"value":[1.23, 5.42]})
+	
+	# Send image
+	# img = cv2.imread("image.jpg")
+	# img_blur = cv2.GaussianBlur(img,(3,3), sigmaX=0, sigmaY=0)
+	# sobel = cv2.Sobel(src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=1, ksize=5)
+	# Info.Send("RLImage", {"value": sobel})
 
-
+	# Request to play audio	
+	Action.Request("ALAudioPlayer", "/home/user/sample.mp3")
