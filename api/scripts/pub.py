@@ -2,7 +2,7 @@
 
 import PepperAPI
 from PepperAPI import Action, Info
-import rospy, cv2
+import cv2
 
 if __name__ == "__main__":
 	# Initialise API module
@@ -19,4 +19,5 @@ if __name__ == "__main__":
 	# Info.Send("RLImage", {"value": sobel})
 
 	# Request to play audio	
-	Action.Request("ALAudioPlayer", "/home/user/sample.mp3")
+	Action.Request("ALTextToSpeech", {"value":"Hello World"})
+	# Action.Request("ALAudioPlayer", {"path":"/home/user/sample.mp3"})
