@@ -14,6 +14,8 @@ WORKDIR /catkin_tools
 RUN sudo pip3 install -r requirements.txt --upgrade
 RUN sudo python3 setup.py install --record install_manifest.txt
 
+
+
 #Create catkins workspace and install ROS dependencies
 RUN mkdir -p /root/catkin_ws/src
 WORKDIR /root/catkin_ws/src
@@ -26,12 +28,11 @@ RUN mkdir /root/catkin_ws/src/robot_gui_bridge/launch
 COPY ./websocket.launch /root/catkin_ws/src/robot_gui_bridge/launch
 COPY ./scripts/publish.py /root/catkin_ws/src/robot_gui_bridge/publish.py
 COPY ./scripts/web_interface.py /root/catkin_ws/src/robot_gui_bridge/web_interface.py
-RUN export ROS_MASTER_URI=http://192.168.0.101:11311
-RUN sudo apt install net-tools
-
-
-# RUN catkin build
-# RUN source devel/setup.bash
+RUN export ROS_MASTER_URI=http://192.168.0.102:11311
+RUN export ROS_IP=192.168.0.100
+RUN . /opt/ros/melodic/setup.sh && \
+    catkin build
+RUN source devel/setup.bash
 
 #Entrypoint
 #docker run -p 9000:9090 -it ros_server

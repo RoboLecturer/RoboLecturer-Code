@@ -3,7 +3,7 @@
 This docker image makes use of the ROS Melodic distrbution in a Ubuntu 18.0.4 environment.
 
 * `docker build -t ros_server .`
-* `docker run -it -p 45100:45100 -p 45101:45101 -p 9000:9090 ros_server `  (-it opens interactive shell by default)
+* `docker run -it -p 45100:45100 -p 45101:45101 -p 9000:9090 --add-host="host.docker.internal:192.168.0.100" ros_server`  (-it opens interactive shell by default)
 * Run the following commands in the directory `~/catkins_ws` of the docker container shell:
     ```bash
     catkin build
@@ -20,6 +20,15 @@ Once running, we can publish and listen to topics as follows:
 * Publish: `rostopic pub /txt_msg std_msgs/String "data: 'Test message'" -1`, where /txt_msg is the name of the topic and std_msgs/String is the message format.
 
 * Listen and display receieved messages: `rostopic echo /txt_msg` where /txt_msg is the topic name.
+
+## Sequencce of startup
+
+1. Start docker container 
+2. Catkin build
+3. source devel/setup.bash
+4. export ROS_MASTER_URI
+5. Launch Web socket
+6. export ROS_IP to allow for publishing
 
 
 ## Resources

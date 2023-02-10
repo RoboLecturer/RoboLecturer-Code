@@ -111,6 +111,7 @@ export default class Test extends Vue {
   }
 
   onMessageReceived(msg:any){
+    console.log(msg)
      if (this.selectedTopic=="trigger_quiz"){
       this.quiz_input_stream += msg.data +"\n";
     }else if (this.selectedTopic=="change_slide"){
