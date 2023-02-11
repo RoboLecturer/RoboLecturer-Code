@@ -54,7 +54,7 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 add_message_files(
   FILES
-  Coords.msg
+  CVInfo.msg
 )
 
 ## Generate services in the 'srv' folder
