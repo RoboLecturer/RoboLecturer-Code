@@ -122,9 +122,9 @@ if __name__ == "__main__":
 ### 3.2. Using the API
 For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/PepperAPI.md)**.
 
-**Note**: This API is only for sending/receiving info between Pepper and your module, or between your module and other modules. For CV, Web, Speech(?) modules that require communication with your camera, mic or web browser, please set that up individually.
-
-The only three functions you'll need are ```Action.Request()``` to request for Pepper to do something, ```Info.Request()``` to request data from Pepper or other modules, or ```Info.Send()``` to send data to other modules.
+**Note**: This API is only for sending/receiving info between Pepper and your module, or between your module and other modules. For CV, Web and Speech modules that require communication with your camera, mic or web browser, please set that up individually.
+  
+The three functions are ```Action.Request()``` to request for Pepper to do something, ```Info.Request()``` to request data from Pepper or other modules, or ```Info.Send()``` to send data to other modules.
 
 **```Action.Request(name, params)```**: Request for Pepper to perform an action
 
@@ -132,7 +132,7 @@ Parameters:
 - **name** : *String*
   Name of API you want to access (see list [here](http://doc.aldebaran.com/2-5/naoqi/index.html)).
 - **params** : *Dict*
-  Dictionary of parameters to give, which is dependent on the API you're accessing. We'll create full documentation for this once we finish the API.
+  Dictionary of parameters to give, which is dependent on the API you're accessing.
 
 **```Info.Request(name, params)```**: Request to receive data from Pepper or from other subteams
 
@@ -153,11 +153,6 @@ Parameters:
   Name of API you want to access.
 - **params** : *Dict*
   Dictionary of parameters to give, which is dependent on the API you're accessing.
-
-Returns:
-- **Value** : *Undef*
-  Value will also be dependent on which API you're accessing.
-  
   
 ## 4. FAQs
 - **ERROR: Unable to communicate with master!** when running ROS commands
