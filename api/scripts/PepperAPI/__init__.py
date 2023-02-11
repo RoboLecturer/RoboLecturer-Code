@@ -25,4 +25,5 @@ def init(node):
 		node_name = "%s_%d" % (node, num)
 
 	# Initialize the node
-	rospy.init_node(node_name, xmlrpc_port=_xmlrpc, tcpros_port=_tcpros)
+	rospy.init_node(node_name, xmlrpc_port=_xmlrpc, tcpros_port=_tcpros, disable_signals=True)
+	rospy.loginfo("Node initialised: " + node_name)
