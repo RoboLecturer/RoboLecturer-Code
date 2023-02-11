@@ -141,6 +141,7 @@ Parameters:
   Name of API you want to access.
 - **params** : *Dict*
   Dictionary of parameters to give, which is dependent on the API you're accessing.
+
 Returns:
 - **Value** : *Undef*
   Value will also be dependent on which API you're accessing.
@@ -152,6 +153,7 @@ Parameters:
   Name of API you want to access.
 - **params** : *Dict*
   Dictionary of parameters to give, which is dependent on the API you're accessing.
+
 Returns:
 - **Value** : *Undef*
   Value will also be dependent on which API you're accessing.
