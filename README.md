@@ -120,7 +120,7 @@ if __name__ == "__main__":
 ```
 
 ### 3.2. Using the API
-For the full documentation, refer to [PepperAPI.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/PepperAPI.md).
+For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/PepperAPI.md)**.
 
 **Note**: This API is only for sending/receiving info between Pepper and your module, or between your module and other modules. For CV, Web, Speech(?) modules that require communication with your camera, mic or web browser, please set that up individually.
 
