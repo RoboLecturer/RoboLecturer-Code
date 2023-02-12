@@ -16,6 +16,7 @@ The three functions are:
 #### Send
 - **```Info.Send("Slides", {"text": myText})```**: Send slides text to NLP module  
   - **params** (*Dict*) : Slides text to be provided as String to key ```text```
+- **```Info.Send("TakeControl")```**: Send signal ("1") to Control module to start next loop
   
 #### Receive
 - **```Info.Request("TriggerQuiz")```**: Receive signal ("1") to trigger quiz
