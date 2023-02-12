@@ -12,8 +12,8 @@ except Exception:
     sampling = False
 
 cap = cv2.VideoCapture(0)
-cap.set(3, 840)
-cap.set(4, 840)
+cap.set(3, 1920)
+cap.set(4, 1080)
 
 face_detector = cv2.CascadeClassifier("../utils/models/face_detection.xml") # loading the pre-trained face detection model from OpenCV.
 closed_hand_detector = cv2.CascadeClassifier("../utils/models/closed_hand.xml")
