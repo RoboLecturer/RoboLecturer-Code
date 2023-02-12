@@ -2,7 +2,7 @@
 
 ## Packages
 
-The list of packages and their versions used for the CV module has been included in the requirements.txt file.
+The list of packages and their versions used for the CV module has been included in the ```requirements.txt``` file.
 
 ## Organisation
 
