@@ -1,48 +1,18 @@
-# Structure of the Project
+# Decription of the code organisation for the CV branch.
 
-Every week we will meet on Thursday after class, everyone give a quick rundown of their parts, and we integrate to make sure everything is working cooperatively.
+## Packages
 
-We will have around 3 people per module. 
+The list of packages and their versions used for the CV module has been included in the ```requirements.txt``` file.
 
-We will aim to finish assignments a week before their deadline, so we can overlook and discuss, and integrate all sections before submission
+## Organisation
 
-## Design report deadline Feb 9.
+PepperCV directory contains (at the moment) 3 directories:
 
-## Technical presintation deadline March 23rd
+1) ```src``` -> directory for scripts for functions, classes etc. specific for the CV module to be used in the ```main.py``` script. It also should contain notebooks for training models.
 
-## Final report deadline March 30th
+2) ```tests``` -> directory used to conduct tests of software.
 
-
-### First two weeks (by Feb 2):
-
-Create an MVP that we can integrate and test. 
-
-Each module "team" will have written up their section on a shared overleaf document for the design report, so please set your internal deadlines to do that. We will then integrate and be ready to submit the design report by Feb 9
-
-### Next three weeks (by Feb 23):
-
-Finish parts up to last year's standard. Each module "team" Start looking at their section of the final report, and setting internal deadlines to have it done by March 26th.
-
-### Next three weeks (by March 16):
-
-Have all our extra features implemented and integrated, start working on a presentation, should not take a long time to do that. By then, each team would have written at least some of their section, which we need fully done by March 25th the altes so that the report can be integrated.
-
-### Last Week:
-
-Integrate Final report, review it, and submit it.
-
-# Resources
-
-### Web Interface
-
-Some useful resources:
-* http://wiki.ros.org/rosbridge_suite/Tutorials/RunningRosbridge
-* http://wiki.ros.org/roslibjs/Tutorials/BasicRosFunctionality
-* http://robotwebtools.org/
-
-Note:
-* Topics are intended for unidirectional, streaming communication. Nodes that need to perform remote procedure calls, i.e. receive a response to a request, should use services instead.
+3) ```utils``` -> directory for utility code/files. This includes ```PepperAPI``` and saved models in the ```models``` subdirectory.
 
 
-
-
+Feel free to modify this.
