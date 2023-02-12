@@ -14,7 +14,7 @@ The three functions are:
 
 ## Web
 #### Send
-- **```Info.Send("Slides", {"text": myText}```**: Send slides text to NLP module  
+- **```Info.Send("Slides", {"text": myText})```**: Send slides text to NLP module  
   - **params** (*Dict*) : Slides text to be provided as String to key ```text```
   
 #### Receive
@@ -48,13 +48,13 @@ The three functions are:
 
 ## NLP
 #### Send
-- **```Info.Send("LectureScript", {"text": myText}```**: Send lecture script text to Speech module
+- **```Info.Send("LectureScript", {"text": myText})```**: Send lecture script text to Speech module
   - **params** (*Dict*) : Script text to be provided as String to key ```text```
 
-- **```Info.Send("Answer", {"text": myText}```**: Send QnA answer text to Speech module
+- **```Info.Send("Answer", {"text": myText})```**: Send QnA answer text to Speech module
   - **params** (*Dict*) : Answer text to be provided as String to key ```text```
 
-- **```Info.Send("Joke", {"text": myText}```**: Send joke text to Speech module
+- **```Info.Send("Joke", {"text": myText})```**: Send joke text to Speech module
   - **params** (*Dict*) : Joke text to be provided as String to key ```text```
   
 #### Receive
@@ -65,10 +65,10 @@ The three functions are:
 
 ## Speech
 #### Send
-- **```Info.Send("Question", {"text": myText}```**: Send QnA question text to NLP module
+- **```Info.Send("Question", {"text": myText})```**: Send QnA question text to NLP module
   - **params** (*Dict*) : Question text to be provided as String to key ```text```
 
-- **```Action.Request("ALAudioPlayer", {"path": filepath}```**: Request for generated audio to be played by Pepper's speakers
+- **```Action.Request("ALAudioPlayer", {"path": filepath})```**: Request for generated audio to be played by Pepper's speakers
   - **params** (*Dict*) : Filepath of audio file (e.g. "C:/Users/user/sample.mp3" to be provided as String to key ```path```
 
 - **```Info.Send("TriggerJoke")```**: Send signal ("1") to NLP module to trigger joke when high noise levels are detected
