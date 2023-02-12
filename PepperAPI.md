@@ -4,6 +4,7 @@ The three functions are:
 - **```Info.Request(name, params)```**: Request to receive data from other modules or from Pepper
 - **```Info.Send(name, params)```**: Request to send data to other modules
 
+## Importing & Initialising
 For each script in which you need to call the API, import the **PepperAPI** package and initialise it with the name of your module (e.g. **cv_module**). This name should remain the same for all scripts, or it'll trigger a port error.
 ```
 import PepperAPI
@@ -14,7 +15,10 @@ if __name__ == "__main__":
     Info.Request("TriggerHandDetection")
 ```
 
-## Contents
+## Blocking transmission
+Publishers are implemented such that they wait for a subscriber to connect before they publish the msg. Subscribers also waits for data to be received before allowing subsequent code to run.
+
+## APIs
 - [Web](#web)
 - [CV](#cv)
 - [NLP](#nlp)
