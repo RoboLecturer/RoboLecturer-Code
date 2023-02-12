@@ -159,3 +159,7 @@ Parameters:
   1. If the line ```source /opt/ros/noetic/setup.bash``` is not in your ```~/.bashrc```, run it, then add it to your ```~/.bashrc``` so you can avoid doing it everytime you open a terminal.
   2. Run ```source ~/<workspace_name>/devel/setup.bash```.
   3. Your ```ROS_MASTER_URI``` may be different from that of the Master running roscore.
+  
+- **ERROR: Unable to start XML-RPC server, port 45100 is already in use**. 
+
+  If you've called ```PepperAPI.init()``` in multiple scripts, check that the module name you provided as the argument remains the same across all scripts.
