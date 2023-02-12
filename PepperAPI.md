@@ -4,7 +4,7 @@ The three functions are:
 - **```Info.Request(name, params)```**: Request to receive data from other modules or from Pepper
 - **```Info.Send(name, params)```**: Request to send data to other modules
 
-For each script in which you need to call the API, import the **PepperAPI** package and initialise it with the name of your module (e.g. **cv_module**). This provided name should remain the same for all scripts, or it'll trigger a port error.
+For each script in which you need to call the API, import the **PepperAPI** package and initialise it with the name of your module (e.g. **cv_module**). This name should remain the same for all scripts, or it'll trigger a port error.
 ```
 import PepperAPI
 from PepperAPI import Info
