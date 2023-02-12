@@ -9,6 +9,16 @@ The list of packages and their versions used for the CV module has been included
 PepperCV directory contains (at the moment) 3 directories:
 
 1) ```src``` -> directory for scripts for functions, classes etc. specific for the CV module to be used in the ```main.py``` script. It also should contain notebooks for training models.
+<<<<<<< HEAD
+=======
+
+2) ```tests``` -> directory used to conduct tests of software.
+
+3) ```utils``` -> directory for utility code/files. This includes ```PepperAPI``` and saved models in the ```models``` subdirectory.
+
+
+Feel free to modify this.
+>>>>>>> 477b5f3db43440cc4394ea702fff2dcca4cb1bcc
 
 2) ```tests``` -> directory used to conduct tests of software.
 
