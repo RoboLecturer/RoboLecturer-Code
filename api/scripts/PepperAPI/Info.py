@@ -27,7 +27,7 @@ def Request(api_name, api_params={}):
 		def callback(msg):
 			Data.SimpleMsg = msg.data
 			rospy.loginfo("Received: SimpleMsg=%s" % Data.SimpleMsg)
-		StringSubscriber("simple_msg", callback, listen_once=True)
+		StringSubscriber("simple_msg", callback)
 		return Data.SimpleMsg
 
 	if api_name == "Image":
@@ -47,13 +47,13 @@ def Request(api_name, api_params={}):
 	if api_name == "TriggerQuiz":
 		"""Receive trigger_quiz signal"""
 		callback = lambda _: rospy.loginfo("Received: trigger_quiz")
-		StringSubscriber("trigger_quiz", callback, listen_once=True)
+		StringSubscriber("trigger_quiz", callback)
 		return True
 
 	if api_name == "ChangeSlide":
 		"""Receive change_slide signal"""
 		callback = lambda _: rospy.loginfo("Received: change_slide")
-		StringSubscriber("change_slide", callback, listen_once=True)
+		StringSubscriber("change_slide", callback)
 		return True
 
 
@@ -61,13 +61,13 @@ def Request(api_name, api_params={}):
 	if api_name == "TriggerHandDetection":
 		"""Receive trigger_hand_detection signal"""
 		callback = lambda _: rospy.loginfo("Received: trigger_hand_detection")
-		StringSubscriber("trigger_hand_detection", callback, listen_once=True)
+		StringSubscriber("trigger_hand_detection", callback)
 		return True
 
 	if api_name == "TriggerAttentivenessDetection":
 		"""Receive trigger_attentiveness_detection signal"""
 		callback = lambda _: rospy.loginfo("Received: trigger_attentiveness_detection")
-		StringSubscriber("trigger_attentiveness_detection", callback, listen_once=True)
+		StringSubscriber("trigger_attentiveness_detection", callback)
 		return True
 
 
@@ -79,13 +79,13 @@ def Request(api_name, api_params={}):
 		def callback(msg):
 			Data.Question = msg.data
 			rospy.loginfo("Received: Question=%s" % Data.Question)
-		StringSubscriber("question", callback, listen_once=True)
+		StringSubscriber("question", callback)
 		return Data.Question
 
 	if api_name == "TriggerJoke":
 		"""Receive trigger_joke signal"""
 		callback = lambda _: rospy.loginfo("Received: trigger_joke")
-		StringSubscriber("trigger_joke", callback, listen_once=True)
+		StringSubscriber("trigger_joke", callback)
 		return True
 
 
@@ -97,7 +97,7 @@ def Request(api_name, api_params={}):
 		def callback(msg):
 			Data.LectureScript = msg.data
 			rospy.loginfo("Received: Script=%s" % Data.LectureScript)
-		StringSubscriber("lecture_script", callback, listen_once=True)
+		StringSubscriber("lecture_script", callback)
 		return Data.LectureScript
 	
 	if api_name == "Answer":
@@ -107,7 +107,7 @@ def Request(api_name, api_params={}):
 		def callback(msg):
 			Data.Answer = msg.data
 			rospy.loginfo("Received: Answer=%s" % Data.Answer)
-		StringSubscriber("answer", callback, listen_once=True)
+		StringSubscriber("answer", callback)
 		return Data.Answer
 
 	if api_name == "Joke":
@@ -117,19 +117,19 @@ def Request(api_name, api_params={}):
 		def callback(msg):
 			Data.Joke = msg.data
 			rospy.loginfo("Received: Joke=%s" % Data.Joke)
-		StringSubscriber("joke", callback, listen_once=True)
+		StringSubscriber("joke", callback)
 		return Data.Joke
 
 	if api_name == "TriggerListen":
 		"""Receive trigger_listen signal"""
 		callback = lambda _: rospy.loginfo("Received: trigger_listen")
-		StringSubscriber("trigger_listen", callback, listen_once=True)
+		StringSubscriber("trigger_listen", callback)
 		return True
 
 	if api_name == "TriggerNoiseDetection":
 		"""Receive trigger_noise_detection signal"""
 		callback = lambda _: rospy.loginfo("Received: trigger_noise_detection")
-		StringSubscriber("trigger_noise_detection", callback, listen_once=True)
+		StringSubscriber("trigger_noise_detection", callback)
 		return True
 
 
@@ -155,7 +155,7 @@ def Request(api_name, api_params={}):
 	if api_name == "IncrementLoopCounter":
 		"""Receive increment_loop_counter signal"""
 		callback = lambda _: rospy.loginfo("Received: increment_loop_counter")
-		StringSubscriber("increment_loop_counter", callback, listen_once=True)
+		StringSubscriber("increment_loop_counter", callback)
 		return True
 
 
