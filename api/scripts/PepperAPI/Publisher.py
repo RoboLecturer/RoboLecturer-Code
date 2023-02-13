@@ -1,7 +1,7 @@
 import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from api.msg import CVInfo
+from api.msg import CVInfo, State
 from cv_bridge import CvBridge
 
 # Parent publisher class
@@ -49,6 +49,7 @@ class CVInfoPublisher(Publisher, object):
 		while self.publisher.get_num_connections() == 0:
 			pass			
 		self.publisher.publish(msg)
+		rospy.loginfo("[%s] %s: Published hand info" % (self.name, self.topic))
 
 """publish image"""
 class ImagePublisher(Publisher, object):
@@ -63,7 +64,27 @@ class ImagePublisher(Publisher, object):
 		while self.publisher.get_num_connections() == 0:
 			pass			
 		self.publisher.publish(br.cv2_to_imgmsg(image))
-		rospy.loginfo("Published image")
+		rospy.loginfo("[%s] %s: Published image" % (self.name, self.topic))
+
+"""publish state info"""
+class StatePublisher(Publisher, object):
+	def __init__(self, topic):
+		super(StatePublisher, self).__init__(
+			"StatePublisher",
+			topic,
+			State)
+
+	def publish(self, state_dict):
+		msg = State()
+		msg.Start = state_dict["Start"]
+		msg.AnyQuestions = state_dict["AnyQuestions"]
+		msg.NoiseLevel = state_dict["NoiseLevel"]
+		msg.Attentiveness = state_dict["Attentiveness"]
+		msg.NoQuestionsLoop = state_dict["NoQuestionsLoop"]
+		while self.publisher.get_num_connections() == 0:
+			pass			
+		self.publisher.publish(msg)
+
 
 # ==============================================================
 # Initiate publishers
@@ -96,6 +117,7 @@ trigger_listen_publisher = StringPublisher("trigger_listen")
 
 ## CONTROL
 change_slide_publisher = StringPublisher("change_slide")
+state_publisher = StatePublisher("state")
 
 ## SHARED
 trigger_quiz_publisher = StringPublisher("trigger_quiz")

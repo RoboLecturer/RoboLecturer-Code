@@ -1,7 +1,7 @@
 import rospy, cv2
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from api.msg import CVInfo
+from api.msg import CVInfo, State
 
 # Parent subscriber class
 class Subscriber:	
@@ -30,7 +30,7 @@ class Subscriber:
 
 
 # Child subscriber classes
-"""receive simple string msg"""
+"""receive string"""
 class StringSubscriber(Subscriber, object):
 	def __init__(self, topic, callback, listen=True):
 		super(StringSubscriber, self).__init__(
@@ -57,5 +57,15 @@ class ImageSubscriber(Subscriber, object):
 			"ImageSubscriber", 
 			topic, 
 			Image,
+			callback, 
+			listen)
+		
+"""receive state"""
+class StateSubscriber(Subscriber, object):
+	def __init__(self, topic, callback, listen=True):
+		super(StateSubscriber, self).__init__(
+			"StateSubscriber", 
+			topic, 
+			State,
 			callback, 
 			listen)

@@ -79,9 +79,9 @@ def Listen():
 
 		# constants
 		Z_UP = 1.0
-		Z_DOWN = 0.5
-		Y_LARM_OUT = 1.0
-		Y_LARM_IN = -0.2
+		Z_DOWN = 0.7
+		Y_LARM_OUT = 5.0
+		Y_LARM_IN = 0
 		Y_RARM_OUT = -Y_LARM_OUT
 		Y_RARM_IN = -Y_LARM_IN
 
@@ -93,8 +93,8 @@ def Listen():
 			(center_x, center_y, frame_width, frame_height))
 
 		# point parameters
-		max_speed = 0.7
-		frame = 1 # Torso=0, World=1, Robot=2
+		max_speed = 0.5
+		frame = 0 # Torso=0, World=1, Robot=2
 
 		# point in/out
 		point_x = 1.0 # fixed
@@ -117,11 +117,11 @@ def Listen():
 		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
 		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
 
-		posture.applyPosture("StandInit", 0.5)
-		tracker.lookAt(effector, [x,y,z], frame, max_speed)
-		tracker.pointAt(effector, [x,y,z], frame, max_speed)
-		time.sleep(10)
-		posture.applyPosture("StandInit", 0.5)
+		# posture.applyPosture("StandInit", 0.5)
+		tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
+		tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
+		# time.sleep(10)
+		# posture.applyPosture("StandInit", 0.5)
 
 		return True
 

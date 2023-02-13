@@ -1,6 +1,6 @@
 from .Publisher import *
 from .Subscriber import *
-from api.msg import CVInfo
+from api.msg import CVInfo, State
 
 # =========================================================
 
@@ -158,6 +158,15 @@ def Request(api_name, api_params={}):
 		StringSubscriber("increment_loop_counter", callback)
 		return True
 
+	if api_name == "State":
+		state_name = api_params["name"]
+		def callback(msg):
+			state = getattr(msg, state_name)
+			Data.State = state if state else False
+			rospy.loginfo("State: %s" % str(msg))
+		StateSubscriber("state", callback)
+		return Data.State
+
 
 	print("API does not exist. Please check name again.")
 	return False
@@ -304,6 +313,20 @@ def Send(api_name, api_params={}):
 	if api_name == "ChangeSlide":
 		"""Send change_slide to Speech"""
 		change_slide_publisher.publish(1)
+		return True
+
+	if api_name == "State":
+		"""Broadcast state info to all modules"""
+		state_dict = {
+			"Start": "",
+			"AnyQuestions": "",
+			"NoiseLevel": "",
+			"Attentiveness": "",
+			"NoQuestionsLoop": ""
+		}
+		for k,v in api_params.items():
+			state_dict[k] = v
+		state_publisher.publish(state_dict)
 		return True
 
 	
