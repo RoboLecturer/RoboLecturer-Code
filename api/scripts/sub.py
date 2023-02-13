@@ -41,6 +41,6 @@ if __name__ == "__main__":
 			print("\nTrial %d" % counter)
 			simulate_cv_module()
 			counter += 1
-	except:
+	except KeyboardInterrupt:
 		sys.exit(0)
 
