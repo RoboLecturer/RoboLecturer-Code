@@ -32,7 +32,7 @@ if __name__ == "__main__":
 			print("\nTrial %d" % counter)
 			main()
 			counter += 1
-	except:
+	except KeyboardInterrupt:
 		sys.exit(0)
 
 	## Send image
