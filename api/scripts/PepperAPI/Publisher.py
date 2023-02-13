@@ -94,6 +94,7 @@ tts_publisher = StringPublisher("tts")
 
 ## WEB
 slides_publisher = StringPublisher("slides")
+take_control_publisher = StringPublisher("take_control")
 
 ## CV
 hand_publisher = CVInfoPublisher("raised_hand")

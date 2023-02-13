@@ -40,7 +40,7 @@ class StringSubscriber(Subscriber, object):
 			callback, 
 			listen)
 
-"""receive array of xy float coordinates"""
+"""receive feature info about raised hand or detected face"""
 class CVInfoSubscriber(Subscriber, object):
 	def __init__(self, topic, callback, listen=True):
 		super(CVInfoSubscriber, self).__init__(

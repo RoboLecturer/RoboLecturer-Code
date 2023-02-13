@@ -158,6 +158,12 @@ def Request(api_name, api_params={}):
 		StringSubscriber("increment_loop_counter", callback)
 		return True
 
+	if api_name == "TakeControl":
+		"""Receive take_control signal"""
+		callback = lambda _: rospy.loginfo("Received: take_control")
+		StringSubscriber("take_control", callback)
+		return True
+
 	if api_name == "State":
 		state_name = api_params["name"]
 		def callback(msg):
@@ -166,7 +172,7 @@ def Request(api_name, api_params={}):
 			rospy.loginfo("State: %s" % str(msg))
 		StateSubscriber("state", callback)
 		return Data.State
-
+	
 
 	print("API does not exist. Please check name again.")
 	return False
@@ -205,6 +211,11 @@ def Send(api_name, api_params={}):
 		"""
 		text = api_params["text"]
 		slides_publisher.publish(text)
+		return True
+
+	if api_name == "TakeControl":
+		"""Send take_control to Control"""
+		take_control_publisher.publish(1)
 		return True
 
 
