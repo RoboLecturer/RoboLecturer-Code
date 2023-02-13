@@ -19,7 +19,7 @@ class Subscriber:
 				self.subscriber.unregister()
 
 		self.subscriber = rospy.Subscriber(topic, payload_type, finalCallback)
-		# self.log()
+		self.log()
 		# my implementation of rospy.spin()
 		while self.spin and not rospy.is_shutdown():
 			rospy.rostime.wallsleep(0.5)

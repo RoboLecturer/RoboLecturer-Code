@@ -147,7 +147,7 @@ def Request(api_name, api_params={}):
 			Data.RaisedHandInfo["frame_res"] = (msg.frame_width, msg.frame_height)
 			Data.RaisedHandInfo["confidence_score"] = msg.score
 			rospy.loginfo("Received: raised hand at (%.2f, %.2f)" % (msg.x, msg.y))
-		CVInfoSubscriber("raised_hands", callback)
+		CVInfoSubscriber("raised_hand", callback)
 		return Data.RaisedHandInfo
 
 
@@ -211,7 +211,7 @@ def Send(api_name, api_params={}):
 		bounding_box = api_params["bounding_box"]
 		frame_res = api_params["frame_res"]
 		confidence_score = api_params["confidence_score"]
-		hands_publisher.publish(bounding_box, frame_res, confidence_score)
+		hand_publisher.publish(bounding_box, frame_res, confidence_score)
 		return True
 
 	if api_name == "FaceInfo":

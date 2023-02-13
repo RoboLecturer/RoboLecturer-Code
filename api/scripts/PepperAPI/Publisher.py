@@ -75,7 +75,7 @@ tts_publisher = StringPublisher("tts")
 slides_publisher = StringPublisher("slides")
 
 ## CV
-hands_publisher = CVInfoPublisher("raised_hands")
+hand_publisher = CVInfoPublisher("raised_hand")
 face_publisher = CVInfoPublisher("faces")
 trigger_noise_detection_publisher = StringPublisher("trigger_noise_detection")
 increment_loop_counter_publisher = StringPublisher("increment_loop_counter")
