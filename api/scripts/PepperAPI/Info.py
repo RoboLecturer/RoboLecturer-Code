@@ -161,7 +161,7 @@ def Request(api_name, api_params={}):
 	if api_name == "TakeControl":
 		"""Receive take_control signal"""
 		callback = lambda _: rospy.loginfo("Received: take_control")
-		StringSubscriber("take_control", callback, listen_once=True)
+		StringSubscriber("take_control", callback)
 		return True
 
 
