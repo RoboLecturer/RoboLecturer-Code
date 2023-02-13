@@ -4,6 +4,17 @@ The three functions are:
 - **```Info.Request(name, params)```**: Request to receive data from other modules or from Pepper
 - **```Info.Send(name, params)```**: Request to send data to other modules
 
+## Contents
+- [Importing & Initialising](#importing--initialising)
+- [Blocking transmission](#blocking-transmission)
+- [APIs](#apis)
+  - [Web](#web)
+  - [CV](#cv)
+  - [NLP](#nlp)
+  - [Speech](#speech)
+  - [Kinematics](#kinematics)
+  - [Control](#control)
+
 ## Importing & Initialising
 For each script in which you need to call the API, import the **PepperAPI** package and initialise it with the name of your module (e.g. **cv_module**). This name should remain the same for all scripts, or it'll trigger a port error.
 ```
@@ -21,14 +32,7 @@ if __name__ == "__main__":
 - Subscribers will also wait for data to be received before allowing subsequent code to run
 
 ## APIs
-- [Web](#web)
-- [CV](#cv)
-- [NLP](#nlp)
-- [Speech](#speech)
-- [Kinematics](#kinematics)
-- [Control](#control)
-
-## Web
+### Web
 #### Send
 - **```Info.Send("Slides", {"text": myText})```**: Send slides text to NLP module  
   - **params** (*Dict*) : Slides text to be provided as String to key ```text```
@@ -39,7 +43,7 @@ if __name__ == "__main__":
 - **```Info.Request("ChangeSlide")```**: Receive signal ("1") to change slide
 
 
-## CV
+### CV
 #### Send
 - **```Info.Send("RaisedHandInfo", params)```**: Send information about raised hand to Kinematics module 
   - **params** (*Dict*) : 
@@ -63,7 +67,7 @@ if __name__ == "__main__":
 - **```Info.Request("TriggerAttentivenessDetection")```**: Receive signal ("1") to detecting for inattentiveness
 
 
-## NLP
+### NLP
 #### Send
 - **```Info.Send("LectureScript", {"text": myText})```**: Send lecture script text to Speech module
   - **params** (*Dict*) : Script text to be provided as String to key ```text```
@@ -80,7 +84,7 @@ if __name__ == "__main__":
 
 - **```Info.Request("TriggerJoke")```**: Receive signal ("1") to trigger joke to be sent to Speech module
 
-## Speech
+### Speech
 #### Send
 - **```Info.Send("Question", {"text": myText})```**: Send QnA question text to NLP module
   - **params** (*Dict*) : Question text to be provided as String to key ```text```
@@ -105,7 +109,7 @@ if __name__ == "__main__":
 - **```Info.Request("TriggerNoiseDetection")```**: Receive signal ("1") to start detecting for noise
 
 
-## Kinematics
+### Kinematics
 #### Send
 - **```Info.Send("TriggerHandDetection")```**: Send signal ("1") to CV module to start detecting for raised hands after Pepper has finished the script for the slide
 - **```Info.Send("TriggerListen")```**: Send signal ("1") to Speech module to start listening to mic input after Pepper has pointed at the student
@@ -119,7 +123,7 @@ if __name__ == "__main__":
     - key ```confidence_score```: *Float* confidence score
 
 
-## Control
+### Control
 #### Send
 - **```Info.Send("TriggerQuiz")```**: Send signal ("1") to Web module to trigger quiz when loop counter reaches threshold
 - **```Info.Send("TriggerJoke")```**: Send signal ("1") to NLP module to trigger joke when loop counter reaches threshold
@@ -127,3 +131,4 @@ if __name__ == "__main__":
 
 #### Receive
 - **```Info.Request("IncrementLoopCounter")```**: Receive signal ("1") to increment "no questions" loop counter
+- **```Info.Request("TakeControl")```**: Receive signal ("1") to indicate start of new loop
