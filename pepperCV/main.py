@@ -58,6 +58,8 @@ if __name__ == "__main__":
 	## Initialise CV node
     PepperAPI.init("cv_node")
     try:
+        closed_hands = [(0, 0, 0, 0)]
+        open_hands = [(0, 0 , 0 , 0)]
         while True:
             ret, frame = cap.read()
             img = frame#np.random.rand(840, 840, 3)#cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # to make frames gray.
@@ -70,8 +72,6 @@ if __name__ == "__main__":
                 cv2.putText(img, f"Engagement: {0.69}", org=(x_face, y_face-5), fontFace=cv2.FONT_HERSHEY_SIMPLEX , fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
                 
                 # detecting two types of hand gestures in parallel
-                closed_hands = [None]
-                open_hands = [None]
                 t1 = threading.Thread(target=hand_detector, args=(closed_hand_detector, img, closed_hands))
                 t2 = threading.Thread(target=hand_detector, args=(open_hand_detector, img, open_hands))
                 t1.start()

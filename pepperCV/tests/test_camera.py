@@ -3,7 +3,7 @@ import cv2
 from sys import argv
 import os
 import threading
-
+import random
 
 try:
     sampling = argv[1]
@@ -19,7 +19,6 @@ face_detector = cv2.CascadeClassifier("../utils/models/face_detection.xml") # lo
 closed_hand_detector = cv2.CascadeClassifier("../utils/models/closed_hand.xml")
 open_hand_detector = cv2.CascadeClassifier("../utils/models/open_hand.xml")
 iter = 0
-engagement = 0.69 # for now an arbitrary number. In the future, it will come from the classification model.
 
 def sample(faces, iter):
     for (x, y, w, h) in faces:
@@ -34,20 +33,20 @@ def hand_detector(cascade, frame, hands):
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
         hands.append((x, y))
 
+closed_hands = [(0, 0, 0, 0)]
+open_hands = [(0, 0, 0, 0)]
 
 while True:
     ret, frame = cap.read()
     img = frame#np.random.rand(840, 840, 3)#cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # to make frames gray.
     faces = face_detector.detectMultiScale(img, scaleFactor=1.2, minNeighbors=5, minSize=(64, 64))
-    
+    engagement = random.uniform(0, 1)
     
     for (x_face, y_face, w_face, h_face) in faces:
         cv2.rectangle(img, (x_face, y_face), (x_face+w_face, y_face+h_face), (255, 0, 0), 2)
         roi_color_face = img[y_face:y_face+h_face, x_face:x_face+w_face]
-        cv2.putText(img, f"Confidence: {0.69}", org=(x_face, y_face-5), fontFace=cv2.FONT_HERSHEY_SIMPLEX , fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
+        cv2.putText(img, f"Engagement: {engagement}", org=(x_face, y_face-5), fontFace=cv2.FONT_HERSHEY_SIMPLEX , fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
 
-        closed_hands = [(0, 0)]
-        open_hands = [(0, 0)]
         t1 = threading.Thread(target=hand_detector, args=(closed_hand_detector, img, closed_hands))
         t2 = threading.Thread(target=hand_detector, args=(open_hand_detector, img, open_hands))
         t1.start()
@@ -55,6 +54,9 @@ while True:
 
         t1.join()
         t2.join()
+        print(f"Face detected: {(x_face, y_face)}")
+        print(f"Hand detected: {(closed_hands[-1])}")
+
 
         if open_hands[-1][1] < y_face:
             cv2.putText(img, f"Question!", org=(open_hands[-1][0], open_hands[-1][1]-5), fontFace=cv2.FONT_HERSHEY_SIMPLEX , fontScale=1, color=(0, 255, 0), thickness=2, lineType=2)
