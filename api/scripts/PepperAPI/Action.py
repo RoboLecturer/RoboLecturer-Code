@@ -69,5 +69,5 @@ def Listen():
 	# ALAudioPlayer used by speech module
 	StringSubscriber("audio_player_topic", audio_player_callback, listen_once=False)
 	
-	# Coords sent by CV module
-	CoordsSubscriber("point_topic", point_callback, listen_once=False)
+	# Hands info sent by CV module
+	CVInfoSubscriber("point_topic", point_callback, listen_once=False)
