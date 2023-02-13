@@ -16,7 +16,9 @@ if __name__ == "__main__":
 ```
 
 ## Blocking transmission
-Publishers are implemented such that they wait for a subscriber to connect before they publish the msg. Subscribers also waits for data to be received before allowing subsequent code to run.
+- In general, the Publishers and Subscribers implemented by the API are blocking
+- Publishers will wait for a subscriber to connect before they publish the msg
+- Subscribers will also wait for data to be received before allowing subsequent code to run
 
 ## APIs
 - [Web](#web)
