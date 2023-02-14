@@ -1,9 +1,7 @@
-### NOT YET WORKING
-
 import cv2
 import numpy as np
 
-im = cv2.imread("headPose.jpg");
+im = cv2.imread("../assets/headPose.jpg");
 size = im.shape
  
 image_points = np.array([
@@ -36,8 +34,8 @@ camera_matrix = np.array(
 print("Camera Matrix :\n {0}".format(camera_matrix))
 
 dist_coeffs = np.zeros((4,1))
-(success, rotation_vector, translation_vector) = cv2.solvePnP(model_points, image_points, camera_matrix, dist_coeffs, flags=cv2.CV_ITERATIVE)
- 
+(success, rotation_vector, translation_vector) = cv2.solvePnP(model_points, image_points, camera_matrix, dist_coeffs, flags=cv2.SOLVEPNP_ITERATIVE)
+
 print("Rotation Vector:\n {0}".format(rotation_vector))
 print("Translation Vector:\n {0}".format(translation_vector))
  
