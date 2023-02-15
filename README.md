@@ -166,4 +166,4 @@ Parameters:
 
 - **```No module found named: api```**
 
-You might not have built the api package (see [Section 3.1](#31-building-the-api-package). If you have, make sure you've run ```source devel/setup.bash```.
+  You might not have built the api package (see [Section 3.1](#31-building-the-api-package)). If you have, make sure you've run ```source devel/setup.bash```.
