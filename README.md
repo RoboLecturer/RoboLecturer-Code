@@ -52,7 +52,6 @@ Your Python scripts will be placed in your package folder. The directory listing
 |    |         setup.bash
 |    \----src
 |    |    \----<package name>
-|    |    |    +----src
 |    |    |         CMakeLists.txt
 |    |    |         packages.xml
 |    |    |         myScript.py
@@ -102,7 +101,6 @@ The directory listing should be:
 |    \----src
 |    |    +----api
 |    |    \----<package name>
-|    |    |    +----src
 |    |    |         CMakeLists.txt
 |    |    |         packages.xml
 |    |    |    +----PepperAPI
