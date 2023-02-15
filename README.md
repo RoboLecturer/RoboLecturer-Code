@@ -7,7 +7,7 @@
    3. [Setting ROS variables](#23-setting-ros-variables)
    4. [Running your scripts](#24-running-your-scripts)
 3. [PepperAPI](#3-pepperapi)
-   1. [Importing the API](#31-importing-the-api)
+   1. [Building the API package](#31-building-the-api-package)
    2. [Using the API](#32-using-the-api)
 4. [FAQs](#4-faqs)
 
@@ -90,7 +90,7 @@ python3 myScript.py
 Note: Every time you open a terminal, you have to run ```source <workspace_path>/devel/setup.bash``` in order to import the necessary environment variables to run ROS.
 
 ## 3. PepperAPI
-### 3.1. Importing the API
+### 3.1. Building the API package
 The PepperAPI calls custom ROS msgs, hence we've include the entire **[api](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/api)** package folder to be placed in your workspace/src folder and built with catkin_make. Then, copy the **[PepperAPI](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/api/scripts/PepperAPI)** folder under **api>scripts>PepperAPI** to the same directory as your scripts.
 
 The directory listing should be:
@@ -163,3 +163,7 @@ Parameters:
 - **ERROR: Unable to start XML-RPC server, port 45100 is already in use**. 
 
   If you've called ```PepperAPI.init()``` in multiple scripts, check that the module name you provided as the argument remains the same across all scripts.
+
+- **```No module found named: api```**
+
+You might not have built the api package (see [Section 3.1](#31-building-the-api-package). If you have, make sure you've run ```source devel/setup.bash```.
