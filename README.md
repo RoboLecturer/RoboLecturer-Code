@@ -91,7 +91,7 @@ Note: Every time you open a terminal, you have to run ```source <workspace_path>
 
 ## 3. PepperAPI
 ### 3.1. Building the API package
-The PepperAPI calls custom ROS msgs, hence we've include the entire **[api](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/api)** package folder to be placed in your workspace/src folder and built with catkin_make. Then, copy the **[PepperAPI](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/api/scripts/PepperAPI)** folder under **api>scripts>PepperAPI** to the same directory as your scripts.
+The PepperAPI calls custom ROS msgs, hence we've include the entire **[api](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/api)** package folder to be placed in your **workspace/src** folder and built with ```catkin_make```. Then, copy the **[PepperAPI](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/api/scripts/PepperAPI)** folder under **api>scripts>PepperAPI** to the same directory as your scripts.
 
 The directory listing should be:
 ```
