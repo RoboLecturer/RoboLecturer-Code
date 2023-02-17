@@ -1,2 +1,2 @@
-nlp_pkg
--DCATKIN_DEVEL_PREFIX=/home/dovakeith/HCR/nlp_ros/devel -DCMAKE_INSTALL_PREFIX=/home/dovakeith/HCR/nlp_ros/install -G Unix Makefiles
+api:nlp_pkg
+-DCATKIN_DEVEL_PREFIX=/mnt/c/Users/Keith/HCR/RoboLecturer-Code/nlp_ros/devel -DCMAKE_INSTALL_PREFIX=/mnt/c/Users/Keith/HCR/RoboLecturer-Code/nlp_ros/install -G Unix Makefiles
