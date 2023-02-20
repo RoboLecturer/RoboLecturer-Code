@@ -5,7 +5,10 @@ import os
 import threading
 import random
 import time
+import pandas as pd
 from functools import wraps
+
+execution_time=[]
 
 def time_inference(func):
     @wraps(func)
@@ -14,8 +17,9 @@ def time_inference(func):
         result = func(*args, **kwargs)
         end_inference = time.perf_counter()
         total_time_inference = end_inference - start__inference
-        print(f'Function {func.__name__} took {total_time_inference * 1000:.4f} ms')
-        time.sleep(0.0001)
+        total_time_inference = total_time_inference * 1000
+        execution_time.append(total_time_inference)
+        print(f'Function {func.__name__} took {total_time_inference:.4f} ms')
         return result
     return timeit_wrapper
 
@@ -25,7 +29,7 @@ except Exception:
     print("Sampling argument not provided")
     sampling = False
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 cap.set(3, 1920)
 cap.set(4, 1080)
 
@@ -94,7 +98,8 @@ while True:
     if iter % 100 == 0 and sampling: # 100 is arbitrary. The point is to not sample to frequently.
         sample(faces, iter)
 
-    if k == 27: # press 'ESC' to quit  
+    if k == 27: # press 'ESC' to quit
+        pd.DataFrame(np.array(execution_time)).to_csv("execution.csv", index=False)
         break
     iter += 1
 
