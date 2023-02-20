@@ -47,7 +47,7 @@ export default class Test extends Vue {
   slide_listener: any = null;
   control_publisher: any = null;
   subscriptions: Array<String> = ["trigger_quiz", "change_slide"];
-  publishings: Array<String> = ["take_control"];
+  publishings: Array<String> = ["take_control_forwarder"];
   quiz_input_stream: String = "Data stream:\n";
   slide_input_stream: String = "Data stream:\n";
   streamUpdate: number = 0;
@@ -99,11 +99,10 @@ export default class Test extends Vue {
 
     this.control_publisher = new ROSLIB.Topic({
       ros: this.ros,
-      name: "/take_control",
+      name: "/take_control_forwarder",
       messageType: "std_msgs/String",
     });
 
-    //this.publishText("I published this message, are you listening?");
   }
 
   setSelectedTopic(){

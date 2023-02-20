@@ -27,12 +27,12 @@ RUN rosdep install --from-paths src --ignore-src -r -y
 RUN mkdir /root/catkin_ws/src/robot_gui_bridge/launch
 COPY ./websocket.launch /root/catkin_ws/src/robot_gui_bridge/launch
 COPY ./scripts/publish.py /root/catkin_ws/src/robot_gui_bridge/publish.py
-COPY ./scripts/web_interface.py /root/catkin_ws/src/robot_gui_bridge/web_interface.py
+COPY ./scripts/forwarder.py /root/catkin_ws/src/robot_gui_bridge/forwarder.py
 RUN export ROS_MASTER_URI=http://192.168.0.102:11311
 RUN export ROS_IP=192.168.0.100
-RUN . /opt/ros/melodic/setup.sh && \
-    catkin build
-RUN source devel/setup.bash
+# RUN . /opt/ros/melodic/setup.sh && \
+#     catkin build
+# RUN source devel/setup.bash
 
 #Entrypoint
 #docker run -p 9000:9090 -it ros_server
