@@ -4,6 +4,20 @@ from sys import argv
 import os
 import threading
 import random
+import time
+from functools import wraps
+
+def time_inference(func):
+    @wraps(func)
+    def timeit_wrapper(*args, **kwargs):
+        start__inference = time.perf_counter()
+        result = func(*args, **kwargs)
+        end_inference = time.perf_counter()
+        total_time_inference = end_inference - start__inference
+        print(f'Function {func.__name__} took {total_time_inference * 1000:.4f} ms')
+        time.sleep(0.0001)
+        return result
+    return timeit_wrapper
 
 try:
     sampling = argv[1]
@@ -27,20 +41,29 @@ def sample(faces, iter):
         cv2.imwrite(f"{x}_{y}_{iter}_face.jpg", roi_color)
 
 
+#@time_inference
+def detect_face(img, model):
+    return model.detectMultiScale(img, scaleFactor=1.2, minNeighbors=5, minSize=(64, 64))
+
+#@time_inference
 def hand_detector(cascade, frame, hands):
     detected_hands = cascade.detectMultiScale(frame, scaleFactor=1.2, minNeighbors=5, minSize=(64, 64))
     for (x, y, w, h) in detected_hands:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
         hands.append((x, y))
 
+@time_inference
+def read_video(cap):
+    return cap.read()
+
 closed_hands = [(0, 0, 0, 0)]
 open_hands = [(0, 0, 0, 0)]
 
 while True:
-    ret, frame = cap.read()
+    ret, frame = read_video(cap)
     img = frame#np.random.rand(840, 840, 3)#cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # to make frames gray.
-    faces = face_detector.detectMultiScale(img, scaleFactor=1.2, minNeighbors=5, minSize=(64, 64))
-    engagement = random.uniform(0, 1)
+    faces = detect_face(img, face_detector)
+    engagement = round(random.uniform(0, 1), 3)
     
     for (x_face, y_face, w_face, h_face) in faces:
         cv2.rectangle(img, (x_face, y_face), (x_face+w_face, y_face+h_face), (255, 0, 0), 2)
@@ -54,9 +77,8 @@ while True:
 
         t1.join()
         t2.join()
-        print(f"Face detected: {(x_face, y_face)}")
-        print(f"Hand detected: {(closed_hands[-1])}")
-
+        #print(f"Face detected: {(x_face, y_face)}")
+        #print(f"Hand detected: {(closed_hands[-1])}")
 
         if open_hands[-1][1] < y_face:
             cv2.putText(img, f"Question!", org=(open_hands[-1][0], open_hands[-1][1]-5), fontFace=cv2.FONT_HERSHEY_SIMPLEX , fontScale=1, color=(0, 255, 0), thickness=2, lineType=2)
