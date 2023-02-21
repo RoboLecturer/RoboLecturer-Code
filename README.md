@@ -122,36 +122,6 @@ For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLec
 
 **Note**: This API is only for sending/receiving info between Pepper and your module, or between your module and other modules. For CV, Web and Speech modules that require communication with your camera, mic or web browser, please set that up individually.
   
-The three functions are ```Action.Request()``` to request for Pepper to do something, ```Info.Request()``` to request data from Pepper or other modules, or ```Info.Send()``` to send data to other modules.
-
-**```Action.Request(name, params)```**: Request for Pepper to perform an action
-
-Parameters:
-- **name** : *String*
-  Name of API you want to access (see list [here](http://doc.aldebaran.com/2-5/naoqi/index.html)).
-- **params** : *Dict*
-  Dictionary of parameters to give, which is dependent on the API you're accessing.
-
-**```Info.Request(name, params)```**: Request to receive data from Pepper or from other subteams
-
-Parameters:
-- **name** : *String*
-  Name of API you want to access.
-- **params** : *Dict*
-  Dictionary of parameters to give, which is dependent on the API you're accessing.
-
-Returns:
-- **Value** : *Undef*
-  Value will also be dependent on which API you're accessing.
-  
-**```Info.Send(name, params)```**: Request to send data
-
-Parameters:
-- **name** : *String*
-  Name of API you want to access.
-- **params** : *Dict*
-  Dictionary of parameters to give, which is dependent on the API you're accessing.
-  
 ## 4. FAQs
 - **ERROR: Unable to communicate with master!** when running ROS commands
   1. If the line ```source /opt/ros/noetic/setup.bash``` is not in your ```~/.bashrc```, run it, then add it to your ```~/.bashrc``` so you can avoid doing it everytime you open a terminal.
