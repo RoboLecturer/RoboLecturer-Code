@@ -36,10 +36,9 @@ if __name__ == "__main__":
 #### Send
 - **```Info.Send("Slides", {"text": myText})```**: Send slides text to NLP module  
   - **params** (*Dict*) : Slides text to be provided as String to key ```text```
-- **```Info.Send("TakeControl")```**: Send signal ("1") to Control module to start next loop
   
 #### Receive
-- **```Info.Request("TriggerQuiz")```**: Receive signal ("1") to trigger quiz
+- **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal "joke" or "quiz". If signal received is "quiz", trigger quiz
 - **```Info.Request("ChangeSlide")```**: Receive signal ("1") to change slide
 
 
@@ -57,14 +56,14 @@ if __name__ == "__main__":
     - key ```frame_res```: *Int* (width, height) of frame
     - key ```engagement_score```: *Float* engagement score
 
-- **```Info.Send("TriggerNoiseDetection")```**: Send signal ("1") to Speech module to trigger noise detection when there are no raised hands detected
-- **```Info.Send("TriggerQuiz")```**: Send signal ("1") to Web module to trigger quiz when inattentiveness is detected
-- **```Info.Send("TriggerJoke")```**: Send signal ("1") to NLP module to trigger joke when inattentiveness is detected
-- **```Info.Send("IncrementLoopCounter")```**: Send signal ("1") to Control module to increment loop counter when no inattentiveness is detected
+- **```Info.Send("State", {"AnyQuestion":"HandsRaised"/"NoHandsRaised"})```**: Update state ```AnyQuestions```
+  - **params** (*Dict*) : New state "HandsRaised" or "NoHandsRaised" to be provided as String to key ```AnyQuestions```
+
+- **```Info.Send("State", {"Attentiveness":"NotAttentive"/"Attentive"})```**: Update state ```Attentiveness```
+  - **params** (*Dict*) : New state "NotAttentive" or "Attentive" to be provided as String to key ```Attentiveness```
   
 #### Receive
 - **```Info.Request("TriggerHandDetection")```**: Receive signal ("1") to start detecting raised hands
-- **```Info.Request("TriggerAttentivenessDetection")```**: Receive signal ("1") to detecting for inattentiveness
 
 
 ### NLP
@@ -82,7 +81,10 @@ if __name__ == "__main__":
 - **```Info.Request("Question")```**: Receive speech-to-text of detected question from Speech module
   - **return** (*String*) : Question text
 
-- **```Info.Request("TriggerJoke")```**: Receive signal ("1") to trigger joke to be sent to Speech module
+- **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal "joke" or "quiz". If signal received is "joke", send joke to Speech module
+
+- **```Info.Request("TriggerJokeOrShutup")```**: Receive signal "joke" or "shutup" to send joke or shutup to Speech module
+
 
 ### Speech
 #### Send
@@ -92,8 +94,8 @@ if __name__ == "__main__":
 - **```Action.Request("ALAudioPlayer", {"path": filepath})```**: Request for generated audio to be played by Pepper's speakers
   - **params** (*Dict*) : Filepath of audio file (e.g. "C:/Users/user/sample.mp3" to be provided as String to key ```path```
 
-- **```Info.Send("TriggerJoke")```**: Send signal ("1") to NLP module to trigger joke when high noise levels are detected
-- **```Info.Send("TriggerAttentivenessDetection")```**: Send signal ("1") to CV to start detecting for inattentiveness when low noise levels are detected
+- **```Info.Send("State", {"NoiseLevel":"High"/"Low"})```**: Update state ```NoiseLevel```
+  - **params** (*Dict*) : New state "High" or "Low" to be provided as String to key ```NoiseLevel```
 
 #### Receive
 - **```Info.Request("LectureScript")```**: Receive script for current slide from NLP module
@@ -102,11 +104,13 @@ if __name__ == "__main__":
 - **```Info.Request("Joke")```**: Receive joke text from NLP module
   - **return** (*String*) : Joke text
 
+- **```Info.Request("Joke")```**: Receive joke text from NLP module
+  - **return** (*String*) : Joke text
+
 - **```Info.Request("Answer")```**: Receive QnA answer text from NLP module
   - **return** (*String*) : Answer text
 
 - **```Info.Request("TriggerListen")```**: Receive signal ("1") to start listening to mic input
-- **```Info.Request("TriggerNoiseDetection")```**: Receive signal ("1") to start detecting for noise
 
 
 ### Kinematics
@@ -125,10 +129,10 @@ if __name__ == "__main__":
 
 ### Control
 #### Send
-- **```Info.Send("TriggerQuiz")```**: Send signal ("1") to Web module to trigger quiz when loop counter reaches threshold
-- **```Info.Send("TriggerJoke")```**: Send signal ("1") to NLP module to trigger joke when loop counter reaches threshold
-- **```Info.Send("ChangeSlide")```**: Send signal ("1") to Web module to change slide
+- **```Info.Send("TriggerJokeOrQuiz")```**: Send signal ("1") to Web module to trigger quiz when loop counter reaches threshold
+- **```Info.Send("TriggerJokeOrShutup")```**: Send signal ("1") to NLP module to trigger joke when loop counter reaches threshold
 
 #### Receive
-- **```Info.Request("IncrementLoopCounter")```**: Receive signal ("1") to increment "no questions" loop counter
-- **```Info.Request("TakeControl")```**: Receive signal ("1") to indicate start of new loop
+- **```Info.Request("State", params)```**: Receive state update
+  - **params** (*Dict*) : 
+    - key ```<state_name>```: *String* <new_state>
