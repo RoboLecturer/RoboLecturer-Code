@@ -37,6 +37,8 @@ if __name__ == "__main__":
 #### Send
 - **```Info.Send("Slides", {"text": myText})```**: Send slides text to NLP module  
   - **params** (*Dict*) : Slides text to be provided as *String* to key ```text```
+
+- **```Info.Send("TakeControl")```**: Send signal ("1") to Control module to take back control after quiz has finished
   
 #### Receive
 - **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal (*String*) "joke" or "quiz". If signal received is "quiz", trigger quiz
@@ -126,6 +128,8 @@ if __name__ == "__main__":
     - key ```bounding_box```: *Float* (x,y,w,h)
     - key ```frame_res```: *Int* (width, height) of frame
     - key ```confidence_score```: *Float* confidence score
+
+- **```Info.Request("TakeControl")```**: Receive signal ("1") to indicate that quiz has finished
 
 
 ### Control
