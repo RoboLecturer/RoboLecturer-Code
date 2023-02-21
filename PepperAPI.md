@@ -36,10 +36,10 @@ if __name__ == "__main__":
 ### Web
 #### Send
 - **```Info.Send("Slides", {"text": myText})```**: Send slides text to NLP module  
-  - **params** (*Dict*) : Slides text to be provided as String to key ```text```
+  - **params** (*Dict*) : Slides text to be provided as *String* to key ```text```
   
 #### Receive
-- **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal "joke" or "quiz". If signal received is "quiz", trigger quiz
+- **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal (*String*) "joke" or "quiz". If signal received is "quiz", trigger quiz
 - **```Info.Request("ChangeSlide")```**: Receive signal ("1") to change slide
 
 
@@ -58,10 +58,10 @@ if __name__ == "__main__":
     - key ```engagement_score```: *Float* engagement score
 
 - **```Info.Send("State", {"AnyQuestion":"HandsRaised"/"NoHandsRaised"})```**: Update state ```AnyQuestions```
-  - **params** (*Dict*) : New state "HandsRaised" or "NoHandsRaised" to be provided as String to key ```AnyQuestions```
+  - **params** (*Dict*) : New state "HandsRaised" or "NoHandsRaised" to be provided as *String* to key ```AnyQuestions```
 
 - **```Info.Send("State", {"Attentiveness":"NotAttentive"/"Attentive"})```**: Update state ```Attentiveness```
-  - **params** (*Dict*) : New state "NotAttentive" or "Attentive" to be provided as String to key ```Attentiveness```
+  - **params** (*Dict*) : New state "NotAttentive" or "Attentive" to be provided as *String* to key ```Attentiveness```
   
 #### Receive
 - **```Info.Request("TriggerHandDetection")```**: Receive signal ("1") to start detecting raised hands
@@ -70,33 +70,33 @@ if __name__ == "__main__":
 ### NLP
 #### Send
 - **```Info.Send("LectureScript", {"text": myText})```**: Send lecture script text to Speech module
-  - **params** (*Dict*) : Script text to be provided as String to key ```text```
+  - **params** (*Dict*) : Script text to be provided as *String* to key ```text```
 
 - **```Info.Send("Answer", {"text": myText})```**: Send QnA answer text to Speech module
-  - **params** (*Dict*) : Answer text to be provided as String to key ```text```
+  - **params** (*Dict*) : Answer text to be provided as *String* to key ```text```
 
 - **```Info.Send("Joke", {"text": myText})```**: Send joke text to Speech module
-  - **params** (*Dict*) : Joke text to be provided as String to key ```text```
+  - **params** (*Dict*) : Joke text to be provided as *String* to key ```text```
   
 #### Receive
 - **```Info.Request("Question")```**: Receive speech-to-text of detected question from Speech module
   - **return** (*String*) : Question text
 
-- **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal "joke" or "quiz". If signal received is "joke", send joke to Speech module
+- **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal (*String*) "joke" or "quiz". If signal received is "joke", send joke to Speech module
 
-- **```Info.Request("TriggerJokeOrShutup")```**: Receive signal "joke" or "shutup" to send joke or shutup to Speech module
+- **```Info.Request("TriggerJokeOrShutup")```**: Receive signal (*String*) "joke" or "shutup" to send joke or shutup to Speech module
 
 
 ### Speech
 #### Send
 - **```Info.Send("Question", {"text": myText})```**: Send QnA question text to NLP module
-  - **params** (*Dict*) : Question text to be provided as String to key ```text```
+  - **params** (*Dict*) : Question text to be provided as *String* to key ```text```
 
 - **```Action.Request("ALAudioPlayer", {"path": filepath})```**: Request for generated audio to be played by Pepper's speakers
-  - **params** (*Dict*) : Filepath of audio file (e.g. "C:/Users/user/sample.mp3" to be provided as String to key ```path```
+  - **params** (*Dict*) : Filepath of audio file (e.g. "C:/Users/user/sample.mp3" to be provided as *String* to key ```path```
 
 - **```Info.Send("State", {"NoiseLevel":"High"/"Low"})```**: Update state ```NoiseLevel```
-  - **params** (*Dict*) : New state "High" or "Low" to be provided as String to key ```NoiseLevel```
+  - **params** (*Dict*) : New state "High" or "Low" to be provided as *String to key ```NoiseLevel```
 
 #### Receive
 - **```Info.Request("LectureScript")```**: Receive script for current slide from NLP module
@@ -135,5 +135,5 @@ if __name__ == "__main__":
 
 #### Receive
 - **```Info.Request("State", params)```**: Receive state update
-  - **params** (*Dict*) : 
-    - key ```<state_name>```: *String* <new_state>
+  - **return** (*Dict*) : 
+    - keys ```<state_name>```: *String* <new_state>
