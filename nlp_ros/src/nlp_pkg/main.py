@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-import PepperAPI
 from PepperAPI import Info
 import QA
+import chatgpt
 
-def main():
+question = Info.Request("Question")
 
-	question = Info.Request("Question")
+#answer = QA.question_answering(question)
+#answer = chatgpt.asking_chatgpt(question)
+answer = chatgpt.asking_chatgpt("What is apple?")
 
-	answer = QA.question_answering(question)
-
-	Info.Send("Answer", {"text": answer})
+Info.Send("Answer", {"text": answer})

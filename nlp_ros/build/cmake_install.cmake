@@ -131,6 +131,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/dovakeith/HCR/nlp_ros/build/gtest/cmake_install.cmake")
+  include("/home/dovakeith/HCR/nlp_ros/build/api/cmake_install.cmake")
   include("/home/dovakeith/HCR/nlp_ros/build/nlp_pkg/cmake_install.cmake")
 
 endif()

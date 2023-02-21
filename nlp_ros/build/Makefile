@@ -285,43 +285,17 @@ gtest/fast:
 .PHONY : gtest/fast
 
 #=============================================================================
-# Target rules for targets named std_msgs_generate_messages_py
+# Target rules for targets named api_gennodejs
 
 # Build rule for target.
-std_msgs_generate_messages_py: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_py
-.PHONY : std_msgs_generate_messages_py
+api_gennodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_gennodejs
+.PHONY : api_gennodejs
 
 # fast build rule for target.
-std_msgs_generate_messages_py/fast:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/build
-.PHONY : std_msgs_generate_messages_py/fast
-
-#=============================================================================
-# Target rules for targets named std_msgs_generate_messages_nodejs
-
-# Build rule for target.
-std_msgs_generate_messages_nodejs: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_nodejs
-.PHONY : std_msgs_generate_messages_nodejs
-
-# fast build rule for target.
-std_msgs_generate_messages_nodejs/fast:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build
-.PHONY : std_msgs_generate_messages_nodejs/fast
-
-#=============================================================================
-# Target rules for targets named std_msgs_generate_messages_lisp
-
-# Build rule for target.
-std_msgs_generate_messages_lisp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_lisp
-.PHONY : std_msgs_generate_messages_lisp
-
-# fast build rule for target.
-std_msgs_generate_messages_lisp/fast:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
-.PHONY : std_msgs_generate_messages_lisp/fast
+api_gennodejs/fast:
+	$(MAKE) -f api/CMakeFiles/api_gennodejs.dir/build.make api/CMakeFiles/api_gennodejs.dir/build
+.PHONY : api_gennodejs/fast
 
 #=============================================================================
 # Target rules for targets named std_msgs_generate_messages_eus
@@ -333,8 +307,86 @@ std_msgs_generate_messages_eus: cmake_check_build_system
 
 # fast build rule for target.
 std_msgs_generate_messages_eus/fast:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/build
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make api/CMakeFiles/std_msgs_generate_messages_eus.dir/build
 .PHONY : std_msgs_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named api_genpy
+
+# Build rule for target.
+api_genpy: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_genpy
+.PHONY : api_genpy
+
+# fast build rule for target.
+api_genpy/fast:
+	$(MAKE) -f api/CMakeFiles/api_genpy.dir/build.make api/CMakeFiles/api_genpy.dir/build
+.PHONY : api_genpy/fast
+
+#=============================================================================
+# Target rules for targets named std_msgs_generate_messages_lisp
+
+# Build rule for target.
+std_msgs_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_lisp
+.PHONY : std_msgs_generate_messages_lisp
+
+# fast build rule for target.
+std_msgs_generate_messages_lisp/fast:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make api/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
+.PHONY : std_msgs_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named std_msgs_generate_messages_py
+
+# Build rule for target.
+std_msgs_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_py
+.PHONY : std_msgs_generate_messages_py
+
+# fast build rule for target.
+std_msgs_generate_messages_py/fast:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_py.dir/build.make api/CMakeFiles/std_msgs_generate_messages_py.dir/build
+.PHONY : std_msgs_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named api_generate_messages_py
+
+# Build rule for target.
+api_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_generate_messages_py
+.PHONY : api_generate_messages_py
+
+# fast build rule for target.
+api_generate_messages_py/fast:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_py.dir/build.make api/CMakeFiles/api_generate_messages_py.dir/build
+.PHONY : api_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named api_generate_messages
+
+# Build rule for target.
+api_generate_messages: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_generate_messages
+.PHONY : api_generate_messages
+
+# fast build rule for target.
+api_generate_messages/fast:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages.dir/build.make api/CMakeFiles/api_generate_messages.dir/build
+.PHONY : api_generate_messages/fast
+
+#=============================================================================
+# Target rules for targets named api_genlisp
+
+# Build rule for target.
+api_genlisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_genlisp
+.PHONY : api_genlisp
+
+# fast build rule for target.
+api_genlisp/fast:
+	$(MAKE) -f api/CMakeFiles/api_genlisp.dir/build.make api/CMakeFiles/api_genlisp.dir/build
+.PHONY : api_genlisp/fast
 
 #=============================================================================
 # Target rules for targets named std_msgs_generate_messages_cpp
@@ -346,8 +398,125 @@ std_msgs_generate_messages_cpp: cmake_check_build_system
 
 # fast build rule for target.
 std_msgs_generate_messages_cpp/fast:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make api/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
 .PHONY : std_msgs_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named _api_generate_messages_check_deps_CVInfo
+
+# Build rule for target.
+_api_generate_messages_check_deps_CVInfo: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _api_generate_messages_check_deps_CVInfo
+.PHONY : _api_generate_messages_check_deps_CVInfo
+
+# fast build rule for target.
+_api_generate_messages_check_deps_CVInfo/fast:
+	$(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/build
+.PHONY : _api_generate_messages_check_deps_CVInfo/fast
+
+#=============================================================================
+# Target rules for targets named _api_generate_messages_check_deps_State
+
+# Build rule for target.
+_api_generate_messages_check_deps_State: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _api_generate_messages_check_deps_State
+.PHONY : _api_generate_messages_check_deps_State
+
+# fast build rule for target.
+_api_generate_messages_check_deps_State/fast:
+	$(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_State.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_State.dir/build
+.PHONY : _api_generate_messages_check_deps_State/fast
+
+#=============================================================================
+# Target rules for targets named api_gencpp
+
+# Build rule for target.
+api_gencpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_gencpp
+.PHONY : api_gencpp
+
+# fast build rule for target.
+api_gencpp/fast:
+	$(MAKE) -f api/CMakeFiles/api_gencpp.dir/build.make api/CMakeFiles/api_gencpp.dir/build
+.PHONY : api_gencpp/fast
+
+#=============================================================================
+# Target rules for targets named std_msgs_generate_messages_nodejs
+
+# Build rule for target.
+std_msgs_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 std_msgs_generate_messages_nodejs
+.PHONY : std_msgs_generate_messages_nodejs
+
+# fast build rule for target.
+std_msgs_generate_messages_nodejs/fast:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build
+.PHONY : std_msgs_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named api_generate_messages_eus
+
+# Build rule for target.
+api_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_generate_messages_eus
+.PHONY : api_generate_messages_eus
+
+# fast build rule for target.
+api_generate_messages_eus/fast:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_eus.dir/build.make api/CMakeFiles/api_generate_messages_eus.dir/build
+.PHONY : api_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named api_generate_messages_nodejs
+
+# Build rule for target.
+api_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_generate_messages_nodejs
+.PHONY : api_generate_messages_nodejs
+
+# fast build rule for target.
+api_generate_messages_nodejs/fast:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_nodejs.dir/build.make api/CMakeFiles/api_generate_messages_nodejs.dir/build
+.PHONY : api_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named api_generate_messages_cpp
+
+# Build rule for target.
+api_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_generate_messages_cpp
+.PHONY : api_generate_messages_cpp
+
+# fast build rule for target.
+api_generate_messages_cpp/fast:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_cpp.dir/build.make api/CMakeFiles/api_generate_messages_cpp.dir/build
+.PHONY : api_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named api_geneus
+
+# Build rule for target.
+api_geneus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_geneus
+.PHONY : api_geneus
+
+# fast build rule for target.
+api_geneus/fast:
+	$(MAKE) -f api/CMakeFiles/api_geneus.dir/build.make api/CMakeFiles/api_geneus.dir/build
+.PHONY : api_geneus/fast
+
+#=============================================================================
+# Target rules for targets named api_generate_messages_lisp
+
+# Build rule for target.
+api_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_generate_messages_lisp
+.PHONY : api_generate_messages_lisp
+
+# fast build rule for target.
+api_generate_messages_lisp/fast:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_lisp.dir/build.make api/CMakeFiles/api_generate_messages_lisp.dir/build
+.PHONY : api_generate_messages_lisp/fast
 
 # Help Target
 help:
@@ -371,11 +540,24 @@ help:
 	@echo "... gmock"
 	@echo "... gtest_main"
 	@echo "... gtest"
-	@echo "... std_msgs_generate_messages_py"
-	@echo "... std_msgs_generate_messages_nodejs"
-	@echo "... std_msgs_generate_messages_lisp"
+	@echo "... api_gennodejs"
 	@echo "... std_msgs_generate_messages_eus"
+	@echo "... api_genpy"
+	@echo "... std_msgs_generate_messages_lisp"
+	@echo "... std_msgs_generate_messages_py"
+	@echo "... api_generate_messages_py"
+	@echo "... api_generate_messages"
+	@echo "... api_genlisp"
 	@echo "... std_msgs_generate_messages_cpp"
+	@echo "... _api_generate_messages_check_deps_CVInfo"
+	@echo "... _api_generate_messages_check_deps_State"
+	@echo "... api_gencpp"
+	@echo "... std_msgs_generate_messages_nodejs"
+	@echo "... api_generate_messages_eus"
+	@echo "... api_generate_messages_nodejs"
+	@echo "... api_generate_messages_cpp"
+	@echo "... api_geneus"
+	@echo "... api_generate_messages_lisp"
 .PHONY : help
 
 
