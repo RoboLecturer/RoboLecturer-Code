@@ -54,12 +54,14 @@ CMAKE_BINARY_DIR = /home/dovakeith/HCR/nlp_ros/build
 
 # The main recursive "all" target.
 all: gtest/all
+all: api/all
 all: nlp_pkg/all
 
 .PHONY : all
 
 # The main recursive "preinstall" target.
 preinstall: gtest/preinstall
+preinstall: api/preinstall
 preinstall: nlp_pkg/preinstall
 
 .PHONY : preinstall
@@ -71,9 +73,45 @@ clean: CMakeFiles/clean_test_results.dir/clean
 clean: CMakeFiles/tests.dir/clean
 clean: CMakeFiles/download_extra_data.dir/clean
 clean: gtest/clean
+clean: api/clean
 clean: nlp_pkg/clean
 
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory api
+
+# Recursive "all" directory target.
+api/all: api/CMakeFiles/api_generate_messages.dir/all
+
+.PHONY : api/all
+
+# Recursive "preinstall" directory target.
+api/preinstall:
+
+.PHONY : api/preinstall
+
+# Recursive "clean" directory target.
+api/clean: api/CMakeFiles/api_gennodejs.dir/clean
+api/clean: api/CMakeFiles/std_msgs_generate_messages_eus.dir/clean
+api/clean: api/CMakeFiles/api_genpy.dir/clean
+api/clean: api/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean
+api/clean: api/CMakeFiles/std_msgs_generate_messages_py.dir/clean
+api/clean: api/CMakeFiles/api_generate_messages_py.dir/clean
+api/clean: api/CMakeFiles/api_generate_messages.dir/clean
+api/clean: api/CMakeFiles/api_genlisp.dir/clean
+api/clean: api/CMakeFiles/std_msgs_generate_messages_cpp.dir/clean
+api/clean: api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/clean
+api/clean: api/CMakeFiles/_api_generate_messages_check_deps_State.dir/clean
+api/clean: api/CMakeFiles/api_gencpp.dir/clean
+api/clean: api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
+api/clean: api/CMakeFiles/api_generate_messages_eus.dir/clean
+api/clean: api/CMakeFiles/api_generate_messages_nodejs.dir/clean
+api/clean: api/CMakeFiles/api_generate_messages_cpp.dir/clean
+api/clean: api/CMakeFiles/api_geneus.dir/clean
+api/clean: api/CMakeFiles/api_generate_messages_lisp.dir/clean
+
+.PHONY : api/clean
 
 #=============================================================================
 # Directory level rules for directory gtest
@@ -146,11 +184,7 @@ nlp_pkg/preinstall:
 .PHONY : nlp_pkg/preinstall
 
 # Recursive "clean" directory target.
-nlp_pkg/clean: nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/clean
-nlp_pkg/clean: nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
-nlp_pkg/clean: nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean
-nlp_pkg/clean: nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/clean
-nlp_pkg/clean: nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/clean
+nlp_pkg/clean:
 
 .PHONY : nlp_pkg/clean
 
@@ -293,11 +327,11 @@ CMakeFiles/download_extra_data.dir/clean:
 # Target rules for target gtest/googlemock/CMakeFiles/gmock_main.dir
 
 # All Build rule for target.
-gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googlemock/CMakeFiles/gmock.dir/all
+gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/depend
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=3,4 "Built target gmock_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=15,16 "Built target gmock_main"
 .PHONY : gtest/googlemock/CMakeFiles/gmock_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -324,7 +358,7 @@ gtest/googlemock/CMakeFiles/gmock_main.dir/clean:
 gtest/googlemock/CMakeFiles/gmock.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/depend
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=1,2 "Built target gmock"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=13,14 "Built target gmock"
 .PHONY : gtest/googlemock/CMakeFiles/gmock.dir/all
 
 # Build rule for subdir invocation for target.
@@ -351,7 +385,7 @@ gtest/googlemock/CMakeFiles/gmock.dir/clean:
 gtest/googletest/CMakeFiles/gtest_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/depend
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=7,8 "Built target gtest_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=19,20 "Built target gtest_main"
 .PHONY : gtest/googletest/CMakeFiles/gtest_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -378,7 +412,7 @@ gtest/googletest/CMakeFiles/gtest_main.dir/clean:
 gtest/googletest/CMakeFiles/gtest.dir/all:
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/depend
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=5,6 "Built target gtest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=17,18 "Built target gtest"
 .PHONY : gtest/googletest/CMakeFiles/gtest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -399,139 +433,504 @@ gtest/googletest/CMakeFiles/gtest.dir/clean:
 .PHONY : gtest/googletest/CMakeFiles/gtest.dir/clean
 
 #=============================================================================
-# Target rules for target nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir
+# Target rules for target api/CMakeFiles/api_gennodejs.dir
 
 # All Build rule for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/all:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/depend
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_py"
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/all
+api/CMakeFiles/api_gennodejs.dir/all: api/CMakeFiles/api_generate_messages_nodejs.dir/all
+	$(MAKE) -f api/CMakeFiles/api_gennodejs.dir/build.make api/CMakeFiles/api_gennodejs.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_gennodejs.dir/build.make api/CMakeFiles/api_gennodejs.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target api_gennodejs"
+.PHONY : api/CMakeFiles/api_gennodejs.dir/all
 
 # Build rule for subdir invocation for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/rule: cmake_check_build_system
+api/CMakeFiles/api_gennodejs.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_gennodejs.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/rule
+.PHONY : api/CMakeFiles/api_gennodejs.dir/rule
 
 # Convenience name for target.
-std_msgs_generate_messages_py: nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/rule
+api_gennodejs: api/CMakeFiles/api_gennodejs.dir/rule
 
-.PHONY : std_msgs_generate_messages_py
-
-# clean rule for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/clean:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/clean
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_py.dir/clean
-
-#=============================================================================
-# Target rules for target nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir
-
-# All Build rule for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/all:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/depend
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_nodejs"
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/all
-
-# Build rule for subdir invocation for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule
-
-# Convenience name for target.
-std_msgs_generate_messages_nodejs: nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule
-
-.PHONY : std_msgs_generate_messages_nodejs
+.PHONY : api_gennodejs
 
 # clean rule for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
+api/CMakeFiles/api_gennodejs.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_gennodejs.dir/build.make api/CMakeFiles/api_gennodejs.dir/clean
+.PHONY : api/CMakeFiles/api_gennodejs.dir/clean
 
 #=============================================================================
-# Target rules for target nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir
+# Target rules for target api/CMakeFiles/std_msgs_generate_messages_eus.dir
 
 # All Build rule for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/all:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/depend
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_lisp"
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/all
-
-# Build rule for subdir invocation for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-std_msgs_generate_messages_lisp: nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
-
-.PHONY : std_msgs_generate_messages_lisp
-
-# clean rule for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean
-
-#=============================================================================
-# Target rules for target nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir
-
-# All Build rule for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/all:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/depend
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/build
+api/CMakeFiles/std_msgs_generate_messages_eus.dir/all:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make api/CMakeFiles/std_msgs_generate_messages_eus.dir/depend
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make api/CMakeFiles/std_msgs_generate_messages_eus.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_eus"
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/all
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_eus.dir/all
 
 # Build rule for subdir invocation for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/rule: cmake_check_build_system
+api/CMakeFiles/std_msgs_generate_messages_eus.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/std_msgs_generate_messages_eus.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
 
 # Convenience name for target.
-std_msgs_generate_messages_eus: nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
+std_msgs_generate_messages_eus: api/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
 
 .PHONY : std_msgs_generate_messages_eus
 
 # clean rule for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/clean:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/clean
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_eus.dir/clean
+api/CMakeFiles/std_msgs_generate_messages_eus.dir/clean:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make api/CMakeFiles/std_msgs_generate_messages_eus.dir/clean
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_eus.dir/clean
 
 #=============================================================================
-# Target rules for target nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir
+# Target rules for target api/CMakeFiles/api_genpy.dir
 
 # All Build rule for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/all:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/depend
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_cpp"
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/all
+api/CMakeFiles/api_genpy.dir/all: api/CMakeFiles/api_generate_messages_py.dir/all
+	$(MAKE) -f api/CMakeFiles/api_genpy.dir/build.make api/CMakeFiles/api_genpy.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_genpy.dir/build.make api/CMakeFiles/api_genpy.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target api_genpy"
+.PHONY : api/CMakeFiles/api_genpy.dir/all
 
 # Build rule for subdir invocation for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule: cmake_check_build_system
+api/CMakeFiles/api_genpy.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_genpy.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
+.PHONY : api/CMakeFiles/api_genpy.dir/rule
 
 # Convenience name for target.
-std_msgs_generate_messages_cpp: nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
+api_genpy: api/CMakeFiles/api_genpy.dir/rule
+
+.PHONY : api_genpy
+
+# clean rule for target.
+api/CMakeFiles/api_genpy.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_genpy.dir/build.make api/CMakeFiles/api_genpy.dir/clean
+.PHONY : api/CMakeFiles/api_genpy.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/std_msgs_generate_messages_lisp.dir
+
+# All Build rule for target.
+api/CMakeFiles/std_msgs_generate_messages_lisp.dir/all:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make api/CMakeFiles/std_msgs_generate_messages_lisp.dir/depend
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make api/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_lisp"
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_lisp.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/std_msgs_generate_messages_lisp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
+
+# Convenience name for target.
+std_msgs_generate_messages_lisp: api/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
+
+.PHONY : std_msgs_generate_messages_lisp
+
+# clean rule for target.
+api/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make api/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_lisp.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/std_msgs_generate_messages_py.dir
+
+# All Build rule for target.
+api/CMakeFiles/std_msgs_generate_messages_py.dir/all:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_py.dir/build.make api/CMakeFiles/std_msgs_generate_messages_py.dir/depend
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_py.dir/build.make api/CMakeFiles/std_msgs_generate_messages_py.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_py"
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_py.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/std_msgs_generate_messages_py.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/std_msgs_generate_messages_py.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_py.dir/rule
+
+# Convenience name for target.
+std_msgs_generate_messages_py: api/CMakeFiles/std_msgs_generate_messages_py.dir/rule
+
+.PHONY : std_msgs_generate_messages_py
+
+# clean rule for target.
+api/CMakeFiles/std_msgs_generate_messages_py.dir/clean:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_py.dir/build.make api/CMakeFiles/std_msgs_generate_messages_py.dir/clean
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_py.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/api_generate_messages_py.dir
+
+# All Build rule for target.
+api/CMakeFiles/api_generate_messages_py.dir/all: api/CMakeFiles/std_msgs_generate_messages_py.dir/all
+api/CMakeFiles/api_generate_messages_py.dir/all: api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/all
+api/CMakeFiles/api_generate_messages_py.dir/all: api/CMakeFiles/_api_generate_messages_check_deps_State.dir/all
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_py.dir/build.make api/CMakeFiles/api_generate_messages_py.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_py.dir/build.make api/CMakeFiles/api_generate_messages_py.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=10,11,12 "Built target api_generate_messages_py"
+.PHONY : api/CMakeFiles/api_generate_messages_py.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/api_generate_messages_py.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_generate_messages_py.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/api_generate_messages_py.dir/rule
+
+# Convenience name for target.
+api_generate_messages_py: api/CMakeFiles/api_generate_messages_py.dir/rule
+
+.PHONY : api_generate_messages_py
+
+# clean rule for target.
+api/CMakeFiles/api_generate_messages_py.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_py.dir/build.make api/CMakeFiles/api_generate_messages_py.dir/clean
+.PHONY : api/CMakeFiles/api_generate_messages_py.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/api_generate_messages.dir
+
+# All Build rule for target.
+api/CMakeFiles/api_generate_messages.dir/all: api/CMakeFiles/api_generate_messages_py.dir/all
+api/CMakeFiles/api_generate_messages.dir/all: api/CMakeFiles/api_generate_messages_eus.dir/all
+api/CMakeFiles/api_generate_messages.dir/all: api/CMakeFiles/api_generate_messages_nodejs.dir/all
+api/CMakeFiles/api_generate_messages.dir/all: api/CMakeFiles/api_generate_messages_cpp.dir/all
+api/CMakeFiles/api_generate_messages.dir/all: api/CMakeFiles/api_generate_messages_lisp.dir/all
+	$(MAKE) -f api/CMakeFiles/api_generate_messages.dir/build.make api/CMakeFiles/api_generate_messages.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_generate_messages.dir/build.make api/CMakeFiles/api_generate_messages.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target api_generate_messages"
+.PHONY : api/CMakeFiles/api_generate_messages.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/api_generate_messages.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 12
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_generate_messages.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/api_generate_messages.dir/rule
+
+# Convenience name for target.
+api_generate_messages: api/CMakeFiles/api_generate_messages.dir/rule
+
+.PHONY : api_generate_messages
+
+# clean rule for target.
+api/CMakeFiles/api_generate_messages.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages.dir/build.make api/CMakeFiles/api_generate_messages.dir/clean
+.PHONY : api/CMakeFiles/api_generate_messages.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/api_genlisp.dir
+
+# All Build rule for target.
+api/CMakeFiles/api_genlisp.dir/all: api/CMakeFiles/api_generate_messages_lisp.dir/all
+	$(MAKE) -f api/CMakeFiles/api_genlisp.dir/build.make api/CMakeFiles/api_genlisp.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_genlisp.dir/build.make api/CMakeFiles/api_genlisp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target api_genlisp"
+.PHONY : api/CMakeFiles/api_genlisp.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/api_genlisp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_genlisp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/api_genlisp.dir/rule
+
+# Convenience name for target.
+api_genlisp: api/CMakeFiles/api_genlisp.dir/rule
+
+.PHONY : api_genlisp
+
+# clean rule for target.
+api/CMakeFiles/api_genlisp.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_genlisp.dir/build.make api/CMakeFiles/api_genlisp.dir/clean
+.PHONY : api/CMakeFiles/api_genlisp.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/std_msgs_generate_messages_cpp.dir
+
+# All Build rule for target.
+api/CMakeFiles/std_msgs_generate_messages_cpp.dir/all:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make api/CMakeFiles/std_msgs_generate_messages_cpp.dir/depend
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make api/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_cpp"
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_cpp.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/std_msgs_generate_messages_cpp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
+
+# Convenience name for target.
+std_msgs_generate_messages_cpp: api/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
 
 .PHONY : std_msgs_generate_messages_cpp
 
 # clean rule for target.
-nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/clean:
-	$(MAKE) -f nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/clean
-.PHONY : nlp_pkg/CMakeFiles/std_msgs_generate_messages_cpp.dir/clean
+api/CMakeFiles/std_msgs_generate_messages_cpp.dir/clean:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make api/CMakeFiles/std_msgs_generate_messages_cpp.dir/clean
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_cpp.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir
+
+# All Build rule for target.
+api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/all:
+	$(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/depend
+	$(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target _api_generate_messages_check_deps_CVInfo"
+.PHONY : api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/rule
+
+# Convenience name for target.
+_api_generate_messages_check_deps_CVInfo: api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/rule
+
+.PHONY : _api_generate_messages_check_deps_CVInfo
+
+# clean rule for target.
+api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/clean:
+	$(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/clean
+.PHONY : api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/_api_generate_messages_check_deps_State.dir
+
+# All Build rule for target.
+api/CMakeFiles/_api_generate_messages_check_deps_State.dir/all:
+	$(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_State.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_State.dir/depend
+	$(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_State.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_State.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target _api_generate_messages_check_deps_State"
+.PHONY : api/CMakeFiles/_api_generate_messages_check_deps_State.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/_api_generate_messages_check_deps_State.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/_api_generate_messages_check_deps_State.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/_api_generate_messages_check_deps_State.dir/rule
+
+# Convenience name for target.
+_api_generate_messages_check_deps_State: api/CMakeFiles/_api_generate_messages_check_deps_State.dir/rule
+
+.PHONY : _api_generate_messages_check_deps_State
+
+# clean rule for target.
+api/CMakeFiles/_api_generate_messages_check_deps_State.dir/clean:
+	$(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_State.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_State.dir/clean
+.PHONY : api/CMakeFiles/_api_generate_messages_check_deps_State.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/api_gencpp.dir
+
+# All Build rule for target.
+api/CMakeFiles/api_gencpp.dir/all: api/CMakeFiles/api_generate_messages_cpp.dir/all
+	$(MAKE) -f api/CMakeFiles/api_gencpp.dir/build.make api/CMakeFiles/api_gencpp.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_gencpp.dir/build.make api/CMakeFiles/api_gencpp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target api_gencpp"
+.PHONY : api/CMakeFiles/api_gencpp.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/api_gencpp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_gencpp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/api_gencpp.dir/rule
+
+# Convenience name for target.
+api_gencpp: api/CMakeFiles/api_gencpp.dir/rule
+
+.PHONY : api_gencpp
+
+# clean rule for target.
+api/CMakeFiles/api_gencpp.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_gencpp.dir/build.make api/CMakeFiles/api_gencpp.dir/clean
+.PHONY : api/CMakeFiles/api_gencpp.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/std_msgs_generate_messages_nodejs.dir
+
+# All Build rule for target.
+api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/all:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/depend
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target std_msgs_generate_messages_nodejs"
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule
+
+# Convenience name for target.
+std_msgs_generate_messages_nodejs: api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule
+
+.PHONY : std_msgs_generate_messages_nodejs
+
+# clean rule for target.
+api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean:
+	$(MAKE) -f api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
+.PHONY : api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/api_generate_messages_eus.dir
+
+# All Build rule for target.
+api/CMakeFiles/api_generate_messages_eus.dir/all: api/CMakeFiles/std_msgs_generate_messages_eus.dir/all
+api/CMakeFiles/api_generate_messages_eus.dir/all: api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/all
+api/CMakeFiles/api_generate_messages_eus.dir/all: api/CMakeFiles/_api_generate_messages_check_deps_State.dir/all
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_eus.dir/build.make api/CMakeFiles/api_generate_messages_eus.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_eus.dir/build.make api/CMakeFiles/api_generate_messages_eus.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=3,4,5 "Built target api_generate_messages_eus"
+.PHONY : api/CMakeFiles/api_generate_messages_eus.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/api_generate_messages_eus.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_generate_messages_eus.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/api_generate_messages_eus.dir/rule
+
+# Convenience name for target.
+api_generate_messages_eus: api/CMakeFiles/api_generate_messages_eus.dir/rule
+
+.PHONY : api_generate_messages_eus
+
+# clean rule for target.
+api/CMakeFiles/api_generate_messages_eus.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_eus.dir/build.make api/CMakeFiles/api_generate_messages_eus.dir/clean
+.PHONY : api/CMakeFiles/api_generate_messages_eus.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/api_generate_messages_nodejs.dir
+
+# All Build rule for target.
+api/CMakeFiles/api_generate_messages_nodejs.dir/all: api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/all
+api/CMakeFiles/api_generate_messages_nodejs.dir/all: api/CMakeFiles/_api_generate_messages_check_deps_State.dir/all
+api/CMakeFiles/api_generate_messages_nodejs.dir/all: api/CMakeFiles/std_msgs_generate_messages_nodejs.dir/all
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_nodejs.dir/build.make api/CMakeFiles/api_generate_messages_nodejs.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_nodejs.dir/build.make api/CMakeFiles/api_generate_messages_nodejs.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=8,9 "Built target api_generate_messages_nodejs"
+.PHONY : api/CMakeFiles/api_generate_messages_nodejs.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/api_generate_messages_nodejs.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_generate_messages_nodejs.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/api_generate_messages_nodejs.dir/rule
+
+# Convenience name for target.
+api_generate_messages_nodejs: api/CMakeFiles/api_generate_messages_nodejs.dir/rule
+
+.PHONY : api_generate_messages_nodejs
+
+# clean rule for target.
+api/CMakeFiles/api_generate_messages_nodejs.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_nodejs.dir/build.make api/CMakeFiles/api_generate_messages_nodejs.dir/clean
+.PHONY : api/CMakeFiles/api_generate_messages_nodejs.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/api_generate_messages_cpp.dir
+
+# All Build rule for target.
+api/CMakeFiles/api_generate_messages_cpp.dir/all: api/CMakeFiles/std_msgs_generate_messages_cpp.dir/all
+api/CMakeFiles/api_generate_messages_cpp.dir/all: api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/all
+api/CMakeFiles/api_generate_messages_cpp.dir/all: api/CMakeFiles/_api_generate_messages_check_deps_State.dir/all
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_cpp.dir/build.make api/CMakeFiles/api_generate_messages_cpp.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_cpp.dir/build.make api/CMakeFiles/api_generate_messages_cpp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=1,2 "Built target api_generate_messages_cpp"
+.PHONY : api/CMakeFiles/api_generate_messages_cpp.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/api_generate_messages_cpp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_generate_messages_cpp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/api_generate_messages_cpp.dir/rule
+
+# Convenience name for target.
+api_generate_messages_cpp: api/CMakeFiles/api_generate_messages_cpp.dir/rule
+
+.PHONY : api_generate_messages_cpp
+
+# clean rule for target.
+api/CMakeFiles/api_generate_messages_cpp.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_cpp.dir/build.make api/CMakeFiles/api_generate_messages_cpp.dir/clean
+.PHONY : api/CMakeFiles/api_generate_messages_cpp.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/api_geneus.dir
+
+# All Build rule for target.
+api/CMakeFiles/api_geneus.dir/all: api/CMakeFiles/api_generate_messages_eus.dir/all
+	$(MAKE) -f api/CMakeFiles/api_geneus.dir/build.make api/CMakeFiles/api_geneus.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_geneus.dir/build.make api/CMakeFiles/api_geneus.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num= "Built target api_geneus"
+.PHONY : api/CMakeFiles/api_geneus.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/api_geneus.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_geneus.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/api_geneus.dir/rule
+
+# Convenience name for target.
+api_geneus: api/CMakeFiles/api_geneus.dir/rule
+
+.PHONY : api_geneus
+
+# clean rule for target.
+api/CMakeFiles/api_geneus.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_geneus.dir/build.make api/CMakeFiles/api_geneus.dir/clean
+.PHONY : api/CMakeFiles/api_geneus.dir/clean
+
+#=============================================================================
+# Target rules for target api/CMakeFiles/api_generate_messages_lisp.dir
+
+# All Build rule for target.
+api/CMakeFiles/api_generate_messages_lisp.dir/all: api/CMakeFiles/std_msgs_generate_messages_lisp.dir/all
+api/CMakeFiles/api_generate_messages_lisp.dir/all: api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/all
+api/CMakeFiles/api_generate_messages_lisp.dir/all: api/CMakeFiles/_api_generate_messages_check_deps_State.dir/all
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_lisp.dir/build.make api/CMakeFiles/api_generate_messages_lisp.dir/depend
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_lisp.dir/build.make api/CMakeFiles/api_generate_messages_lisp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=6,7 "Built target api_generate_messages_lisp"
+.PHONY : api/CMakeFiles/api_generate_messages_lisp.dir/all
+
+# Build rule for subdir invocation for target.
+api/CMakeFiles/api_generate_messages_lisp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_generate_messages_lisp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dovakeith/HCR/nlp_ros/build/CMakeFiles 0
+.PHONY : api/CMakeFiles/api_generate_messages_lisp.dir/rule
+
+# Convenience name for target.
+api_generate_messages_lisp: api/CMakeFiles/api_generate_messages_lisp.dir/rule
+
+.PHONY : api_generate_messages_lisp
+
+# clean rule for target.
+api/CMakeFiles/api_generate_messages_lisp.dir/clean:
+	$(MAKE) -f api/CMakeFiles/api_generate_messages_lisp.dir/build.make api/CMakeFiles/api_generate_messages_lisp.dir/clean
+.PHONY : api/CMakeFiles/api_generate_messages_lisp.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
