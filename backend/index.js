@@ -1,13 +1,28 @@
+
+
+import express, { json } from 'express';
+import cors from 'cors';
+import routes from './router/nodeRouter.js';
+import {createTablesIfNotExist} from './database/database.js';
+import mysql from 'mysql';
+
 var corsOptions = {
   origin: "http://localhost:8080"
 };
 
-import express, { json } from 'express';
-import cors from 'cors';
 const app = express();
-
 app.use(cors(corsOptions));
-import routes from './router/nodeRouter.js';
+
+
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'adminuser',
+  password: 'admin',
+  database: 'roboserver'
+})
+
+connection.connect()
+createTablesIfNotExist(connection);
 
 
 // const upload = multer({ dest: "PDFs/" });
