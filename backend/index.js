@@ -14,15 +14,7 @@ const app = express();
 app.use(cors(corsOptions));
 
 
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'adminuser',
-  password: 'admin',
-  database: 'roboserver'
-})
-
-connection.connect()
-createTablesIfNotExist(connection);
+createTablesIfNotExist();
 
 
 // const upload = multer({ dest: "PDFs/" });

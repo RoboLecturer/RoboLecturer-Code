@@ -12,3 +12,4 @@ import "material-icons/iconfont/material-icons.css";
 const app = createApp(App);
 app.use(VueCookies).use(store).use(router).mount("#app");
 app.config.globalProperties.$http = axios;
+app.config.globalProperties.api_url = "http://127.0.0.1:3000";

@@ -36,6 +36,7 @@ Vue.registerHooks(["beforeRouteLeave"]);
 @Options({})
 export default class Home extends Vue {
   $http: any;
+  api_url: any;
   statusText = "Join the lobby";
   ros: any = null;
   connected = false;
@@ -85,7 +86,7 @@ export default class Home extends Vue {
   }
 
   async fetchQuiz(): Promise<void> {
-    let resp = await this.$http.get("http://127.0.0.1:3000/quiz", {
+    let resp = await this.$http.get(`${this.api_url}/quiz`, {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
@@ -101,8 +102,17 @@ export default class Home extends Vue {
   }
 
   async storeUser(): Promise<void> {
-    console.log("Storing:", this.username);
-    return;
+    if (this.username != "") {
+      let resp = await this.$http.post(`${this.api_url}/insertUser`, {
+        username: this.username,
+      });
+      if (resp.status == 200) {
+        console.log("user stored");
+        this.statusText = "Waiting for quiz to start...";
+      } else {
+        console.log(resp);
+      }
+    }
   }
 
   connect(): void {
@@ -140,6 +150,7 @@ export default class Home extends Vue {
   }
 
   mounted(): void {
+    console.log(this.api_url);
     var y: HTMLElement | null = document.querySelector(".visualTimer");
     if (y) {
       y.style.width = this.hrWidth + "%";

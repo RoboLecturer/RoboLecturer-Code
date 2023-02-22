@@ -4,6 +4,7 @@ import { parsePDF,uploadPDF } from '../controller/pdfController.js';
 import multer from 'multer'
 import path from 'path'
 import { getQuiz } from '../controller/quizController.js';
+import { insertUser } from '../database/database.js';
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -49,5 +50,6 @@ const uploadParams = upload.fields([{ name: 'pdf', maxCount: 1 }, { name: 'quiz'
 router.post("/upload_pdf",uploadParams,uploadPDF);
 
 router.get('/quiz',getQuiz)
+router.post('/insertUser', insertUser)
 
 export default router;
