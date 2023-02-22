@@ -1,11 +1,12 @@
-// var corsOptions = {
-//   origin: "http://localhost:8081"
-// };
-
-// app.use(cors(corsOptions));
+var corsOptions = {
+  origin: "http://localhost:8080"
+};
 
 import express, { json } from 'express';
+import cors from 'cors';
 const app = express();
+
+app.use(cors(corsOptions));
 import routes from './router/nodeRouter.js';
 
 

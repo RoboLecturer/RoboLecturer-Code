@@ -23,7 +23,15 @@ export default class App extends Vue {
 }
 </script>
 
-<style>
+<style lang="scss">
+// 
+// @import "materialize-css/sass/components/color-variables";
+// @import "materialize-css/sass/components/variables";
+// // $primary-color: color("yellow", "lighten-2") !default;
+// $secondary-color: color("purple", "base") !default;
+// @import 'materialize-css';
+
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

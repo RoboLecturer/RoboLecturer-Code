@@ -13,7 +13,7 @@
           <input id="last_name" type="text" class="validate" />
         </div>
         <a class="waves-effect waves-light btn" @click="addTopic()"><i class="material-icons left">cloud</i>Add topic</a>
-        <p :key="streamUpdate">{{currentText}}</p>
+        <p :key="streamUpdate" >{{slide_input_stream}}</p>
       </div>
       <div class="tile">
         <h3>Publish</h3>
@@ -36,24 +36,23 @@
 import { Options, Vue } from "vue-class-component";
 import ROSLIB from "roslib";
 import M from "materialize-css";
+import RosInterface from "../interface/ros";
 
 @Options({})
 export default class Test extends Vue {
+  rosInterface: RosInterface = new RosInterface("ws://localhost:9000", this.onQuizTriggered, this.onChangeSlide);
   ros: any = null;
   connected = false;
-  ws_url = "ws://localhost:9000";
-  text_listener: any = null;
-  quiz_listener: any = null;
-  slide_listener: any = null;
-  control_publisher: any = null;
+  
   subscriptions: Array<String> = ["trigger_quiz", "change_slide"];
   publishings: Array<String> = ["take_control_forwarder"];
-  quiz_input_stream: String = "Data stream:\n";
-  slide_input_stream: String = "Data stream:\n";
+  quiz_input_stream: string = "Data stream:\n";
+  slide_input_stream: string = "Data stream:\n";
   streamUpdate: number = 0;
-  selectedTopic: string = "trigger_quiz";
+  selectedTopic: string = "change_slide";
 
   get currentText(){
+    return this.slide_input_stream;
     if (this.selectedTopic=="trigger_quiz"){
       return this.quiz_input_stream;
     }else if (this.selectedTopic=="change_slide"){
@@ -63,74 +62,30 @@ export default class Test extends Vue {
     }
   }
 
-
-  connect() {
-    this.ros = new ROSLIB.Ros({
-      url: this.ws_url,
-    });
-
-    this.ros.on("connection", () => {
-      this.connected = true;
-      console.log("Connected!");
-    });
-
-    this.ros.on("error", (error: any) => {
-      console.log("Error connecting to websocket server: ", error);
-    });
-
-    this.ros.on("close", () => {
-      this.connected = false;
-      console.log("Connection to websocket server closed.");
-    });
-
-    this.quiz_listener = new ROSLIB.Topic({
-      ros: this.ros,
-      name: "/trigger_quiz",
-      messageType: "std_msgs/String",
-    });
-    this.quiz_listener.subscribe(this.onMessageReceived);
-
-    this.slide_listener = new ROSLIB.Topic({
-      ros: this.ros,
-      name: "/change_slide",
-      messageType: "std_msgs/String",
-    });
-    this.slide_listener.subscribe(this.onMessageReceived);
-
-    this.control_publisher = new ROSLIB.Topic({
-      ros: this.ros,
-      name: "/take_control_forwarder",
-      messageType: "std_msgs/String",
-    });
-
+  onQuizTriggered(msg:any){
+    console.log("on quiz triggered")
+     console.log(msg)
+    this.quiz_input_stream += msg.data +"\n";
+    this.streamUpdate++;
   }
 
-  setSelectedTopic(){
-  
-  }
-
-  onMessageReceived(msg:any){
+  onChangeSlide(msg:any){
+    console.log("on change slide")
     console.log(msg)
-     if (this.selectedTopic=="trigger_quiz"){
-      this.quiz_input_stream += msg.data +"\n";
-    }else if (this.selectedTopic=="change_slide"){
-      this.slide_input_stream += msg.data +"\n";
-    }
+    this.slide_input_stream += msg.data +"\n";
+    console.log(this.slide_input_stream)
     this.streamUpdate++;
   }
 
 
   publishText(msg: String) {
-    var data: any = new ROSLIB.Message({data:msg});
-    this.control_publisher.publish(data);
+    var data: ROSLIB.Message = new ROSLIB.Message({data:msg});
+    this.rosInterface.publishTakeControl(data);
   }
 
-  disconnect() {
-    this.ros.close();
-    this.connected = false;
-  }
+  setSelectedTopic(){
 
-  
+  }
 
   initialize(){
     document.addEventListener('DOMContentLoaded', function() {
@@ -141,7 +96,7 @@ export default class Test extends Vue {
 
   mounted() {
     this.initialize();
-    this.connect();
+    this.rosInterface.connect();
   }
 }
 </script>
