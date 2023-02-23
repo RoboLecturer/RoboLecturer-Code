@@ -29,17 +29,16 @@ def Request(api_name, api_params={}):
 		Answer = ""
 		Joke = ""
 		Shutup = ""
+		NumHands = 0
 		RaisedHandInfo = []
-		FaceInfo = {}
 		TriggerJokeOrQuiz = ""
 		TriggerJokeOrShutup = ""
-		NumHands = 0
 
 
 	# Callbacks for API
 	if api_name == "SimpleMsg":
 		"""Receive string message 
-		@return	String
+		@return	string message : String
 		"""
 		def callback(msg):
 			Data.SimpleMsg = msg.data
@@ -49,7 +48,7 @@ def Request(api_name, api_params={}):
 
 	if api_name == "Image":
 		"""Receive image
-		@return	image
+		@return	image : numpy.ndarray
 		"""
 		def callback(msg):
 			br = CvBridge()
@@ -62,7 +61,9 @@ def Request(api_name, api_params={}):
 
 	## ========= WEB =========
 	if api_name == "TriggerJokeOrQuiz":
-		"""Receive trigger_quiz signal"""
+		"""Receive trigger_quiz signal
+		@return triggered signal (joke/quiz) : String
+		"""
 		def callback(msg):
 			Data.TriggerJokeOrQuiz = msg.data
 			if Data.TriggerJokeOrQuiz == "joke":
@@ -84,7 +85,7 @@ def Request(api_name, api_params={}):
 	## ========= NLP =========
 	if api_name == "Slides":
 		"""Receive slides text from Web"
-		@return	question text
+		@return	slides text : String
 		"""
 		def callback(msg):
 			Data.Slides = msg.data
@@ -94,7 +95,7 @@ def Request(api_name, api_params={}):
 
 	if api_name == "Question":
 		"""Receive question STT from Speech"
-		@return	question text
+		@return	question text : String
 		"""
 		def callback(msg):
 			Data.Question = msg.data
@@ -105,7 +106,9 @@ def Request(api_name, api_params={}):
 	# See api "TriggerJokeOrQuiz" under Web
 
 	if api_name == "TriggerJokeOrShutup":
-		"""Receive signal to trigger joke or shutup"""
+		"""Receive signal to trigger joke or shutup
+		@return triggered signal (joke/shutup) : String
+		"""
 		def callback(msg):
 			Data.TriggerJokeOrShutup = msg.data
 			if Data.TriggerJokeOrShutup == "joke":
@@ -118,7 +121,7 @@ def Request(api_name, api_params={}):
 	## ========= SPEECH =========
 	if api_name == "LectureScript":
 		"""Receive script text from NLP"
-		@return	script text
+		@return	script text : String
 		"""
 		def callback(msg):
 			Data.LectureScript = msg.data
@@ -128,7 +131,7 @@ def Request(api_name, api_params={}):
 	
 	if api_name == "Answer":
 		"""Receive answer text from NLP"
-		@return	answer text
+		@return	answer text : String
 		"""
 		def callback(msg):
 			Data.Answer = msg.data
@@ -138,7 +141,7 @@ def Request(api_name, api_params={}):
 
 	if api_name == "Joke":
 		"""Receive joke text from NLP"
-		@return	joke text
+		@return	joke text : String
 		"""
 		def callback(msg):
 			Data.Joke = msg.data
@@ -166,35 +169,19 @@ def Request(api_name, api_params={}):
 	## ========= KINEMATICS =========
 	if api_name == "RaisedHandInfo":
 		"""Receive info on raised hand
-		@return	dict{
-			"bounding_box": (x,y,w,h)
-			"frame_res": (width, height)
-			"confidence_score": confidence_score
-		}
+		@return	list of CVInfo msgs of raised hand info
 		"""
 		def callback(msg):
 			Data.NumHands = int(msg.data)
 		StringSubscriber(NUM_HANDS_TOPIC, callback)
 		def callback(msg):
 			Data.RaisedHandInfo.append(msg)
-			# Data.RaisedHandInfo["bounding_box"] = (msg.x, msg.y, msg.w, msg.h)
-			# Data.RaisedHandInfo["frame_res"] = (msg.frame_width, msg.frame_height)
-			# Data.RaisedHandInfo["confidence_score"] = msg.score
 			rospy.loginfo("Received: raised hand at (%.2f, %.2f)" % (msg.x, msg.y))
 		CVInfoSubscriber(HAND_TOPIC, callback, listen=Data.NumHands)
 		return Data.RaisedHandInfo
 
 
 	## ========= CONTROL =========
-	if api_name == "State":
-		state_name = api_params["name"]
-		def callback(msg):
-			state = getattr(msg, state_name)
-			Data.State = state if state else False
-			rospy.loginfo("State: %s" % str(msg))
-		StateSubscriber(STATE_TOPIC, callback)
-		return Data.State
-	
 	if api_name == "TakeControl":
 		"""Receive take_control signal"""
 		callback = lambda _: rospy.loginfo("Received: take_control")
@@ -202,8 +189,24 @@ def Request(api_name, api_params={}):
 		return True
 
 
+	## ========= SHARED =========
+	if api_name == "State":
+		"""Receive state
+		@param	api_params : dict{
+			"name": name of state to be queried
+		}
+		"""
+		state_name = api_params["name"]
+		def callback(msg):
+			state = getattr(msg, state_name)
+			Data.State = state if state else False
+			rospy.loginfo("State: %s" % str(msg))
+		StateSubscriber(STATE_TOPIC, callback)
+		return Data.State
+
 	print("API does not exist. Please check name again.")
 	return False
+
 
 # =========================================================
 
@@ -372,7 +375,6 @@ def Send(api_name, api_params={}):
 		global state_dict
 		for k,v in api_params.items():
 			state_dict[k] = v
-		# state_publisher.publish(state_dict)
 		return True
 
 
@@ -380,14 +382,15 @@ def Send(api_name, api_params={}):
 	return False
 
 
-# Only for Control. Broadcast states to all modules
-def Broadcast(api_name):
+# Only for Control. Broadcast to all modules every second
+def Broadcast(api_name, rate=1):
+	
+	_rate = rospy.Rate(rate)
 
 	if api_name == "State":
-		rate = rospy.Rate(1)
 		while True:
 			global state_dict
 			state_publisher.publish(state_dict)
-			rate.sleep()
+			_rate.sleep()
 		
 	return
