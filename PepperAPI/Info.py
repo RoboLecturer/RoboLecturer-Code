@@ -338,7 +338,7 @@ def Send(api_name, api_params={}):
 		}
 		"""
 		text = api_params["text"]
-		question_publisher.publish(question)
+		question_publisher.publish(text)
 		return True
 
 
