@@ -41,13 +41,12 @@ class CVInfoPublisher(Publisher, object):
 			topic,
 			CVInfo)
 
-	def publish(self, bounding_box, frame_res, confidence_score, number):
+	def publish(self, bounding_box, frame_res, confidence_score):
 		msg = CVInfo()
 		msg.x, msg.y, msg.w, msg.h = bounding_box
 		msg.frame_width = frame_res[0]
 		msg.frame_height = frame_res[1]
 		msg.score = confidence_score
-		msg.number = number
 		while self.publisher.get_num_connections() == 0:
 			pass			
 		self.publisher.publish(msg)

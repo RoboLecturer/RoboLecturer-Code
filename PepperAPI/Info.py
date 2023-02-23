@@ -270,8 +270,7 @@ def Send(api_name, api_params={}):
 		bounding_box = api_params["bounding_box"]
 		frame_res = api_params["frame_res"]
 		confidence_score = api_params["confidence_score"]
-		number = api_params["number"]
-		hand_publisher.publish(bounding_box, frame_res, confidence_score, number)
+		hand_publisher.publish(bounding_box, frame_res, confidence_score)
 		return True
 
 	if api_name == "FaceInfo":
