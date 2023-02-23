@@ -61,14 +61,14 @@ def Request(api_name, api_params):
 def Listen():
 
 	# Import NAOqi modules
-	from naoqi import ALProxy
+	# from naoqi import ALProxy
 
 	# Callback for ALTextToSpeech
 	def tts_callback(msg):
 		rospy.loginfo("Pepper say: %s" % msg.data)
 		tts = ALProxy("ALTextToSpeech", ROBOT_IP, ROBOT_PORT)
 		tts.say(msg.data)
-		return Action.IsDone("Set", "ALTextToSpeech")	
+		return IsDone("Set", "ALTextToSpeech")	
 
 	# Callback for ALAudioPlayer
 	def audio_player_callback(msg):
@@ -77,7 +77,7 @@ def Listen():
 		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
 		audio_file = PEPPER_AUDIO_PATH + filename
 		ap.post.playFile(audio_file)
-		return Action.IsDone("Set", "ALAudioPlayer")	
+		return IsDone("Set", "ALAudioPlayer")	
 
 	# Callback for pointing at raised hand
 	def point_callback(msg):
@@ -123,14 +123,14 @@ def Listen():
 		rospy.loginfo("Pepper point %s at x=%.2f y=%.2f, z=%.2f" % 
 			(effector, point_x, point_y, point_z))
 
-		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
-		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+		# tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
+		# posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+        #
+		# # posture.applyPosture("StandInit", 0.5)
+		# tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
+		# tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
 
-		# posture.applyPosture("StandInit", 0.5)
-		tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
-		tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
-
-		return Action.IsDone("Set", "ALTracker")
+		return IsDone("Set", "Point")
 
 
 	# Define event to terminate thread on command
@@ -173,6 +173,8 @@ def Listen():
 		thread_tts.join()
 		thread_ap.join()
 		thread_hand.join()
+
+	return
 
 
 action_status_dict = {

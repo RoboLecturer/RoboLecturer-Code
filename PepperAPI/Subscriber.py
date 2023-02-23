@@ -13,8 +13,8 @@ class Subscriber:
 
 		def finalCallback(data):
 			callback(data)
-			if listen:
-				self.spin = False
+			self.spin -= 1
+			if not self.spin:
 				self.subscriber.unregister()
 
 		self.subscriber = rospy.Subscriber(topic, payload_type, finalCallback)

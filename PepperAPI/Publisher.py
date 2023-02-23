@@ -10,7 +10,7 @@ class Publisher:
 	def __init__(self, name, topic, payload_type):
 		self.name = name
 		self.topic = topic
-		self.publisher = rospy.Publisher(self.topic, payload_type, queue_size=10)
+		self.publisher = rospy.Publisher(self.topic, payload_type, queue_size=10, latch=True)
 		# self.log()
 
 	# Log info about publisher
@@ -41,16 +41,30 @@ class CVInfoPublisher(Publisher, object):
 			topic,
 			CVInfo)
 
-	def publish(self, bounding_box, frame_res, confidence_score):
+	def publish(self, bounding_box, frame_res, confidence_score, number):
 		msg = CVInfo()
 		msg.x, msg.y, msg.w, msg.h = bounding_box
 		msg.frame_width = frame_res[0]
 		msg.frame_height = frame_res[1]
 		msg.score = confidence_score
+		msg.number = number
 		while self.publisher.get_num_connections() == 0:
 			pass			
 		self.publisher.publish(msg)
+		rospy.loginfo("[%s] %s: Published hand info (%.0f, %.0f)" % (self.name, self.topic, msg.x, msg.y))
+
+"""publish msg"""
+class CVInfoMsgPublisher(Publisher, object):
+	def __init__(self, topic):
+		super(CVInfoMsgPublisher, self).__init__(
+			"CVInfoMsgPublisher",
+			topic,
+			CVInfo)
+
+	def publish(self, msg):
+		self.publisher.publish(msg)
 		rospy.loginfo("[%s] %s: Published hand info" % (self.name, self.topic))
+
 
 """publish image"""
 class ImagePublisher(Publisher, object):
@@ -82,8 +96,6 @@ class StatePublisher(Publisher, object):
 		msg.NoiseLevel = state_dict["NoiseLevel"]
 		msg.Attentiveness = state_dict["Attentiveness"]
 		msg.NoQuestionsLoop = state_dict["NoQuestionsLoop"]
-		while self.publisher.get_num_connections() == 0:
-			pass			
 		self.publisher.publish(msg)
 
 
@@ -99,6 +111,7 @@ take_control_publisher = StringPublisher(TAKE_CONTROL_TOPIC)
 
 ## CV
 hand_publisher = CVInfoPublisher(HAND_TOPIC)
+num_hands_publisher = StringPublisher(NUM_HANDS_TOPIC)
 face_publisher = CVInfoPublisher(FACE_TOPIC)
 
 ## NLP
@@ -114,7 +127,7 @@ audio_player_publisher = StringPublisher(AUDIO_PLAYER_TOPIC)
 ## KINEMATICS
 trigger_hand_detection_publisher = StringPublisher(TRIGGER_HAND_DETECTION_TOPIC)
 trigger_listen_publisher = StringPublisher(TRIGGER_LISTEN_TOPIC)
-point_publisher = CVInfoPublisher(POINT_TOPIC)
+point_publisher = CVInfoMsgPublisher(POINT_TOPIC)
 
 ## CONTROL
 state_publisher = StatePublisher(STATE_TOPIC)

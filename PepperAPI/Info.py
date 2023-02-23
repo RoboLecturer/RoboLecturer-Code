@@ -3,8 +3,17 @@ from .Publisher import *
 from .Subscriber import *
 from api.msg import CVInfo, State
 import random
+import rospy
 
 # =========================================================
+
+state_dict = {
+	"Start": "",
+	"AnyQuestions": "",
+	"NoiseLevel": "",
+	"Attentiveness": "",
+	"NoQuestionsLoop": ""
+}
 
 # Get information from other subteams
 def Request(api_name, api_params={}):
@@ -20,10 +29,11 @@ def Request(api_name, api_params={}):
 		Answer = ""
 		Joke = ""
 		Shutup = ""
-		RaisedHandInfo = {}
+		RaisedHandInfo = []
 		FaceInfo = {}
 		TriggerJokeOrQuiz = ""
 		TriggerJokeOrShutup = ""
+		NumHands = 0
 
 
 	# Callbacks for API
@@ -138,10 +148,10 @@ def Request(api_name, api_params={}):
 
 	if api_name == "Shutup":
 		"""Receive shutup text from NLP"
-		@return	shutup text
+		@return	shutup text : String
 		"""
 		def callback(msg):
-			Data.Shutup = msg.shutup
+			Data.Shutup = msg.data
 			rospy.loginfo("Received: Shutup=%s" % Data.Shutup)
 		StringSubscriber(SHUTUP_TOPIC, callback)
 		return Data.Shutup
@@ -163,13 +173,16 @@ def Request(api_name, api_params={}):
 		}
 		"""
 		def callback(msg):
-			Data.RaisedHandInfo = msg
+			Data.NumHands = int(msg.data)
+		StringSubscriber(NUM_HANDS_TOPIC, callback)
+		def callback(msg):
+			Data.RaisedHandInfo.append(msg)
 			# Data.RaisedHandInfo["bounding_box"] = (msg.x, msg.y, msg.w, msg.h)
 			# Data.RaisedHandInfo["frame_res"] = (msg.frame_width, msg.frame_height)
 			# Data.RaisedHandInfo["confidence_score"] = msg.score
 			rospy.loginfo("Received: raised hand at (%.2f, %.2f)" % (msg.x, msg.y))
-		CVInfoSubscriber(HAND_TOPIC, callback)
-		return Data.RaisedHandInfo, msg.number
+		CVInfoSubscriber(HAND_TOPIC, callback, listen=Data.NumHands)
+		return Data.RaisedHandInfo
 
 
 	## ========= CONTROL =========
@@ -236,6 +249,16 @@ def Send(api_name, api_params={}):
 
 
 	## ========= CV =========
+	if api_name == "NumHands":
+		"""Send number of hands to Kinematics before sending RaisedHandInfo
+		@param	api_params : dict{
+			"value": number of hands
+		}
+		"""
+		num_hands = api_params["value"]
+		num_hands_publisher.publish(num_hands)
+		return True
+
 	if api_name == "RaisedHandInfo":
 		"""Send information about raised hands
 		@param	api_params : dict{
@@ -247,7 +270,8 @@ def Send(api_name, api_params={}):
 		bounding_box = api_params["bounding_box"]
 		frame_res = api_params["frame_res"]
 		confidence_score = api_params["confidence_score"]
-		hand_publisher.publish(bounding_box, frame_res, confidence_score)
+		number = api_params["number"]
+		hand_publisher.publish(bounding_box, frame_res, confidence_score, number)
 		return True
 
 	if api_name == "FaceInfo":
@@ -345,19 +369,26 @@ def Send(api_name, api_params={}):
 		return choice
 
 	if api_name == "State":
-		"""Broadcast state info to all modules"""
-		state_dict = {
-			"Start": "",
-			"AnyQuestions": "",
-			"NoiseLevel": "",
-			"Attentiveness": "",
-			"NoQuestionsLoop": ""
-		}
+		"""Update state"""
+		global state_dict
 		for k,v in api_params.items():
 			state_dict[k] = v
-		state_publisher.publish(state_dict)
+		# state_publisher.publish(state_dict)
 		return True
 
 
 	print("API does not exist. Please check name again.")
 	return False
+
+
+# Only for Control. Broadcast states to all modules
+def Broadcast(api_name):
+
+	if api_name == "State":
+		rate = rospy.Rate(1)
+		while True:
+			global state_dict
+			state_publisher.publish(state_dict)
+			rate.sleep()
+		
+	return
