@@ -52,7 +52,6 @@ ___
     - key ```bounding_box```: *Float* (x,y,w,h)
     - key ```frame_res```: *Int* (width, height) of frame
     - key ```confidence_score```: *Float* confidence score
-    - key ```number```: *Int* total number of detected hands
 
 - **```Info.Send("FaceInfo", params)```**: Send information about detected face to Kinematics module 
   - **params** (*Dict*) : 
@@ -60,6 +59,9 @@ ___
     - key ```frame_res```: *Int* (width, height) of frame
     - key ```engagement_score```: *Float* engagement score
     - key ```number```: *Int* total number of detected faces
+
+- **```Info.Send("NumHands", {"value": numberOfHands})```**: Send number of hands to Kinematics before publishing hand info
+  - **params** (*Dict*) : Number of hands to be provided as *Int* to key ```value```
 
 - **```Info.Send("State", {"AnyQuestion":"HandsRaised"/"NoHandsRaised"})```**: Update state ```AnyQuestions```
   - **params** (*Dict*) : New state "HandsRaised" or "NoHandsRaised" to be provided as *String* to key ```AnyQuestions```
