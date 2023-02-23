@@ -63,7 +63,18 @@ docker exec -it <container_name> bash # run for each terminal you open
 ```
 apt-get -y update
 ```
-5. You can copy the files you need and the PepperAPI package from your machine to docker through
+5. THe image already has the repo cloned in **~/RoboLecturer-Code**. You can just ```git pull`` it to update it. The **api** package folder has also already been added into the workspace **catkin_ws/src** as a symlink. To add your own scripts, create your package folder and copy your scripts and the **PepperAPI** into the package folder.
+```
+cd ~/catkin_ws/src
+catkin_create_pkg <package_name>    # create package
+cd ~/catkin_ws
+catkin_make                         # build the catkin workspace
+source devel/setup.bash             # source the variables
+cd ~/catkin_ws/src/<package_name>
+ln -s ~/RoboLecturer-Code/PepperAPI # create a symlink (shortcut) of the PepperAPI to your package
+```
+
+To copy your scripts from your machine to the docker container, you can use
 ```
 docker cp SRC_PATH <container_name>:/root/
 ```
