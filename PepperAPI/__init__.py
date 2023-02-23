@@ -8,6 +8,28 @@ PEPPER_USER = "nao"
 PEPPER_PASSWORD = "BioARTLab123"
 PEPPER_AUDIO_PATH = "/home/nao/audio_files/"
 
+# Topics
+SIMPLE_MSG_TOPIC = "simple_msg"
+IMAGE_TOPIC = "image"
+TTS_TOPIC = "tts"
+SLIDES_TOPIC = "slides"
+HAND_TOPIC = "raised_hand"
+FACE_TOPIC = "face"
+LECTURE_SCRIPT_TOPIC = "lecture_script"
+QUESTION_TOPIC = "question"
+ANSWER_TOPIC = "answer"
+JOKE_TOPIC = "joke"
+SHUTUP_TOPIC = "shutup"
+AUDIO_PLAYER_TOPIC = "audio_player"
+STATE_TOPIC = "state"
+POINT_TOPIC = "point"
+TAKE_CONTROL_TOPIC = "take_control"
+TRIGGER_HAND_DETECTION_TOPIC = "trigger_hand_detection"
+TRIGGER_LISTEN_TOPIC = "trigger_listen"
+TRIGGER_JOKE_OR_QUIZ_TOPIC = "trigger_joke_or_quiz"
+TRIGGER_JOKE_OR_SHUTUP_TOPIC = "trigger_joke_or_shutup"
+
+# Start node
 def init(node):
 	# XMLRPC & TCPROS ports to start from 45100 & 45101
 	_xmlrpc, _tcpros = 45100, 45101

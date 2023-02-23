@@ -3,6 +3,7 @@ from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from api.msg import CVInfo, State
 from cv_bridge import CvBridge
+from PepperAPI import * # import global topic names
 
 # Parent publisher class
 class Publisher:
@@ -88,38 +89,36 @@ class StatePublisher(Publisher, object):
 
 # ==============================================================
 # Initiate publishers
-simple_msg_publisher = StringPublisher("simple_msg")
-image_publisher = ImagePublisher("image")
-tts_publisher = StringPublisher("tts")
+simple_msg_publisher = StringPublisher(SIMPLE_MSG_TOPIC)
+image_publisher = ImagePublisher(IMAGE_TOPIC)
+tts_publisher = StringPublisher(TTS_TOPIC)
 
 ## WEB
-slides_publisher = StringPublisher("slides")
-take_control_publisher = StringPublisher("take_control")
+slides_publisher = StringPublisher(SLIDES_TOPIC)
+take_control_publisher = StringPublisher(TAKE_CONTROL_TOPIC)
 
 ## CV
-hand_publisher = CVInfoPublisher("raised_hand")
-face_publisher = CVInfoPublisher("faces")
-trigger_noise_detection_publisher = StringPublisher("trigger_noise_detection")
-increment_loop_counter_publisher = StringPublisher("increment_loop_counter")
+hand_publisher = CVInfoPublisher(HAND_TOPIC)
+face_publisher = CVInfoPublisher(FACE_TOPIC)
 
 ## NLP
-lecture_script_publisher = StringPublisher("lecture_script")
-answer_publisher = StringPublisher("answer")
-joke_publisher = StringPublisher("joke")
+lecture_script_publisher = StringPublisher(LECTURE_SCRIPT_TOPIC)
+answer_publisher = StringPublisher(ANSWER_TOPIC)
+joke_publisher = StringPublisher(JOKE_TOPIC)
+shutup_publisher = StringPublisher(SHUTUP_TOPIC)
 
 ## SPEECH
-question_publisher = StringPublisher("question")
-audio_player_publisher = StringPublisher("audio_player_topic")
-trigger_attentiveness_detection_publisher = StringPublisher("trigger_attentiveness_detection")
+question_publisher = StringPublisher(QUESTION_TOPIC)
+audio_player_publisher = StringPublisher(AUDIO_PLAYER_TOPIC)
 
 ## KINEMATICS
-trigger_hand_detection_publisher = StringPublisher("trigger_hand_detection")
-trigger_listen_publisher = StringPublisher("trigger_listen")
+trigger_hand_detection_publisher = StringPublisher(TRIGGER_HAND_DETECTION_TOPIC)
+trigger_listen_publisher = StringPublisher(TRIGGER_LISTEN_TOPIC)
+point_publisher = CVInfoPublisher(POINT_TOPIC)
 
 ## CONTROL
-change_slide_publisher = StringPublisher("change_slide")
-state_publisher = StatePublisher("state")
+state_publisher = StatePublisher(STATE_TOPIC)
 
 ## SHARED
-trigger_quiz_publisher = StringPublisher("trigger_quiz")
-trigger_joke_publisher = StringPublisher("trigger_joke")
+trigger_joke_or_quiz_publisher = StringPublisher(TRIGGER_JOKE_OR_QUIZ_TOPIC)
+trigger_joke_or_shutup_publisher = StringPublisher(TRIGGER_JOKE_OR_SHUTUP_TOPIC)
