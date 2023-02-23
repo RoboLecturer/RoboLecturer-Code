@@ -52,16 +52,20 @@ docker load -i ros-dev.tar    # load the image (takes a while)
 ```
 3. Your docker image must be run with port forwarding for the range 45100 to 45200. This range allows for each machine to have up to 50 different scripts that can call the API, as each script must have a new node, and a node cannot be initialised with the same ports as another. An example command is:
 ```
-docker run --name=<container-name> -p 45100-45200:45100-45200 -it ros-dev
+docker run --name=<container_name> -p 45100-45200:45100-45200 -it ros-dev
 ```
 The above command is only for the first run. For subsequent runs, the created container can be accessed with
 ```
 docker start <container-name>         # just run once
-docker exec -it <container-name> bash # run for each terminal you open
+docker exec -it <container_name> bash # run for each terminal you open
 ```
-4. The image provided should have python, pip, and some other useful utils (ping, ifconfig, vim etc). If you want to install more packages, update the container
+4. The image provided should have python, pip, and some other useful utils (ping, ifconfig, vim etc). If you want to install more packages, update the container.
 ```
 apt-get -y update
+```
+5. You can copy the files you need and the PepperAPI package from your machine to docker through
+```
+docker cp SRC_PATH <container_name>:/root/
 ```
 
 ## 3. VirtualBox
@@ -109,5 +113,5 @@ apt-get -y update
 **Useful commands**
 - Copy files from your laptop to the docker image:
 ```
-docker cp [-r] SRC_PATH <container-name>:DEST_PATH
+docker cp SRC_PATH <container-name>:DEST_PATH
 ```
