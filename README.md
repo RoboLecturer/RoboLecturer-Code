@@ -130,9 +130,10 @@ For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLec
   
 ## 4. FAQs
 - **ERROR: Unable to communicate with master!** when running ROS commands
-  1. If the line ```source /opt/ros/noetic/setup.bash``` is not in your ```~/.bashrc```, run it, then add it to your ```~/.bashrc``` so you can avoid doing it everytime you open a terminal.
-  2. Run ```source ~/<workspace_name>/devel/setup.bash```.
-  3. Your ```ROS_MASTER_URI``` may be different from that of the Master running roscore.
+  1. Is a ```roscore``` running?
+  2. If the line ```source /opt/ros/noetic/setup.bash``` is not in your ```~/.bashrc```, run it, then add it to your ```~/.bashrc``` so you can avoid hving to run it everytime you open a terminal.
+  3. Run ```source ~/<workspace_name>/devel/setup.bash```.
+  4. Your ```ROS_MASTER_URI``` may be different from that of the Master running roscore.
   
 - **ERROR: Unable to start XML-RPC server, port 45100 is already in use**. 
 
