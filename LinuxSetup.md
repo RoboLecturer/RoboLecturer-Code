@@ -43,10 +43,10 @@ If you want to work with the Docker container, you have to install Docker on bot
 
 # 2. Docker for MacOS
 1. Install Docker Desktop for MacOS.
-2. Download the image [here](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh). Rename it from **ros-dev.tar** to **ros-dev.tar.gz**, then extract the gzip file and load it.
+2. Download the image [here](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh). If it doesn't have the **.gz** extension, rename it from **ros-dev.tar** to **ros-dev.tar.gz**, then extract the gzip file and load it.
 ```
 cd ~/Downloads
-mv ros-dev.tar ros-dev.tar.gz # rename the file
+mv ros-dev.tar ros-dev.tar.gz # rename the file if needed
 tar -xzvf ros-dev.tar.gz      # extract the file
 docker load -i ros-dev.tar    # load the image (takes a while)
 ```
