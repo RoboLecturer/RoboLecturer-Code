@@ -56,7 +56,7 @@ docker run --name=<container_name> -p 45100-45200:45100-45200 --add-host="host.d
 ```
 The above command is only for the first run. For subsequent runs, the created container can be accessed with
 ```
-docker start <container-name>         # just run once
+docker start <container_name>         # just run once
 docker exec -it <container_name> bash # run for each terminal you open
 ```
 4. The image already has the repo cloned in **~/RoboLecturer-Code**. You can just ```git pull``` to update it. The **api** package folder has also already been added into the workspace **catkin_ws/src** as a symlink. To add your own scripts, create your package folder and copy your scripts and the **PepperAPI** into the package folder.
