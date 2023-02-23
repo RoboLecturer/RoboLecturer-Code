@@ -42,24 +42,27 @@ If you want to work with the Docker container, you have to install Docker on bot
 2. To install Docker in WSL, follow the instructions in [section 3.2](#32-install-ros).
 
 # 2. Docker for MacOS
-1. Install Docker Dekstop for MacOS
-2. Your docker image must be run with port forwarding for the range 45100 to 45200. This range allows for each machine to have up to 50 different scripts that can call the API, as each script must have a new node, and a node cannot be initialised with the same ports as another. An example command is:
+1. Install Docker Desktop for MacOS.
+2. Download the image [here](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh). Rename it from **ros-dev.tar** to **ros-dev.tar.gz**, then extract the gzip file and load it.
+```
+cd ~/Downloads
+mv ros-dev.tar ros-dev.tar.gz # rename the file
+tar -xzvf ros-dev.tar.gz      # extract the file
+docker load -i ros-dev.tar    # load the image (takes a while)
+```
+3. Your docker image must be run with port forwarding for the range 45100 to 45200. This range allows for each machine to have up to 50 different scripts that can call the API, as each script must have a new node, and a node cannot be initialised with the same ports as another. An example command is:
 ```
 docker run --name=<container-name> -p 45100-45200:45100-45200 -it ros-dev
 ```
-3. Since you'll be using our defined API, you don't need to worry about the ROS wrapping part. But if you just want to test connectio with the master, your publish node must be initiated with the **xmlrpc_port** and **tcpros_port** within the 45100~45200 range. A sample script ```publisher.py``` is:
+The above command is only for the first run. For subsequent runs, the created container can be accessed with
 ```
-import rospy
-from std_msgs.msg import String
-
-if __name__ == "__main__:
-  rospy.init_node("my_node", xmlrpc_port=45100, tcpros_port=45101)
-  pub = rospy.Publisher("my_topic", String, queue_size=10)
-  while not rospy.is_shutdown():
-    pub.publish("Hello World")
-    rospy.Rate(1).sleep()
+docker start <container-name>         # just run once
+docker exec -it <container-name> bash # run for each terminal you open
 ```
-On a separate master/slave machine, the command ```rostopic echo /my_topic``` can be used to verify communication between nodes is working.
+4. The image provided should have python, pip, and some other useful utils (ping, ifconfig, vim etc). If you want to install more packages, update the container
+```
+apt-get -y update
+```
 
 ## 3. VirtualBox
 ### 3.1. Install VirtualBox
@@ -95,7 +98,7 @@ docker run --name=<container-name> --net=host -it ros-dev
 ```
 The above command is only for the first run. For subsequent runs, the created container can be accessed with
 ```
-docker start <container-name> # just run once
+docker start <container-name>         # just run once
 docker exec -it <container-name> bash # run for each terminal you open
 ```
 4. If you want to install more packages, update the container
