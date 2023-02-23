@@ -52,7 +52,7 @@ docker load -i ros-dev.tar    # load the image (takes a while)
 ```
 3. Your docker image must be run with port forwarding for the range 45100 to 45200. This range allows for each machine to have up to 50 different scripts that can call the API, as each script must have a new node, and a node cannot be initialised with the same ports as another. An example command is:
 ```
-docker run --name=<container_name> -p 45100-45200:45100-45200 --add-host=“host.docker.internal:host-gateway” -it ros-dev
+docker run --name=<container_name> -p 45100-45200:45100-45200 --add-host="host.docker.internal:host-gateway" -it ros-dev
 ```
 The above command is only for the first run. For subsequent runs, the created container can be accessed with
 ```
