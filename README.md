@@ -90,7 +90,23 @@ Note: Every time you open a terminal, you have to run ```source <workspace_path>
 
 ## 3. PepperAPI
 ### 3.1. Building the API package
-The PepperAPI calls custom ROS msgs, hence we've include the entire **[api](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/api)** package folder to be placed in your **workspace/src** folder and built with ```catkin_make```. Then, copy the **[PepperAPI](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/PepperAPI)** folder to the same directory as your scripts.
+1. Clone this repo somewhere and go to the **api** branch
+```
+git clone -b api https://github.com/RoboLecturer/RoboLecturer-Code.git
+```
+2. Copy the **[api](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/api)** package to your catkin **workspace/src** folder. Then build with ```catkin_make``` and source the variables.
+```
+cd ~/RoboLecturer-Code
+cp -r api ~/<workspace_name>/src/
+cd ~/<workspace_name>
+catkin_make
+source devel/setup.bash
+```
+3. Copy the **[PepperAPI](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api/PepperAPI)** folder to your own package folder.
+```
+cd ~/RoboLecturer-Code
+cp -r PepperAPI ~/<workspace_name>/src/<package_name>
+```
 
 The directory listing should be:
 ```
@@ -100,21 +116,11 @@ The directory listing should be:
 |    |         setup.bash
 |    \----src
 |    |    +----api
-|    |    \----<package name>
+|    |    \----<package_name>
 |    |    |         CMakeLists.txt
 |    |    |         packages.xml
 |    |    |    +----PepperAPI
 |    |    |         myScript.py
-```
-
-Once set up, you can import and use PepperAPI in your scripts. **Note**: the "node" argument for ```PepperAPI.init()``` should be the same in all your scripts. I.e, each module should use only one name (e.g. cv_node, nlp_node, etc).
-```
-import PepperAPI
-from PepperAPI import Info
-
-if __name__ == "__main__":	
-	PepperAPI.init("cv_node")                        # initialize the API with your module
-	Info.Send("RLCoords", {"value":[26.54, 58.20]})  # send xy-coords
 ```
 
 ### 3.2. Using the API
