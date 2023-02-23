@@ -90,7 +90,7 @@ Note: Every time you open a terminal, you have to run ```source <workspace_path>
 
 ## 3. PepperAPI
 ### 3.1. Building the API package
-1. Clone this repo somewhere and go to the **api** branch
+1. Clone the **api** branch of this repo somewhere.
 ```
 git clone -b api https://github.com/RoboLecturer/RoboLecturer-Code.git
 ```
