@@ -44,7 +44,7 @@ if __name__ == "__main__":
 - **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal (*String*) "joke" or "quiz". If signal received is "quiz", trigger quiz
 - **```Info.Request("ChangeSlide")```**: Receive signal ("1") to change slide
 
-
+___
 ### CV
 #### Send
 - **```Info.Send("RaisedHandInfo", params)```**: Send information about raised hand to Kinematics module 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 #### Receive
 - **```Info.Request("TriggerHandDetection")```**: Receive signal ("1") to start detecting raised hands
 
-
+___
 ### NLP
 #### Send
 - **```Info.Send("LectureScript", {"text": myText})```**: Send lecture script text to Speech module
@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
 - **```Info.Request("TriggerJokeOrShutup")```**: Receive signal (*String*) "joke" or "shutup" to send joke or shutup to Speech module
 
-
+___
 ### Speech
 #### Send
 - **```Info.Send("Question", {"text": myText})```**: Send QnA question text to NLP module
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
 - **```Info.Request("TriggerListen")```**: Receive signal ("1") to start listening to mic input
 
-
+___
 ### Kinematics
 #### Send
 - **```Info.Send("TriggerHandDetection")```**: Send signal ("1") to CV module to start detecting for raised hands after Pepper has finished the script for the slide
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
 - **```Info.Request("TakeControl")```**: Receive signal ("1") to indicate that quiz has finished
 
-
+___
 ### Control
 #### Send
 - **```Info.Send("TriggerJokeOrQuiz")```**: Send signal ("1") to Web module to trigger quiz when loop counter reaches threshold
