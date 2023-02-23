@@ -5,3 +5,4 @@ float32 h
 uint16 frame_width
 uint16 frame_height
 float32 score
+uint8 number
