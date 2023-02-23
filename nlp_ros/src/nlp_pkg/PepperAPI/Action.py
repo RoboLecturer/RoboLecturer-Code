@@ -44,6 +44,15 @@ def Request(api_name, api_params):
 		audio_player_publisher.publish(filename)
 		return True
 
+	if api_name == "Point":
+		"""Request for Pepper to point to raised hand at provided coords
+		@param api_params : dict{
+			"info": CVInfo msg of hand info
+		}
+		"""
+		msg = api_params["info"]
+		point_publisher.publish(msg)
+
 	return
 
 # ==============================================================
@@ -52,14 +61,14 @@ def Request(api_name, api_params):
 def Listen():
 
 	# Import NAOqi modules
-	from naoqi import ALProxy
+	# from naoqi import ALProxy
 
 	# Callback for ALTextToSpeech
 	def tts_callback(msg):
 		rospy.loginfo("Pepper say: %s" % msg.data)
 		tts = ALProxy("ALTextToSpeech", ROBOT_IP, ROBOT_PORT)
 		tts.say(msg.data)
-		return True
+		return IsDone("Set", "ALTextToSpeech")	
 
 	# Callback for ALAudioPlayer
 	def audio_player_callback(msg):
@@ -68,7 +77,7 @@ def Listen():
 		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
 		audio_file = PEPPER_AUDIO_PATH + filename
 		ap.post.playFile(audio_file)
-		return True
+		return IsDone("Set", "ALAudioPlayer")	
 
 	# Callback for pointing at raised hand
 	def point_callback(msg):
@@ -114,16 +123,14 @@ def Listen():
 		rospy.loginfo("Pepper point %s at x=%.2f y=%.2f, z=%.2f" % 
 			(effector, point_x, point_y, point_z))
 
-		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
-		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+		# tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
+		# posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+        #
+		# # posture.applyPosture("StandInit", 0.5)
+		# tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
+		# tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
 
-		# posture.applyPosture("StandInit", 0.5)
-		tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
-		tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
-		# time.sleep(10)
-		# posture.applyPosture("StandInit", 0.5)
-
-		return True
+		return IsDone("Set", "Point")
 
 
 	# Define event to terminate thread on command
@@ -139,17 +146,17 @@ def Listen():
 
 	# General TTS to be used by any module
 	thread_tts = threading.Thread(target=subscribe_listen, args=(
-		lambda: StringSubscriber("tts", tts_callback, listen=False),
+		lambda: StringSubscriber(TTS_TOPIC, tts_callback, listen=False),
 		))
 
 	# ALAudioPlayer used by speech module
 	thread_ap = threading.Thread(target=subscribe_listen, args=(
-		lambda: StringSubscriber("audio_player", audio_player_callback, listen=False),
+		lambda: StringSubscriber(AUDIO_PLAYER_TOPIC, audio_player_callback, listen=False),
 		))
 
 	# Hands info sent by CV module
 	thread_hand = threading.Thread(target=subscribe_listen, args=(
-		lambda: CVInfoSubscriber("raised_hand", point_callback, listen=False),
+		lambda: CVInfoSubscriber(POINT_TOPIC, point_callback, listen=False),
 		))
 
 	# Run threads
@@ -166,3 +173,26 @@ def Listen():
 		thread_tts.join()
 		thread_ap.join()
 		thread_hand.join()
+
+	return
+
+
+action_status_dict = {
+	"ALTextToSpeech": False,
+	"ALAudioPlayer": False,
+	"Point": False
+}
+def IsDone(action, name):
+	
+	global action_status_dict
+
+	if action == "Get":
+		return action_status_dict[name]
+
+	if action == "Reset":
+		action_status_dict[name] = False
+
+	if action == "Set":
+		action_status_dict[name] = True
+
+	return True
