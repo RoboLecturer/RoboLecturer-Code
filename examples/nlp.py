@@ -7,10 +7,12 @@ def nlp_main():
 	# Wait for signal that loop has started
 	if not Info.Request("State",{"name": "Start"}):
 		return
+	print("\n========= STATE: Start =========")
 
-	# When loop has started, get slides text from Web
-	# Generate script then send to Speech
+	# Get slides text from Web, then
+	# generate script then send to Speech
 	slides_text = Info.Request("Slides")
+	script_text = "This is the script"
 	Info.Send("LectureScript", {"text": script_text})
 
 
@@ -19,20 +21,21 @@ def nlp_main():
 	state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
 	while not state_any_questions:
 		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
-		time.sleep(.5)
+	print("\n========= STATE: AnyQuestions =========")
 
 	# If hands raised, start QnA loop
 	while state_any_questions == "HandsRaised":
 
-		# wait for student's question from Speech
+		# Wait for student's question from Speech
 		question = Info.Request("Question")
 
-		# process answer, then send back to Speech
+		# Process answer, then send back to Speech
+		answer = "Blue light is scattered the most"
 		Info.Send("Answer", {"text": answer})
 
-		state_any_questions = Info.Request("State", "AnyQuestions")
+		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
 
-	# QnA loop ended
+	# When QnA loop ends, proceed
 
 
 	# ========= STATE: NoiseLevel =========
@@ -40,15 +43,17 @@ def nlp_main():
 	state_noise_level = Info.Request("State", {"name":"NoiseLevel"})
 	while not state_noise_level:
 		state_noise_level = Info.Request("State", {"name":"NoiseLevel"})
-		time.sleep(.5)
+	print("\n========= STATE: NoiseLevel =========")
 
 	# If high noise level, get signal from Control to trigger joke or shutup
 	# Then send joke/shutup text to Speech. And the loop restarts
 	if state_noise_level == "High":
 		signal = Info.Request("TriggerJokeOrShutup")
 		if signal == "joke":
+			joke = "your mom"
 			Info.Send("Joke", {"text": joke})
-		elif signal == "shutup"
+		elif signal == "shutup":
+			shutup = "shut yo mouth"
 			Info.Send("Shutup", {"text": shutup})
 		return
 
@@ -60,7 +65,7 @@ def nlp_main():
 	state_attentiveness = Info.Request("State", {"name":"Attentiveness"})
 	while not state_attentiveness:
 		state_attentiveness = Info.Request("State", {"name":"Attentiveness"})
-		time.sleep(.5)
+	print("\n========= STATE: Attentiveness =========")
 
 	# If not attentive, get signal from Control to trigger joke or quiz
 	if state_attentiveness == "NotAttentive":
@@ -68,6 +73,7 @@ def nlp_main():
 		
 		# If trigger_joke, send joke to Speech
 		if signal == "joke":
+			joke = "your mom"
 			Info.Send("Joke", {"text": joke})
 
 		# After joke has been spent, or if trigger_quiz, loop restarts
@@ -81,7 +87,7 @@ def nlp_main():
 	state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
 	while not state_no_questions_loop:
 		state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
-		time.sleep(.5)
+	print("\n========= STATE: NoQuestionsLoop =========")
 	
 	# If loop counter reached, Control triggers joke or quiz and loop restarts
 	if state_no_questions_loop == "CounterReached":
@@ -97,6 +103,6 @@ def nlp_main():
 # =================================================
 
 if __name__ == "__main__":
-	PepperAPI.init("nlp_node")
+	PepperAPI.init("test")
 	while True:
 		nlp_main()

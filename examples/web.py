@@ -1,5 +1,6 @@
 import PepperAPI
 from PepperAPI import Info
+import time
 
 def web_main():
 
@@ -7,11 +8,11 @@ def web_main():
 	# Wait for signal that loop has started
 	if not Info.Request("State", {"name":"Start"}):
 		return
+	print("\n========= STATE: Start =========")
 
 	# Change slide, then send slides text to NLP
-	change_slide()
-	slides = ""
-	Info.Send("Slides", {"text": slides})
+	slides_text = "These are the slides."
+	Info.Send("Slides", {"text": slides_text})
 
 
 	# ========= STATE: AnyQuestions =========
@@ -19,7 +20,7 @@ def web_main():
 	state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
 	while state_any_questions != "NoHandsRaised":
 		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
-		time.sleep(.5)
+	print("\n========= STATE: AnyQuestions =========")
 
 
 	# ========= STATE: NoiseLevel =========
@@ -27,7 +28,7 @@ def web_main():
 	state_noise_level = Info.Request("State", {"name":"NoiseLevel"})
 	while not state_noise_level:
 		state_noise_level = Info.Request("State", {"name":"NoiseLevel"})
-		time.sleep(.5)
+	print("\n========= STATE: NoiseLevel =========")
 
 	# If high noise level, pepper tells joke/shutup, then loop restarts
 	if state_noise_level == "High":
@@ -41,7 +42,7 @@ def web_main():
 	state_attentiveness = Info.Request("State", {"name":"Attentiveness"})
 	while not state_attentiveness:
 		state_attentiveness = Info.Request("State", {"name":"Attentiveness"})
-		time.sleep(.5)
+	print("\n========= STATE: Attentiveness =========")
 
 	# If not attentive, get signal from Control to trigger joke or quiz
 	# If trigger_quiz, trigger the quiz
@@ -51,6 +52,7 @@ def web_main():
 		# If trigger_joke, send joke to Speech
 		if signal == "quiz":
 			# Do trigger quiz, then send take_control signal back to Control
+			time.sleep(3)
 			Info.Send("TakeControl")
 
 		# After quiz is triggered, or if trigger_joke, loop restarts
@@ -64,7 +66,7 @@ def web_main():
 	state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
 	while not state_no_questions_loop:
 		state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
-		time.sleep(.5)
+	print("\n========= STATE: NoQuestionsLoop =========")
 	
 	# If loop counter reached, Control triggers joke or quiz and loop restarts
 	if state_no_questions_loop == "CounterReached":
@@ -80,6 +82,6 @@ def web_main():
 # =================================================
 
 if __name__ == "__main__":
-	PepperAPI.init("web_node")
+	PepperAPI.init("test")
 	while True:
 		web_main()

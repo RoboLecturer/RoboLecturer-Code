@@ -7,11 +7,12 @@ def speech_main():
 	# Wait for signal that loop has started
 	if not Info.Request("State", {"name":"Start"}):
 		return
+	print("\n========= STATE: Start =========")
 
 	# When loop has started, wait for script from NLP
 	# Then convert to MP3 and send to Kinematics
 	script = Info.Request("LectureScript")
-	Action.Request("ALAudioPlayer", {"path": "/path/to/script")
+	Action.Request("ALAudioPlayer", {"path": "sample.mp3"})
 
 
 	# ========= STATE: AnyQuestions =========
@@ -19,35 +20,37 @@ def speech_main():
 	state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
 	while not state_any_questions:
 		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
-		time.sleep(.5)
+	print("\n========= STATE: AnyQuestions =========")
 
 	# If hands raised, start QnA loop
 	while state_any_questions == "HandsRaised":
 
 		# wait for signal from kinematics to start listening to mic
-		if not Info.Request("TriggerListen"):
-			pass
+		Info.Request("TriggerListen")
 
-		# Listen to mic and process question STT
-		# Then send STT to NLP
+		# Listen to mic and process question STT,
+		# then send STT to NLP
+		question = "Why is the sky blue?"
 		Info.Send("Question", {"text": question})
 
-		# Now wait for answer from NLP
-		# Convert to audio and send to Kinematics
+		# Wait for answer from NLP, 
+		# then convert to audio and send to Kinematics
 		answer = Info.Request("Answer")
-		Action.Request("ALAudioPlayer", {"path": "/path/to/answer"}
+		Action.Request("ALAudioPlayer", {"path": "sample.mp3"})
 
-		state_any_questions = Info.Request("State", "AnyQuestions")
+		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
 
 	# When QnA loop ends, proceed
 
 
 	# ========= STATE: NoiseLevel =========
+	print("\n========= STATE: NoiseLevel =========")
 	# Start detecting noise
 
 	# If high noise level, update state.
 	# Control tells NLP to trigger joke/shutup, you receive text,
 	# convert to audio and send to Kinematics to play
+	HIGH_NOISE_LEVEL = False
 	if HIGH_NOISE_LEVEL:
 		Info.Send("State", {"NoiseLevel": "High"})
 		signal = Info.Request("TriggerJokeOrShutup")
@@ -70,7 +73,7 @@ def speech_main():
 	state_attentiveness = Info.Request("State", {"name": "Attentiveness"})
 	while not state_attentiveness:
 		state_attentiveness = Info.Request("State", {"name": "Attentiveness"})
-		time.sleep(.5)
+	print("\n========= STATE: Attentiveness =========")
 
 	# If inattentive, Control trigger joke or quiz
 	if state_attentiveness == "NotAttentive":
@@ -79,7 +82,7 @@ def speech_main():
 		# If trigger_joke, receive joke from NLP, convert to audio and send to play
 		if signal == "joke":
 			joke = Info.Request("Joke")
-			Action.Request("ALAudioPlayer", {"path": "/path/to/joke"})
+			Action.Request("ALAudioPlayer", {"path": "sample.mp3"})
 		
 		# Restart loop after joke is played or if trigger_quiz
 		return
@@ -92,7 +95,7 @@ def speech_main():
 	state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
 	while not state_no_questions_loop:
 		state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
-		time.sleep(.5)
+	print("\n========= STATE: NoQuestionsLoop =========")
 	
 	# If loop counter reached, Control triggers joke or quiz and loop restarts
 	if state_no_questions_loop == "CounterReached":
@@ -109,6 +112,6 @@ def speech_main():
 # =================================================
 
 if __name__ == "__main__":
-	PepperAPI.init("speech_node")
+	PepperAPI.init("test")
 	while True:
 		speech_main()
