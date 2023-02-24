@@ -172,6 +172,7 @@ def Request(api_name, api_params={}):
 		"""
 		def callback(msg):
 			Data.NumHands = int(msg.data)
+			rospy.loginfo("Number of hands detected: %d" % Data.NumHands)
 		StringSubscriber(NUM_HANDS_TOPIC, callback)
 		def callback(msg):
 			Data.RaisedHandInfo.append(msg)
