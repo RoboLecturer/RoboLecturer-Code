@@ -20,15 +20,16 @@ class Publisher:
 # Child publisher classes
 """publish string msg"""
 class StringPublisher(Publisher, object):
-	def __init__(self, topic):
+	def __init__(self, topic, num_subscribers=1):
 		super(StringPublisher, self).__init__(
 			"StringPublisher",
 			topic, 
 			String)
+		self.num_subscribers = num_subscribers
 
 	def publish(self, msg):
 		msg = str(msg)
-		while self.publisher.get_num_connections() == 0:
+		while self.publisher.get_num_connections() != self.num_subscribers:
 			pass			
 		self.publisher.publish(msg)
 		rospy.loginfo("[%s] %s: %s" % (self.name, self.topic, msg))
@@ -142,5 +143,5 @@ state_publisher = StatePublisher(STATE_TOPIC, wait=False)
 state_update_publisher = StatePublisher(STATE_UPDATE_TOPIC)
 
 ## SHARED
-trigger_joke_or_quiz_publisher = StringPublisher(TRIGGER_JOKE_OR_QUIZ_TOPIC)
-trigger_joke_or_shutup_publisher = StringPublisher(TRIGGER_JOKE_OR_SHUTUP_TOPIC)
+trigger_joke_or_shutup_publisher = StringPublisher(TRIGGER_JOKE_OR_SHUTUP_TOPIC, num_subscribers=2)
+trigger_joke_or_quiz_publisher = StringPublisher(TRIGGER_JOKE_OR_QUIZ_TOPIC, num_subscribers=3)

@@ -363,7 +363,6 @@ def Send(api_name, api_params={}):
 		if "force" in api_params:
 			choice = api_params["force"]
 		trigger_joke_or_quiz_publisher.publish(choice)
-		trigger_joke_or_quiz_publisher.publish(choice)
 		return choice
 
 	if api_name == "TriggerJokeOrShutup":
@@ -371,7 +370,6 @@ def Send(api_name, api_params={}):
 		choice = random.choice(["joke","shutup"])
 		if "force" in api_params:
 			choice = api_params["force"]
-		trigger_joke_or_shutup_publisher.publish(choice)
 		trigger_joke_or_shutup_publisher.publish(choice)
 		return choice
 
@@ -391,6 +389,9 @@ def Send(api_name, api_params={}):
 	return False
 
 
+# =========================================================
+
+# Only for Control. Reset states
 def resetState(name):
 	global state_dict
 	state_dict[name] = ""
