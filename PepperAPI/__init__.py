@@ -30,6 +30,8 @@ TRIGGER_HAND_DETECTION_TOPIC = "trigger_hand_detection"
 TRIGGER_LISTEN_TOPIC = "trigger_listen"
 TRIGGER_JOKE_OR_QUIZ_TOPIC = "trigger_joke_or_quiz"
 TRIGGER_JOKE_OR_SHUTUP_TOPIC = "trigger_joke_or_shutup"
+VOLUME_UP_TOPIC = "volume_up"
+VOLUME_DOWN_TOPIC = "volume_down"
 
 # Start node
 def init(node):

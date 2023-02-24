@@ -108,6 +108,10 @@ simple_msg_publisher = StringPublisher(SIMPLE_MSG_TOPIC)
 image_publisher = ImagePublisher(IMAGE_TOPIC)
 tts_publisher = StringPublisher(TTS_TOPIC)
 
+# VOLUME UP/DOWN
+volume_up_publisher = StringPublisher(VOLUME_UP_TOPIC)
+volume_down_publisher = StringPublisher(VOLUME_DOWN_TOPIC)
+
 ## WEB
 slides_publisher = StringPublisher(SLIDES_TOPIC)
 take_control_publisher = StringPublisher(TAKE_CONTROL_TOPIC)

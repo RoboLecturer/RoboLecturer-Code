@@ -52,8 +52,21 @@ def Request(api_name, api_params):
 		"""
 		msg = api_params["info"]
 		point_publisher.publish(msg)
+		return True
 
-	return
+	if api_name == "VolumeUp":
+		"""
+		Set volume up
+		"""
+		volume_up_publisher.publish("1")
+		return True
+
+	if api_name == "VolumeDown":
+		"""
+		Set volume down
+		"""
+		volume_down_publisher.publish("1")
+		return True
 
 # ==============================================================
 # Only to be used by Kinematics module
@@ -131,6 +144,19 @@ def Listen():
 
 		return IsDone("Set", "Point")
 
+	# Increase master volume
+	def volume_up_callback(msg):
+		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+		vol = ap.getMasterVolume()
+		ap.setMasterVolume(vol + 0.1)
+		return IsDone("Set", "VolumeUp")
+
+	# Decrease master volume
+	def volume_down_callback(msg):
+		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+		vol = ap.getMasterVolume()
+		ap.setMasterVolume(vol + 0.1)
+		return IsDone("Set", "VolumeDown")
 
 	# Define event to terminate thread on command
 	event = threading.Event()
@@ -158,10 +184,22 @@ def Listen():
 		lambda: CVInfoSubscriber(POINT_TOPIC, point_callback, listen=False),
 		))
 
+	# Volume up thread
+	thread_vol_up = threading.Thread(target=subscriber_listen, args=(
+		lambda: StringSubscriber(VOLUME_UP_TOPIC, volume_up_callback, listen=False),
+		))
+
+	# Volume down thread
+	thread_vol_down = threading.Thread(target=subscriber_listen, args=(
+		lambda: StringSubscriber(VOLUME_DOWN_TOPIC, volume_down_callback, listen=False),
+		))
+
 	# Run threads
 	thread_tts.start()
 	thread_ap.start()
 	thread_hand.start()
+	thread_vol_up.start()
+	thread_vol_down.start()
 
 	# Exit when KeyboardInterrupt
 	try:
@@ -179,7 +217,9 @@ def Listen():
 action_status_dict = {
 	"ALTextToSpeech": False,
 	"ALAudioPlayer": False,
-	"Point": False
+	"Point": False,
+	"VolumeUp": False,
+	"VolumeDown": False
 }
 def IsDone(action, name):
 	
