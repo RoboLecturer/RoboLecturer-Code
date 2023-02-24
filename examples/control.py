@@ -113,8 +113,9 @@ def main():
 	print("\n========= STATE: NoQuestionsLoop =========")
 	# If no_questions_counter reaches threshold, update state,
 	# then trigger joke (NLP) or quiz (Web)
-	threshold = 2
-	if no_questions_counter == threshold:
+	no_questions_threshold = 3
+	if no_questions_counter >= no_questions_threshold:
+		no_questions_counter = 0
 		Info.Send("State", {"NoQuestionsLoop": "CounterReached"})
 		signal = Info.Send("TriggerJokeOrQuiz")
 		if signal == "joke":
