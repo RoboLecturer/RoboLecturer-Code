@@ -30,15 +30,15 @@ def Request(api_name, api_params):
 		filename = soundfile_path.split("/")[-1]
 		pepper_path = PEPPER_AUDIO_PATH + filename
 
-		# Setup SFTP link
-		transport = paramiko.Transport((ROBOT_IP, 22))
-		transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
-		sftp = paramiko.SFTPClient.from_transport(transport)
-
-		# Send file
-		sftp.put(soundfile_path, pepper_path)
-		sftp.close()
-		transport.close()
+		# # Setup SFTP link
+		# transport = paramiko.Transport((ROBOT_IP, 22))
+		# transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
+		# sftp = paramiko.SFTPClient.from_transport(transport)
+        #
+		# # Send file
+		# sftp.put(soundfile_path, pepper_path)
+		# sftp.close()
+		# transport.close()
 
 		# Publish msg to kinematics module to play audio
 		audio_player_publisher.publish(filename)
@@ -74,9 +74,9 @@ def Listen():
 	def audio_player_callback(msg):
 		filename = msg.data
 		rospy.loginfo("Pepper play audio: %s" % filename)
-		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		audio_file = PEPPER_AUDIO_PATH + filename
-		ap.post.playFile(audio_file)
+		# ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+		# audio_file = PEPPER_AUDIO_PATH + filename
+		# ap.post.playFile(audio_file)
 		return IsDone("Set", "ALAudioPlayer")	
 
 	# Callback for pointing at raised hand
@@ -125,7 +125,6 @@ def Listen():
 
 		# tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
 		# posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
-        #
 		# # posture.applyPosture("StandInit", 0.5)
 		# tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
 		# tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)

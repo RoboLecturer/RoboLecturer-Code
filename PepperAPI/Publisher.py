@@ -10,7 +10,7 @@ class Publisher:
 	def __init__(self, name, topic, payload_type):
 		self.name = name
 		self.topic = topic
-		self.publisher = rospy.Publisher(self.topic, payload_type, queue_size=10, latch=True)
+		self.publisher = rospy.Publisher(self.topic, payload_type, queue_size=10)
 		# self.log()
 
 	# Log info about publisher
@@ -82,11 +82,12 @@ class ImagePublisher(Publisher, object):
 
 """publish state info"""
 class StatePublisher(Publisher, object):
-	def __init__(self, topic):
+	def __init__(self, topic, wait=True):
 		super(StatePublisher, self).__init__(
 			"StatePublisher",
 			topic,
 			State)
+		self.wait = wait
 
 	def publish(self, state_dict):
 		msg = State()
@@ -95,6 +96,9 @@ class StatePublisher(Publisher, object):
 		msg.NoiseLevel = state_dict["NoiseLevel"]
 		msg.Attentiveness = state_dict["Attentiveness"]
 		msg.NoQuestionsLoop = state_dict["NoQuestionsLoop"]
+		if self.wait:
+			while self.publisher.get_num_connections() == 0:			
+				pass			
 		self.publisher.publish(msg)
 
 
@@ -129,7 +133,9 @@ trigger_listen_publisher = StringPublisher(TRIGGER_LISTEN_TOPIC)
 point_publisher = CVInfoMsgPublisher(POINT_TOPIC)
 
 ## CONTROL
-state_publisher = StatePublisher(STATE_TOPIC)
+# state_publisher to keep publishing even without active subscribers
+state_publisher = StatePublisher(STATE_TOPIC, wait=False)
+state_update_publisher = StatePublisher(STATE_UPDATE_TOPIC)
 
 ## SHARED
 trigger_joke_or_quiz_publisher = StringPublisher(TRIGGER_JOKE_OR_QUIZ_TOPIC)

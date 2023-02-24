@@ -2,8 +2,7 @@ from PepperAPI import * # import global topic names
 from .Publisher import *
 from .Subscriber import *
 from api.msg import CVInfo, State
-import random
-import rospy
+import random, threading, rospy
 
 # =========================================================
 
@@ -199,9 +198,9 @@ def Request(api_name, api_params={}):
 		state_name = api_params["name"]
 		def callback(msg):
 			state = getattr(msg, state_name)
-			Data.State = state if state else False
-			rospy.loginfo("State: %s" % str(msg))
-		StateSubscriber(STATE_TOPIC, callback)
+			Data.State = state
+			# rospy.loginfo("State: %s" % str(msg))
+		StateSubscriber(STATE_TOPIC, callback, log=False)
 		return Data.State
 
 	print("API does not exist. Please check name again.")
@@ -361,20 +360,30 @@ def Send(api_name, api_params={}):
 	if api_name == "TriggerJokeOrQuiz":
 		"""Randomly choose between sending trigger_quiz to Web or trigger_joke to NLP"""
 		choice = random.choice(["joke","quiz"])
-		trigger_joke_quiz_publisher.publish(choice)
+		if "force" in api_params:
+			choice = api_params["force"]
+		trigger_joke_or_quiz_publisher.publish(choice)
+		trigger_joke_or_quiz_publisher.publish(choice)
 		return choice
 
 	if api_name == "TriggerJokeOrShutup":
 		"""Randomly choose between sending trigger_shutup or trigger_joke to NLP"""
 		choice = random.choice(["joke","shutup"])
-		trigger_joke_shutup_publisher.publish(choice)
+		if "force" in api_params:
+			choice = api_params["force"]
+		trigger_joke_or_shutup_publisher.publish(choice)
+		trigger_joke_or_shutup_publisher.publish(choice)
 		return choice
 
+
+	## ========= SHARED =========
 	if api_name == "State":
 		"""Update state"""
 		global state_dict
 		for k,v in api_params.items():
 			state_dict[k] = v
+			rospy.loginfo("Update state %s=%s" % (k,v))
+		state_update_publisher.publish(state_dict)
 		return True
 
 
@@ -382,15 +391,38 @@ def Send(api_name, api_params={}):
 	return False
 
 
-# Only for Control. Broadcast to all modules every second
-def Broadcast(api_name, rate=1):
-	
-	_rate = rospy.Rate(rate)
+def resetState(name):
+	global state_dict
+	state_dict[name] = ""
 
-	if api_name == "State":
+def resetAllStates():
+	global state_dict
+	for key in state_dict:
+		state_dict[key] = ""
+
+# Only for Control. Broadcast to all modules every second
+def Broadcast(rate=1):
+	
+	def publish():
+		"""Continuously publish state"""
+		_rate = rospy.Rate(rate)
 		while True:
 			global state_dict
 			state_publisher.publish(state_dict)
 			_rate.sleep()
-		
+
+	def subscribe():
+		"""Listen to state change and update accordingly"""		
+		global state_dict
+		def callback(msg):
+			for key in state_dict:
+				state_dict[key] = getattr(msg, key)
+			print("New state: %s" % str(state_dict))
+		StateSubscriber(STATE_UPDATE_TOPIC, callback, listen=0, log=True)
+
+	t1 = threading.Thread(target=publish)
+	t2 = threading.Thread(target=subscribe)
+	t1.start()
+	t2.start()
+
 	return

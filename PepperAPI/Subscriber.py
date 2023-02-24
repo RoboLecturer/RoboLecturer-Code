@@ -5,7 +5,7 @@ from api.msg import CVInfo, State
 
 # Parent subscriber class
 class Subscriber:	
-	def __init__(self, name, topic, payload_type, callback, listen):
+	def __init__(self, name, topic, payload_type, callback, listen, log=True):
 		self.name = name
 		self.topic = topic
 		self.subscriber = None
@@ -18,7 +18,8 @@ class Subscriber:
 				self.subscriber.unregister()
 
 		self.subscriber = rospy.Subscriber(topic, payload_type, finalCallback)
-		self.log()
+		if log:
+			self.log()
 
 		# my implementation of rospy.spin()
 		while self.spin and not rospy.is_shutdown():
@@ -62,10 +63,11 @@ class ImageSubscriber(Subscriber, object):
 		
 """receive state"""
 class StateSubscriber(Subscriber, object):
-	def __init__(self, topic, callback, listen=True):
+	def __init__(self, topic, callback, listen=True, log=False):
 		super(StateSubscriber, self).__init__(
 			"StateSubscriber", 
 			topic, 
 			State,
 			callback, 
-			listen)
+			listen,
+			log)
