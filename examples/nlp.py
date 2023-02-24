@@ -93,6 +93,7 @@ def nlp_main():
 	if state_no_questions_loop == "CounterReached":
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
+			joke = "your mom"
 			Info.Send("Joke", {"text": joke})
 		return
 
