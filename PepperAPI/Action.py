@@ -6,7 +6,7 @@ from .Subscriber import *
 from PepperAPI import *
 import paramiko
 
-def Request(api_name, api_params):
+def Request(api_name, api_params={}):
 
 	# API callbacks
 	if api_name == "ALTextToSpeech":
@@ -30,15 +30,15 @@ def Request(api_name, api_params):
 		filename = soundfile_path.split("/")[-1]
 		pepper_path = PEPPER_AUDIO_PATH + filename
 
-		# # Setup SFTP link
-		# transport = paramiko.Transport((ROBOT_IP, 22))
-		# transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
-		# sftp = paramiko.SFTPClient.from_transport(transport)
-        #
-		# # Send file
-		# sftp.put(soundfile_path, pepper_path)
-		# sftp.close()
-		# transport.close()
+		# Setup SFTP link
+		transport = paramiko.Transport((ROBOT_IP, 22))
+		transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
+		sftp = paramiko.SFTPClient.from_transport(transport)
+
+		# Send file
+		sftp.put(soundfile_path, pepper_path)
+		sftp.close()
+		transport.close()
 
 		# Publish msg to kinematics module to play audio
 		audio_player_publisher.publish(filename)
@@ -74,7 +74,7 @@ def Request(api_name, api_params):
 def Listen():
 
 	# Import NAOqi modules
-	# from naoqi import ALProxy
+	from naoqi import ALProxy
 
 	# Callback for ALTextToSpeech
 	def tts_callback(msg):
@@ -136,26 +136,28 @@ def Listen():
 		rospy.loginfo("Pepper point %s at x=%.2f y=%.2f, z=%.2f" % 
 			(effector, point_x, point_y, point_z))
 
-		# tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
-		# posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
-		# # posture.applyPosture("StandInit", 0.5)
-		# tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
-		# tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
+		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
+		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+		# posture.applyPosture("StandInit", 0.5)
+		tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
+		tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
 
 		return IsDone("Set", "Point")
 
 	# Increase master volume
 	def volume_up_callback(msg):
 		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		vol = ap.getMasterVolume()
-		ap.setMasterVolume(vol + 0.1)
+		vol = ap.getMasterVolume() + 0.1
+		vol = 1 if vol > 1 else vol
+		ap.setMasterVolume(vol)
 		return IsDone("Set", "VolumeUp")
 
 	# Decrease master volume
 	def volume_down_callback(msg):
 		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		vol = ap.getMasterVolume()
-		ap.setMasterVolume(vol + 0.1)
+		vol = ap.getMasterVolume() + 0.1
+		vol = 0 if vol < 0 else vol
+		ap.setMasterVolume(vol)
 		return IsDone("Set", "VolumeDown")
 
 	# Define event to terminate thread on command
@@ -210,6 +212,8 @@ def Listen():
 		thread_tts.join()
 		thread_ap.join()
 		thread_hand.join()
+		thread_vol_up.join()
+		thread_vol_down.join()
 
 	return
 
