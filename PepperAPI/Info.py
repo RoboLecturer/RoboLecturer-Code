@@ -394,11 +394,13 @@ def Send(api_name, api_params={}):
 def resetState(name):
 	global state_dict
 	state_dict[name] = ""
+	print("Reset state:", str(state_dict))
 
 def resetAllStates():
 	global state_dict
 	for key in state_dict:
 		state_dict[key] = ""
+	print("Reset states:", str(state_dict))
 
 # Only for Control. Broadcast to all modules every second
 def Broadcast(rate=1):
