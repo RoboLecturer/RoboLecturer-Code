@@ -16,7 +16,8 @@ def cv_main():
 
 	# ========= STATE: AnyQuestions =========
 	print("\n========= STATE: AnyQuestions =========")
-	# Detect hands
+	# TODO: Detect hands
+
 	# If no hands detected, update state AnyQuestions
 	NO_HANDS_DETECTED = False
 	if NO_HANDS_DETECTED:
@@ -27,9 +28,10 @@ def cv_main():
 		# Update state
 		Info.Send("State", {"AnyQuestions": "HandsRaised"})
 
-		# Send hands info to kinematics
 		hands_info_list, num_hands = generate_random_hands_info()
+		# TODO: First, send total number of hands and send to Kinematics
 		Info.Send("NumHands", {"value": num_hands})
+		# TODO: Then, send info of each hand ony by one
 		for (x,y) in hands_info_list:
 			Info.Send("RaisedHandInfo", {
 				"bounding_box": (x,y,100,120),
@@ -55,7 +57,7 @@ def cv_main():
 
 	# ========= STATE: Attentiveness =========
 	print("\n========= STATE: Attentiveness =========")
-	# Start attentiveness detection and calculate total engagement score
+	# TODO: Start attentiveness detection and calculate total engagement score
 
 	# Update state Attentiveness
 	# If not attentive, update state, then control will trigger joke or quiz and loop restarts
@@ -76,6 +78,7 @@ def cv_main():
 	return	
 
 
+# TODO: This function just generates dummy info and can be deleted
 def generate_random_hands_info():
 	lst = []
 	num_hands = random.randint(2,5)

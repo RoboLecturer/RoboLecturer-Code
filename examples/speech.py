@@ -12,7 +12,9 @@ def speech_main():
 	# When loop has started, wait for script from NLP
 	# Then convert to MP3 and send to Kinematics
 	script = Info.Request("LectureScript")
-	Action.Request("ALAudioPlayer", {"path": "sample.mp3"})
+	# TODO: convert lecture script to audio and save somewhere in your machine
+	path_to_audio = "sample.mp3"
+	Action.Request("ALAudioPlayer", {"path": path_to_audio})
 
 
 	# ========= STATE: AnyQuestions =========
@@ -28,7 +30,7 @@ def speech_main():
 		# wait for signal from kinematics to start listening to mic
 		Info.Request("TriggerListen")
 
-		# Listen to mic and process question STT,
+		# TODO: Listen to mic and process question STT,
 		# then send STT to NLP
 		question = "Why is the sky blue?"
 		Info.Send("Question", {"text": question})
@@ -36,7 +38,8 @@ def speech_main():
 		# Wait for answer from NLP, 
 		# then convert to audio and send to Kinematics
 		answer = Info.Request("Answer")
-		Action.Request("ALAudioPlayer", {"path": "sample.mp3"})
+		# TODO: convert answer to audio and save somewhere in your machine
+		Action.Request("ALAudioPlayer", {"path": path_to_audio})
 
 		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
 
@@ -45,7 +48,7 @@ def speech_main():
 
 	# ========= STATE: NoiseLevel =========
 	print("\n========= STATE: NoiseLevel =========")
-	# Start detecting noise
+	# TODO: Start detecting noise and classify into high or low noise level
 
 	# If high noise level, update state.
 	# Control tells NLP to trigger joke/shutup, you receive text,
@@ -58,7 +61,8 @@ def speech_main():
 			text = Info.Request("Joke")
 		else:
 			text = Info.Request("Shutup")
-		Action.Request("ALAudioPlayer", {"path": "/path/to/text"})
+		# TODO: convert joke/shutup text into audio and save
+		Action.Request("ALAudioPlayer", {"path": path_to_audio})
 
 		# then loop restarts
 		return
@@ -82,7 +86,8 @@ def speech_main():
 		# If trigger_joke, receive joke from NLP, convert to audio and send to play
 		if signal == "joke":
 			joke = Info.Request("Joke")
-			Action.Request("ALAudioPlayer", {"path": "sample.mp3"})
+			# TODO: convert joke/shutup text into audio and save
+			Action.Request("ALAudioPlayer", {"path": path_to_audio})
 		
 		# Restart loop after joke is played or if trigger_quiz
 		return
@@ -101,8 +106,8 @@ def speech_main():
 	if state_no_questions_loop == "CounterReached":
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
-			joke = Info.Request("Joke")
-			Action.Request("ALAudioPlayer", {"path": "/path/to/joke"})
+			# TODO: convert joke/shutup text into audio and save
+			Action.Request("ALAudioPlayer", {"path": path_to_audio})
 		return
 
 	# Else, restart loop

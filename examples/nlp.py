@@ -12,6 +12,7 @@ def nlp_main():
 	# Get slides text from Web, then
 	# generate script then send to Speech
 	slides_text = Info.Request("Slides")
+	# TODO: generate script for current slide based on slide text from Web
 	script_text = "This is the script"
 	Info.Send("LectureScript", {"text": script_text})
 
@@ -29,7 +30,8 @@ def nlp_main():
 		# Wait for student's question from Speech
 		question = Info.Request("Question")
 
-		# Process answer, then send back to Speech
+		# TODO: generate answer from received question
+		# then send back to Speech		
 		answer = "Blue light is scattered the most"
 		Info.Send("Answer", {"text": answer})
 
@@ -49,6 +51,7 @@ def nlp_main():
 	# Then send joke/shutup text to Speech. And the loop restarts
 	if state_noise_level == "High":
 		signal = Info.Request("TriggerJokeOrShutup")
+		# TODO: Generate joke text or shutup text
 		if signal == "joke":
 			joke = "your mom"
 			Info.Send("Joke", {"text": joke})
@@ -73,6 +76,7 @@ def nlp_main():
 		
 		# If trigger_joke, send joke to Speech
 		if signal == "joke":
+			# TODO: generate joke text
 			joke = "your mom"
 			Info.Send("Joke", {"text": joke})
 
@@ -93,6 +97,7 @@ def nlp_main():
 	if state_no_questions_loop == "CounterReached":
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
+			# TODO: generate joke text
 			joke = "your mom"
 			Info.Send("Joke", {"text": joke})
 		return

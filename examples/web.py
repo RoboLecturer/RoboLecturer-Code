@@ -10,8 +10,8 @@ def web_main():
 		return
 	print("\n========= STATE: Start =========")
 
-	# Change slide, then send slides text to NLP
-	slides_text = "These are the slides."
+	# TODO: Change slide, then send slides text to NLP
+	slides_text = "These are the new slides."
 	Info.Send("Slides", {"text": slides_text})
 
 
@@ -51,8 +51,8 @@ def web_main():
 		
 		# If trigger_joke, send joke to Speech
 		if signal == "quiz":
-			# Do trigger quiz, then send take_control signal back to Control
-			time.sleep(3)
+			# TODO: trigger quiz
+			# Send take_control signal back to Control
 			Info.Send("TakeControl")
 
 		# After quiz is triggered, or if trigger_joke, loop restarts
@@ -72,6 +72,8 @@ def web_main():
 	if state_no_questions_loop == "CounterReached":
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "quiz":
+			# TODO: trigger quiz
+			# Send take_control signal back to Control
 			Info.Send("TakeControl")
 		return
 
