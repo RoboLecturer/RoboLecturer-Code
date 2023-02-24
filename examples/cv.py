@@ -1,6 +1,6 @@
 import PepperAPI
 from PepperAPI import Info
-import random
+import random, time
 
 def cv_main():
 
@@ -58,6 +58,7 @@ def cv_main():
 	# ========= STATE: Attentiveness =========
 	print("\n========= STATE: Attentiveness =========")
 	# TODO: Start attentiveness detection and calculate total engagement score
+	time.sleep(1)
 
 	# Update state Attentiveness
 	# If not attentive, update state, then control will trigger joke or quiz and loop restarts
@@ -81,7 +82,7 @@ def cv_main():
 # TODO: This function just generates dummy info and can be deleted
 def generate_random_hands_info():
 	lst = []
-	num_hands = random.randint(2,5)
+	num_hands = 1
 	for i in range(num_hands):
 		x = random.randint(0, 1920-100)
 		y = random.randint(0, 1080-120)
