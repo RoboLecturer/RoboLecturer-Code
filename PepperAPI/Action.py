@@ -87,9 +87,9 @@ def Listen():
 	def audio_player_callback(msg):
 		filename = msg.data
 		rospy.loginfo("Pepper play audio: %s" % filename)
-		# ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		# audio_file = PEPPER_AUDIO_PATH + filename
-		# ap.post.playFile(audio_file)
+		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+		audio_file = PEPPER_AUDIO_PATH + filename
+		ap.playFile(audio_file)
 		return IsDone("Set", "ALAudioPlayer")	
 
 	# Callback for pointing at raised hand
