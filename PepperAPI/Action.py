@@ -185,12 +185,12 @@ def Listen():
 		))
 
 	# Volume up thread
-	thread_vol_up = threading.Thread(target=subscriber_listen, args=(
+	thread_vol_up = threading.Thread(target=subscribe_listen, args=(
 		lambda: StringSubscriber(VOLUME_UP_TOPIC, volume_up_callback, listen=False),
 		))
 
 	# Volume down thread
-	thread_vol_down = threading.Thread(target=subscriber_listen, args=(
+	thread_vol_down = threading.Thread(target=subscribe_listen, args=(
 		lambda: StringSubscriber(VOLUME_DOWN_TOPIC, volume_down_callback, listen=False),
 		))
 
