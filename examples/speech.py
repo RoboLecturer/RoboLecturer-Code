@@ -16,11 +16,11 @@ def speech_main():
 
 
 	# ========= STATE: AnyQuestions =========
+	print("\n========= STATE: AnyQuestions =========")
 	# Wait for state on hands raised or not
 	state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
 	while not state_any_questions:
 		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
-	print("\n========= STATE: AnyQuestions =========")
 
 	# If hands raised, start QnA loop
 	while state_any_questions == "HandsRaised":
@@ -68,12 +68,12 @@ def speech_main():
 
 
 	# ========= STATE: Attentiveness =========
+	print("\n========= STATE: Attentiveness =========")
 	# If low noise level, CV starts attentiveness detection 
 	# Wait for update on state change
 	state_attentiveness = Info.Request("State", {"name": "Attentiveness"})
 	while not state_attentiveness:
 		state_attentiveness = Info.Request("State", {"name": "Attentiveness"})
-	print("\n========= STATE: Attentiveness =========")
 
 	# If inattentive, Control trigger joke or quiz
 	if state_attentiveness == "NotAttentive":
@@ -92,10 +92,10 @@ def speech_main():
 
 	# ========= STATE: NoQuestionsLoop =========
 	# Wait for state update from master to check if no_questions_loop has reached counter threshold
+	print("\n========= STATE: NoQuestionsLoop =========")
 	state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
 	while not state_no_questions_loop:
 		state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
-	print("\n========= STATE: NoQuestionsLoop =========")
 	
 	# If loop counter reached, Control triggers joke or quiz and loop restarts
 	if state_no_questions_loop == "CounterReached":

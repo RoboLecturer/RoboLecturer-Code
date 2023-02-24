@@ -10,10 +10,11 @@ def main():
 	global no_questions_counter
 
 	Info.resetAllStates()
+	time.sleep(0.3) # give time to reset states
 
 	# ========= STATE: Start =========
-	Info.Send("State", {"Start":"1"})
 	print("\n========= STATE: Start =========")
+	Info.Send("State", {"Start":"1"})
 
 	# Wait for Pepper to finish delivering slides
 	Action.IsDone("Reset", "ALAudioPlayer")
@@ -25,13 +26,13 @@ def main():
 
 
 	# ========= STATE: AnyQuestions =========
+	print("\n========= STATE: AnyQuestions =========")
 	Info.resetState("Start")
 
 	# Wait for state update from CV
 	state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
 	while not state_any_questions:
 		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
-	print("\n========= STATE: AnyQuestions =========")
 	
 	# If hands raised
 	if state_any_questions == "HandsRaised":
@@ -63,11 +64,11 @@ def main():
 
 
 	# ========= STATE: NoiseLevel =========
+	print("\n========= STATE: NoiseLevel =========")
 	# Wait for state update from Speech
 	state_noise_level = Info.Request("State", {"name": "NoiseLevel"})
 	while not state_noise_level:
 		state_noise_level = Info.Request("State", {"name": "NoiseLevel"})
-	print("\n========= STATE: NoiseLevel =========")
 
 	# If high noise level, send trigger_joke/shutup to NLP,
 	# then play audio from Speech
@@ -82,11 +83,11 @@ def main():
 
 
 	# ========= STATE: Attentiveness =========
+	print("\n========= STATE: Attentiveness =========")
 	# Wait for state update from CV
 	state_attentiveness = Info.Request("State", {"name": "Attentiveness"})
 	while not state_attentiveness:
 		state_attentiveness = Info.Request("State", {"name": "Attentiveness"})
-	print("\n========= STATE: Attentiveness =========")
 
 	# If inattentive, trigger joke (NLP) or trigger quiz (Web)
 	if state_attentiveness == "NotAttentive":
@@ -112,6 +113,7 @@ def main():
 	print("\n========= STATE: NoQuestionsLoop =========")
 	# If no_questions_counter reaches threshold, update state,
 	# then trigger joke (NLP) or quiz (Web)
+	threshold = 2
 	if no_questions_counter == threshold:
 		Info.Send("State", {"NoQuestionsLoop": "CounterReached"})
 		signal = Info.Send("TriggerJokeOrQuiz")

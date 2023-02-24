@@ -16,19 +16,19 @@ def web_main():
 
 
 	# ========= STATE: AnyQuestions =========
+	print("\n========= STATE: AnyQuestions =========")
 	# Nothing to do here. Just wait for state change to "NoHandsRaised"
 	state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
 	while state_any_questions != "NoHandsRaised":
 		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
-	print("\n========= STATE: AnyQuestions =========")
 
 
 	# ========= STATE: NoiseLevel =========
+	print("\n========= STATE: NoiseLevel =========")
 	# Wait for state update
 	state_noise_level = Info.Request("State", {"name":"NoiseLevel"})
 	while not state_noise_level:
 		state_noise_level = Info.Request("State", {"name":"NoiseLevel"})
-	print("\n========= STATE: NoiseLevel =========")
 
 	# If high noise level, pepper tells joke/shutup, then loop restarts
 	if state_noise_level == "High":
@@ -38,11 +38,11 @@ def web_main():
 
 
 	# ========= STATE: Attentiveness =========
+	print("\n========= STATE: Attentiveness =========")
 	# Wait for state update
 	state_attentiveness = Info.Request("State", {"name":"Attentiveness"})
 	while not state_attentiveness:
 		state_attentiveness = Info.Request("State", {"name":"Attentiveness"})
-	print("\n========= STATE: Attentiveness =========")
 
 	# If not attentive, get signal from Control to trigger joke or quiz
 	# If trigger_quiz, trigger the quiz
@@ -62,11 +62,11 @@ def web_main():
 
 
 	# ========= STATE: NoQuestionsLoop =========
+	print("\n========= STATE: NoQuestionsLoop =========")
 	# Wait for state update from master to check if no_questions_loop has reached counter threshold
 	state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
 	while not state_no_questions_loop:
 		state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
-	print("\n========= STATE: NoQuestionsLoop =========")
 	
 	# If loop counter reached, Control triggers joke or quiz and loop restarts
 	if state_no_questions_loop == "CounterReached":

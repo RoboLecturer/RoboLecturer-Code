@@ -42,11 +42,11 @@ def cv_main():
 
 
 	# ========= STATE: NoiseLevel =========
+	print("\n========= STATE: NoiseLevel =========")
 	# Wait for update on state change
 	state_noise_level = Info.Request("State", {"name": "NoiseLevel"})
 	while not state_noise_level:
 		state_noise_level = Info.Request("State", {"name": "NoiseLevel"})
-	print("\n========= STATE: NoiseLevel =========")
 
 	# If high noise level, robot makes a joke and loop restarts
 	if state_noise_level == "High":
