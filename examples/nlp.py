@@ -1,5 +1,5 @@
 import PepperAPI
-from PepperAPI import Info
+from PepperAPI import Action, Info
 
 def nlp_main():
 
@@ -12,7 +12,7 @@ def nlp_main():
 	# Get slides text from Web, then
 	# generate script then send to Speech
 	slides_text = Info.Request("Slides")
-	# TODO: generate script for current slide based on slide text from Web
+	# TODO: Generate script for current slide based on slide text from Web
 	script_text = "This is the script"
 	Info.Send("LectureScript", {"text": script_text})
 
@@ -30,10 +30,22 @@ def nlp_main():
 		# Wait for student's question from Speech
 		question = Info.Request("Question")
 
-		# TODO: generate answer from received question
-		# then send back to Speech		
-		answer = "Blue light is scattered the most"
-		Info.Send("Answer", {"text": answer})
+		# TODO: Classify question
+		question_type = "related"
+
+		if question_type == "related":
+			# TODO: For lecture-related questions,
+			# generate answer from received question then send to Speech
+			answer = "Blue light is scattered the most"
+			Info.Send("Answer", {"text": answer})
+
+		else:
+			# TODO: For operational questions,
+			# generate response and send to Speech,
+			# then request for the action from Kinematics
+			answer = "Got it, I'll speak louder"
+			Info.Send("Answer", {"text": answer})
+			Action.Request("VolumeUp")
 
 		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
 
