@@ -134,11 +134,11 @@ ___
 - **```Info.Send("State", params)```**: Update state
   - **params** (*Dict*) : 
     - key ```<state_name>```: *String* New state value
-    - key ```print```: *boolean* False if no headers should be printed
+    - (Optional) key ```print```: *boolean* False if no headers should be printed
 
 #### Receive
 - **```Info.Request("State", params)```**: Receive state update
   - **params** (*Dict*) : 
     - key ```name```: *String* Name of state to be queried
-    - key ```print```: *boolean* False if no headers should be printed
+    - (Optional) key ```print```: *boolean* False if no headers should be printed
   - **return** (*String*) : Value of queried state
