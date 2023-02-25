@@ -131,10 +131,14 @@ ___
 #### Send
 - **```Info.Send("TriggerJokeOrQuiz")```**: Send signal ("joke"/"quiz") to NLP & Web module to trigger joke or quiz when loop counter reaches threshold
 - **```Info.Send("TriggerJokeOrShutup")```**: Send signal ("joke"/"quiz") to NLP module to trigger joke/shutup when loop counter reaches threshold
+- **```Info.Send("State", params)```**: Update state
+  - **params** (*Dict*) : 
+    - key ```<state_name>```: *String* <new_state>
+    - key ```print```: *boolean* False if no headers should be printed
 
 #### Receive
 - **```Info.Request("State", params)```**: Receive state update
   - **params** (*Dict*) : 
-    - keys ```<state_name>```: *String* <new_state>
-    - keys ```<print>```: *boolean* False if no headers should be printed
+    - key ```name```: *String* Name of state to be queried
+    - key ```print```: *boolean* False if no headers should be printed
   - **return** (*String*) : Value of queried state
