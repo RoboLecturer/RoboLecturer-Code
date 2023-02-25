@@ -1,7 +1,7 @@
-import rospy, cv2
+import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from api.msg import CVInfo, State
+from api.msg import CVInfo
 
 # Parent subscriber class
 class Subscriber:	

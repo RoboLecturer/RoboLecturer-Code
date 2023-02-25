@@ -1,8 +1,8 @@
 import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from api.msg import CVInfo, State
-from cv_bridge import CvBridge
+from api.msg import CVInfo
+# from cv_bridge import CvBridge
 from PepperAPI import * # import global topic names
 
 # Parent publisher class

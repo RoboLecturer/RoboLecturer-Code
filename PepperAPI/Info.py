@@ -1,7 +1,7 @@
 from PepperAPI import * # import global topic names
 from .Publisher import *
 from .Subscriber import *
-from api.msg import CVInfo, State
+from api.msg import CVInfo
 import random, rospy
 
 # =========================================================
