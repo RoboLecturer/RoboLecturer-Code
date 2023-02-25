@@ -30,7 +30,6 @@ if __name__ == "__main__":
 - In general, the Publishers and Subscribers implemented by the API are blocking
 - Publishers will wait for a subscriber to connect before they publish the msg
 - Subscribers will also wait for data to be received before allowing subsequent code to run
-- An exception is ```Info.Request("State",{"name":XXX})```. Because the states will be continually sent by the Control module, you will see that ```Info.Request("State")``` is often wrapped in a ```while``` loop to continually the state until it is updated
 
 ## APIs
 ### Web
