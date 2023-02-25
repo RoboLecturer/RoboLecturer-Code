@@ -114,8 +114,7 @@ audio_player_publisher = StringPublisher(AUDIO_PLAYER_TOPIC)
 trigger_hand_detection_publisher = StringPublisher(TRIGGER_HAND_DETECTION_TOPIC)
 trigger_listen_publisher = StringPublisher(TRIGGER_LISTEN_TOPIC)
 point_publisher = CVInfoMsgPublisher(POINT_TOPIC)
-volume_up_publisher = StringPublisher(VOLUME_UP_TOPIC)
-volume_down_publisher = StringPublisher(VOLUME_DOWN_TOPIC)
+volume_publisher = StringPublisher(VOLUME_TOPIC)
 
 ## CONTROL
 state_publisher = { 

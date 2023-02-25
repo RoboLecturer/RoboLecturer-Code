@@ -12,7 +12,7 @@ def Request(api_name, api_params={}):
 	if api_name == "ALTextToSpeech":
 		"""Send message to be said by Pepper
 		@param api_params : dict{
-			"value": message to be sent
+			"value": (String) message to be sent
 		}
 		"""
 		msg = api_params["value"]
@@ -22,7 +22,7 @@ def Request(api_name, api_params={}):
 	if api_name == "ALAudioPlayer":
 		"""Request for audio file to be played through Pepper's speakers
 		@param api_params : dict{
-			"path": path of audio file in your machine
+			"path": (String) path of audio file in your machine
 		}
 		"""
 		# Define paths
@@ -54,19 +54,16 @@ def Request(api_name, api_params={}):
 		point_publisher.publish(msg)
 		return True
 
-	if api_name == "VolumeUp":
+	if api_name == "ChangeVolume":
+		"""Request for Pepper to point to raised hand at provided coords
+		@param api_params : dict{
+			"cmd": (String) "up" or "down"
+		}
 		"""
-		Set volume up
-		"""
-		volume_up_publisher.publish("1")
+		val = api_params["cmd"]
+		volume_publisher.publish(val)
 		return True
 
-	if api_name == "VolumeDown":
-		"""
-		Set volume down
-		"""
-		volume_down_publisher.publish("1")
-		return True
 
 # ==============================================================
 # Only to be used by Kinematics module
@@ -145,21 +142,18 @@ def Listen():
 
 		return IsDone("Set", "Point")
 
-	# Increase master volume
-	def volume_up_callback(msg):
-		# ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		# vol = ap.getMasterVolume() + 0.1
-		# vol = 1 if vol > 1 else vol
-		# ap.setMasterVolume(vol)
-		return IsDone("Set", "VolumeUp")
+	# Increase/decrease master volume
+	def volume_callback(msg):
+		# ap = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
+		# vol = ap.getOutputVolume()
+		# if msg.data == "up":
+		# 	vol = 100 if vol > 90 else vol+10
+		# else:
+		# 	vol = 0 if vol < 10 else vol-10
+		# ap.setOutputVolume(vol)
+		rospy.loginfo("Pepper volume " + msg.data)
+		return IsDone("Set", "ChangeVolume")
 
-	# Decrease master volume
-	def volume_down_callback(msg):
-		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		vol = ap.getMasterVolume() + 0.1
-		vol = 0 if vol < 0 else vol
-		ap.setMasterVolume(vol)
-		return IsDone("Set", "VolumeDown")
 
 	# Define event to terminate thread on command
 	event = threading.Event()
@@ -187,22 +181,16 @@ def Listen():
 		lambda: CVInfoSubscriber(POINT_TOPIC, point_callback, listen=0, log=False),
 		))
 
-	# Volume up thread
-	thread_vol_up = threading.Thread(target=subscribe_listen, args=(
-		lambda: StringSubscriber(VOLUME_UP_TOPIC, volume_up_callback, listen=0, log=False),
-		))
-
-	# Volume down thread
-	thread_vol_down = threading.Thread(target=subscribe_listen, args=(
-		lambda: StringSubscriber(VOLUME_DOWN_TOPIC, volume_down_callback, listen=0, log=False),
+	# Change volume command called by NLP
+	thread_volume = threading.Thread(target=subscribe_listen, args=(
+		lambda: StringSubscriber(VOLUME_TOPIC, volume_callback, listen=0, log=False),
 		))
 
 	# Run threads
 	thread_tts.start()
 	thread_ap.start()
 	thread_point.start()
-	thread_vol_up.start()
-	thread_vol_down.start()
+	thread_volume.start()
 
 	# Exit when KeyboardInterrupt
 	try:
@@ -213,8 +201,7 @@ def Listen():
 		thread_tts.join()
 		thread_ap.join()
 		thread_point.join()
-		thread_vol_up.join()
-		thread_vol_down.join()
+		thread_volume.join()
 
 	return
 
@@ -223,8 +210,7 @@ action_status_dict = {
 	"ALTextToSpeech": False,
 	"ALAudioPlayer": False,
 	"Point": False,
-	"VolumeUp": False,
-	"VolumeDown": False
+	"ChangeVolume": False
 }
 def IsDone(action, name):
 	

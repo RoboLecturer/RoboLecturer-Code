@@ -9,28 +9,19 @@ PEPPER_PASSWORD = "BioARTLab123"
 PEPPER_AUDIO_PATH = "/home/nao/audio_files/"
 
 # Topics
-SIMPLE_MSG_TOPIC = "simple_msg"
-IMAGE_TOPIC = "image"
-TTS_TOPIC = "tts"
-SLIDES_TOPIC = "slides"
-NUM_HANDS_TOPIC = "num_hands"
-HAND_TOPIC = "raised_hand"
-FACE_TOPIC = "face"
-LECTURE_SCRIPT_TOPIC = "lecture_script"
-QUESTION_TOPIC = "question"
 ANSWER_TOPIC = "answer"
-JOKE_TOPIC = "joke"
-SHUTUP_TOPIC = "shutup"
 AUDIO_PLAYER_TOPIC = "audio_player"
-STATE_UPDATE_TOPIC = "state_update"
+FACE_TOPIC = "face"
+HAND_TOPIC = "raised_hand"
+IMAGE_TOPIC = "image"
+JOKE_TOPIC = "joke"
+LECTURE_SCRIPT_TOPIC = "lecture_script"
+NUM_HANDS_TOPIC = "num_hands"
 POINT_TOPIC = "point"
-TAKE_CONTROL_TOPIC = "take_control"
-TRIGGER_HAND_DETECTION_TOPIC = "trigger_hand_detection"
-TRIGGER_LISTEN_TOPIC = "trigger_listen"
-TRIGGER_JOKE_OR_QUIZ_TOPIC = "trigger_joke_or_quiz"
-TRIGGER_JOKE_OR_SHUTUP_TOPIC = "trigger_joke_or_shutup"
-VOLUME_UP_TOPIC = "volume_up"
-VOLUME_DOWN_TOPIC = "volume_down"
+QUESTION_TOPIC = "question"
+SHUTUP_TOPIC = "shutup"
+SIMPLE_MSG_TOPIC = "simple_msg"
+SLIDES_TOPIC = "slides"
 STATE_TOPIC = {
 	"Start": "state_start",
 	"AnyQuestions": "state_any_questions",
@@ -38,6 +29,15 @@ STATE_TOPIC = {
 	"Attentiveness": "state_attentiveness",
 	"NoQuestionsLoop": "state_no_questions"
 }
+STATE_UPDATE_TOPIC = "state_update"
+TAKE_CONTROL_TOPIC = "take_control"
+TRIGGER_HAND_DETECTION_TOPIC = "trigger_hand_detection"
+TRIGGER_JOKE_OR_SHUTUP_TOPIC = "trigger_joke_or_shutup"
+TRIGGER_JOKE_OR_QUIZ_TOPIC = "trigger_joke_or_quiz"
+TRIGGER_LISTEN_TOPIC = "trigger_listen"
+TTS_TOPIC = "tts"
+VOLUME_TOPIC = "volume"
+
 
 # Start node
 def init(node):

@@ -27,6 +27,7 @@ def nlp_main():
 
 		# TODO: Classify question
 		question_type = random.choice(["related","operational"])
+		question_type = "operational"
 
 		if question_type == "related":
 			# TODO: For lecture-related questions,
@@ -38,7 +39,7 @@ def nlp_main():
 			# TODO: For operational questions, 
 			# request for the corresponding action,
 			# then generate response and send to Speech
-			Action.Request("VolumeUp")
+			Action.Request("ChangeVolume", {"cmd":"up"})
 			answer = "Got it, I'll speak louder"
 			Info.Send("Answer", {"text": answer})
 
