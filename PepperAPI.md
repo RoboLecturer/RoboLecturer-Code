@@ -133,7 +133,7 @@ ___
 - **```Info.Send("TriggerJokeOrShutup")```**: Send signal ("joke"/"quiz") to NLP module to trigger joke/shutup when loop counter reaches threshold
 - **```Info.Send("State", params)```**: Update state
   - **params** (*Dict*) : 
-    - key ```<state_name>```: *String* <new_state>
+    - key ```<state_name>```: *String* New state value
     - key ```print```: *boolean* False if no headers should be printed
 
 #### Receive
