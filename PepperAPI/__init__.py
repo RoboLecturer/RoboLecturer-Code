@@ -38,7 +38,7 @@ TRIGGER_LISTEN_TOPIC = "trigger_listen"
 TTS_TOPIC = "tts"
 VOLUME_TOPIC = "volume"
 
-
+node_initiated = False
 # Start node
 def init(node):
 	# XMLRPC & TCPROS ports to start from 45100 & 45101
@@ -59,3 +59,4 @@ def init(node):
 	# Initialize the node
 	rospy.init_node(node_name, xmlrpc_port=_xmlrpc, tcpros_port=_tcpros, disable_signals=True)
 	rospy.loginfo("Node initialised: " + node_name)
+	node_initiated = True

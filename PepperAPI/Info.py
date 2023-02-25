@@ -5,9 +5,14 @@ from api.msg import CVInfo
 import random, rospy
 
 # =========================================================
-
 # Get information from other subteams
+
 def Request(api_name, api_params={}):
+	
+	# Check if node initialised
+	if not node_initiated:
+		print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
+		return
 
 	# Data class defined to store data from ROS Subscribers
 	# in return value of Info.Request()
@@ -27,7 +32,7 @@ def Request(api_name, api_params={}):
 		State = ""
 
 
-	# Callbacks for API
+	# API callbacks
 	if api_name == "SimpleMsg":
 		"""Receive string message 
 		@return	string message : String
@@ -202,14 +207,20 @@ def Request(api_name, api_params={}):
 
 
 	print("API does not exist. Please check name again.")
-	return False
+	return
 
 
 # =========================================================
-
 # Send information to other subteams
+
 def Send(api_name, api_params={}):
 
+	# Check if node initialised
+	if not node_initiated:
+		print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
+		return
+
+	# API callbacks
 	if api_name == "SimpleMsg":
 		"""Send simple string message
 		@param	api_params : dict{
@@ -389,13 +400,18 @@ def Send(api_name, api_params={}):
 
 
 	print("API does not exist. Please check name again.")
-	return False
+	return
 
 
 # =========================================================
+# Only to be used by Control module
 
-# Only for Control
 def Listen():
+
+	# Check if node initialised
+	if not node_initiated:
+		print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
+		return
 
 	"""Listen to state change and update accordingly"""		
 	def callback(msg):

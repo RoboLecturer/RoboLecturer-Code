@@ -6,7 +6,15 @@ from .Subscriber import *
 from PepperAPI import *
 import paramiko
 
+# =========================================================
+# Request for actuator action by Pepper robot
+
 def Request(api_name, api_params={}):
+
+	# Check if node initialised
+	if not node_initiated:
+		print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
+		return
 
 	# API callbacks
 	if api_name == "ALTextToSpeech":
@@ -64,18 +72,27 @@ def Request(api_name, api_params={}):
 		volume_publisher.publish(val)
 		return True
 
+	
+	print("API does not exist. Please check name again.")
+	return
+
 
 # ==============================================================
 # Only to be used by Kinematics module
 
 def Listen():
 
+	# Check if node initialised
+	if not node_initiated:
+		print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
+		return
+
 	# Import NAOqi modules
 	# from naoqi import ALProxy
 
 	# Callback for ALTextToSpeech
 	def tts_callback(msg):
-		rospy.loginfo("Pepper say: %s" % msg.data)
+		rospy.loginfo("Pepper ALTextToSpeech: Say %s" % msg.data)
 		tts = ALProxy("ALTextToSpeech", ROBOT_IP, ROBOT_PORT)
 		tts.say(msg.data)
 		return IsDone("Set", "ALTextToSpeech")	
@@ -83,7 +100,7 @@ def Listen():
 	# Callback for ALAudioPlayer
 	def audio_player_callback(msg):
 		filename = msg.data
-		rospy.loginfo("Pepper play audio: %s" % filename)
+		rospy.loginfo("Pepper ALAudioPlayer: Play audio %s" % filename)
 		time.sleep(20)
 		# ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
 		# audio_file = PEPPER_AUDIO_PATH + filename
@@ -131,7 +148,7 @@ def Listen():
 		point_z = Z_UP - Z_DOWN * center_y / frame_height
 
 		# actuate
-		rospy.loginfo("Pepper point %s at x=%.2f y=%.2f, z=%.2f" % 
+		rospy.loginfo("Pepper ALTracker: Point %s at x=%.2f y=%.2f, z=%.2f" % 
 			(effector, point_x, point_y, point_z))
 
 		# tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
@@ -151,7 +168,7 @@ def Listen():
 		# else:
 		# 	vol = 0 if vol < 10 else vol-10
 		# ap.setOutputVolume(vol)
-		rospy.loginfo("Pepper volume " + msg.data)
+		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		return IsDone("Set", "ChangeVolume")
 
 
@@ -206,6 +223,9 @@ def Listen():
 	return
 
 
+# ==============================================================
+# Get status action. IsDone=False means action is still running.
+
 action_status_dict = {
 	"ALTextToSpeech": False,
 	"ALAudioPlayer": False,
@@ -225,4 +245,4 @@ def IsDone(action, name):
 	if action == "Set":
 		action_status_dict[name] = True
 
-	return True
+	return
