@@ -379,8 +379,7 @@ def Send(api_name, api_params={}):
 			(String) state name : (String) new value,
 			"print": False if headers shouldn't be printed
 		"""
-		global state_dict
-		name = list(api_params.keys())[0]
+		name = [k for k in api_params if k != "print"][0]
 		value = api_params[name]
 		msg = "%s=%s" % (name, value)
 		if value and "print" not in api_params:
@@ -399,7 +398,6 @@ def Send(api_name, api_params={}):
 def Listen():
 
 	"""Listen to state change and update accordingly"""		
-	global state_dict
 	def callback(msg):
 		[name, value] = msg.data.split("=")
 		if value:
