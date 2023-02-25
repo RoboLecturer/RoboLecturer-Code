@@ -1,16 +1,14 @@
 import PepperAPI
 from PepperAPI import Action, Info
+import random 
 
 def nlp_main():
 
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
-	if not Info.Request("State",{"name": "Start"}):
-		return
-	print("\n========= STATE: Start =========")
+	Info.Request("State", {"name":"Start"})
 
 	# Get slides text from Web, then
-	# generate script then send to Speech
 	slides_text = Info.Request("Slides")
 	# TODO: Generate script for current slide based on slide text from Web
 	script_text = "This is the script"
@@ -18,20 +16,17 @@ def nlp_main():
 
 
 	# ========= STATE: AnyQuestions =========
-	print("\n========= STATE: AnyQuestions =========")
 	# Wait for state update
-	state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
-	while not state_any_questions:
-		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
+	state = Info.Request("State", {"name":"AnyQuestions"})
 
 	# If hands raised, start QnA loop
-	while state_any_questions == "HandsRaised":
+	while state == "HandsRaised":
 
 		# Wait for student's question from Speech
 		question = Info.Request("Question")
 
 		# TODO: Classify question
-		question_type = "related"
+		question_type = random.choice(["related","operational"])
 
 		if question_type == "related":
 			# TODO: For lecture-related questions,
@@ -40,35 +35,32 @@ def nlp_main():
 			Info.Send("Answer", {"text": answer})
 
 		else:
-			# TODO: For operational questions,
-			# generate response and send to Speech,
-			# then request for the action from Kinematics
+			# TODO: For operational questions, 
+			# request for the corresponding action,
+			# then generate response and send to Speech
+			Action.Request("VolumeUp")
 			answer = "Got it, I'll speak louder"
 			Info.Send("Answer", {"text": answer})
-			Action.Request("VolumeUp")
 
-		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
+		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
 	# When QnA loop ends, proceed
 
 
 	# ========= STATE: NoiseLevel =========
-	print("\n========= STATE: NoiseLevel =========")
 	# Wait for state update
-	state_noise_level = Info.Request("State", {"name":"NoiseLevel"})
-	while not state_noise_level:
-		state_noise_level = Info.Request("State", {"name":"NoiseLevel"})
+	state = Info.Request("State", {"name":"NoiseLevel"})
 
 	# If high noise level, get signal from Control to trigger joke or shutup
 	# Then send joke/shutup text to Speech. And the loop restarts
-	if state_noise_level == "High":
+	if state == "High":
 		signal = Info.Request("TriggerJokeOrShutup")
 		# TODO: Generate joke text or shutup text
 		if signal == "joke":
 			joke = "your mom"
 			Info.Send("Joke", {"text": joke})
 		elif signal == "shutup":
-			shutup = "shut yo mouth"
+			shutup = "pipe down"
 			Info.Send("Shutup", {"text": shutup})
 		return
 
@@ -76,14 +68,11 @@ def nlp_main():
 
 
 	# ========= STATE: Attentiveness =========
-	print("\n========= STATE: Attentiveness =========")
 	# Wait for state update
-	state_attentiveness = Info.Request("State", {"name":"Attentiveness"})
-	while not state_attentiveness:
-		state_attentiveness = Info.Request("State", {"name":"Attentiveness"})
+	state = Info.Request("State", {"name":"Attentiveness"})
 
 	# If not attentive, get signal from Control to trigger joke or quiz
-	if state_attentiveness == "NotAttentive":
+	if state == "NotAttentive":
 		signal = Info.Request("TriggerJokeOrQuiz")
 		
 		# If trigger_joke, send joke to Speech
@@ -99,14 +88,11 @@ def nlp_main():
 
 
 	# ========= STATE: NoQuestionsLoop =========
-	print("\n========= STATE: NoQuestionsLoop =========")
 	# Wait for state update from master to check if no_questions_loop has reached counter threshold
-	state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
-	while not state_no_questions_loop:
-		state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
+	state = Info.Request("State", {"name":"NoQuestionsLoop"})
 	
 	# If loop counter reached, Control triggers joke or quiz and loop restarts
-	if state_no_questions_loop == "CounterReached":
+	if state == "CounterReached":
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
 			# TODO: generate joke text

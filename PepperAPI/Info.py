@@ -2,17 +2,9 @@ from PepperAPI import * # import global topic names
 from .Publisher import *
 from .Subscriber import *
 from api.msg import CVInfo, State
-import random, threading, rospy
+import random, rospy
 
 # =========================================================
-
-state_dict = {
-	"Start": "",
-	"AnyQuestions": "",
-	"NoiseLevel": "",
-	"Attentiveness": "",
-	"NoQuestionsLoop": ""
-}
 
 # Get information from other subteams
 def Request(api_name, api_params={}):
@@ -32,6 +24,7 @@ def Request(api_name, api_params={}):
 		RaisedHandInfo = []
 		TriggerJokeOrQuiz = ""
 		TriggerJokeOrShutup = ""
+		State = ""
 
 
 	# Callbacks for API
@@ -117,6 +110,7 @@ def Request(api_name, api_params={}):
 		StringSubscriber(TRIGGER_JOKE_OR_SHUTUP_TOPIC, callback)
 		return Data.TriggerJokeOrShutup
 
+
 	## ========= SPEECH =========
 	if api_name == "LectureScript":
 		"""Receive script text from NLP"
@@ -193,16 +187,19 @@ def Request(api_name, api_params={}):
 	if api_name == "State":
 		"""Receive state
 		@param	api_params : dict{
-			"name": name of state to be queried
+			"name": (String) name of state to be queried
+			"print": False if headers shouldn't be printed
 		}
 		"""
-		state_name = api_params["name"]
+		name = api_params["name"]
 		def callback(msg):
-			state = getattr(msg, state_name)
-			Data.State = state
-			# rospy.loginfo("State: %s" % str(msg))
-		StateSubscriber(STATE_TOPIC, callback, log=False)
+			Data.State = msg.data
+			if "print" not in api_params:
+				print("\n========= STATE: %s =========" % name)
+			rospy.loginfo("Received: State %s=%s" % (name, Data.State))
+		StringSubscriber(STATE_TOPIC[name], callback, log=False)
 		return Data.State
+
 
 	print("API does not exist. Please check name again.")
 	return False
@@ -377,12 +374,18 @@ def Send(api_name, api_params={}):
 
 	## ========= SHARED =========
 	if api_name == "State":
-		"""Update state"""
+		"""Update state
+		@param	api_params : dict{
+			(String) state name : (String) new value,
+			"print": False if headers shouldn't be printed
+		"""
 		global state_dict
-		for k,v in api_params.items():
-			state_dict[k] = v
-			rospy.loginfo("Update state %s=%s" % (k,v))
-		state_update_publisher.publish(state_dict)
+		name = list(api_params.keys())[0]
+		value = api_params[name]
+		msg = "%s=%s" % (name, value)
+		if value and "print" not in api_params:
+			print("\n========= STATE: %s =========" % name)
+		state_update_publisher.publish(msg)
 		return True
 
 
@@ -392,41 +395,16 @@ def Send(api_name, api_params={}):
 
 # =========================================================
 
-# Only for Control. Reset states
-def resetState(name):
+# Only for Control
+def Listen():
+
+	"""Listen to state change and update accordingly"""		
 	global state_dict
-	state_dict[name] = ""
-	print("Reset state:", str(state_dict))
-
-def resetAllStates():
-	global state_dict
-	for key in state_dict:
-		state_dict[key] = ""
-	print("Reset states:", str(state_dict))
-
-# Only for Control. Broadcast to all modules every second
-def Broadcast(rate=1):
-	
-	def publish():
-		"""Continuously publish state"""
-		_rate = rospy.Rate(rate)
-		while True:
-			global state_dict
-			state_publisher.publish(state_dict)
-			_rate.sleep()
-
-	def subscribe():
-		"""Listen to state change and update accordingly"""		
-		global state_dict
-		def callback(msg):
-			for key in state_dict:
-				state_dict[key] = getattr(msg, key)
-			print("New state: %s" % str(state_dict))
-		StateSubscriber(STATE_UPDATE_TOPIC, callback, listen=0, log=True)
-
-	t1 = threading.Thread(target=publish)
-	t2 = threading.Thread(target=subscribe)
-	t1.start()
-	t2.start()
+	def callback(msg):
+		[name, value] = msg.data.split("=")
+		if value:
+			state_publisher[name].publish(value)
+			rospy.loginfo("Received: Update %s=%s" % (name,value))
+	StringSubscriber(STATE_UPDATE_TOPIC, callback, listen=0)
 
 	return

@@ -1,13 +1,12 @@
 import PepperAPI
 from PepperAPI import Action, Info
+import random
 
 def speech_main():
 
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
-	if not Info.Request("State", {"name":"Start"}):
-		return
-	print("\n========= STATE: Start =========")
+	Info.Request("State", {"name":"Start"})
 
 	# When loop has started, wait for script from NLP
 	# Then convert to MP3 and send to Kinematics
@@ -18,42 +17,37 @@ def speech_main():
 
 
 	# ========= STATE: AnyQuestions =========
-	print("\n========= STATE: AnyQuestions =========")
 	# Wait for state on hands raised or not
-	state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
-	while not state_any_questions:
-		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
+	state = Info.Request("State", {"name":"AnyQuestions"})
 
 	# If hands raised, start QnA loop
-	while state_any_questions == "HandsRaised":
+	while state == "HandsRaised":
 
 		# wait for signal from kinematics to start listening to mic
 		Info.Request("TriggerListen")
 
 		# TODO: Listen to mic and process question STT,
-		# then send STT to NLP
 		question = "Why is the sky blue?"
+		# then send STT to NLP
 		Info.Send("Question", {"text": question})
 
 		# Wait for answer from NLP, 
-		# then convert to audio and send to Kinematics
 		answer = Info.Request("Answer")
 		# TODO: convert answer to audio and save somewhere in your machine
 		Action.Request("ALAudioPlayer", {"path": path_to_audio})
 
-		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
+		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
 	# When QnA loop ends, proceed
 
 
 	# ========= STATE: NoiseLevel =========
-	print("\n========= STATE: NoiseLevel =========")
 	# TODO: Start detecting noise and classify into high or low noise level
+	HIGH_NOISE_LEVEL = random.choice([True, False])
 
 	# If high noise level, update state.
 	# Control tells NLP to trigger joke/shutup, you receive text,
 	# convert to audio and send to Kinematics to play
-	HIGH_NOISE_LEVEL = False
 	if HIGH_NOISE_LEVEL:
 		Info.Send("State", {"NoiseLevel": "High"})
 		signal = Info.Request("TriggerJokeOrShutup")
@@ -61,6 +55,7 @@ def speech_main():
 			text = Info.Request("Joke")
 		else:
 			text = Info.Request("Shutup")
+	
 		# TODO: convert joke/shutup text into audio and save
 		Action.Request("ALAudioPlayer", {"path": path_to_audio})
 
@@ -72,15 +67,12 @@ def speech_main():
 
 
 	# ========= STATE: Attentiveness =========
-	print("\n========= STATE: Attentiveness =========")
 	# If low noise level, CV starts attentiveness detection 
 	# Wait for update on state change
-	state_attentiveness = Info.Request("State", {"name": "Attentiveness"})
-	while not state_attentiveness:
-		state_attentiveness = Info.Request("State", {"name": "Attentiveness"})
-
+	state = Info.Request("State", {"name": "Attentiveness"})
+	
 	# If inattentive, Control trigger joke or quiz
-	if state_attentiveness == "NotAttentive":
+	if state == "NotAttentive":
 		signal = Info.Request("TriggerJokeOrQuiz")
 
 		# If trigger_joke, receive joke from NLP, convert to audio and send to play
@@ -97,15 +89,13 @@ def speech_main():
 
 	# ========= STATE: NoQuestionsLoop =========
 	# Wait for state update from master to check if no_questions_loop has reached counter threshold
-	print("\n========= STATE: NoQuestionsLoop =========")
-	state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
-	while not state_no_questions_loop:
-		state_no_questions_loop = Info.Request("State", {"name":"NoQuestionsLoop"})
+	state = Info.Request("State", {"name":"NoQuestionsLoop"})
 	
 	# If loop counter reached, Control triggers joke or quiz and loop restarts
-	if state_no_questions_loop == "CounterReached":
+	if state == "CounterReached":
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
+			joke = Info.Request("Joke")
 			# TODO: convert joke/shutup text into audio and save
 			Action.Request("ALAudioPlayer", {"path": path_to_audio})
 		return

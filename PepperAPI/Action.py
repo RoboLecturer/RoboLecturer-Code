@@ -30,15 +30,15 @@ def Request(api_name, api_params={}):
 		filename = soundfile_path.split("/")[-1]
 		pepper_path = PEPPER_AUDIO_PATH + filename
 
-		# Setup SFTP link
-		transport = paramiko.Transport((ROBOT_IP, 22))
-		transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
-		sftp = paramiko.SFTPClient.from_transport(transport)
-
-		# Send file
-		sftp.put(soundfile_path, pepper_path)
-		sftp.close()
-		transport.close()
+		# # Setup SFTP link
+		# transport = paramiko.Transport((ROBOT_IP, 22))
+		# transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
+		# sftp = paramiko.SFTPClient.from_transport(transport)
+        #
+		# # Send file
+		# sftp.put(soundfile_path, pepper_path)
+		# sftp.close()
+		# transport.close()
 
 		# Publish msg to kinematics module to play audio
 		audio_player_publisher.publish(filename)
@@ -74,7 +74,7 @@ def Request(api_name, api_params={}):
 def Listen():
 
 	# Import NAOqi modules
-	from naoqi import ALProxy
+	# from naoqi import ALProxy
 
 	# Callback for ALTextToSpeech
 	def tts_callback(msg):
@@ -87,9 +87,10 @@ def Listen():
 	def audio_player_callback(msg):
 		filename = msg.data
 		rospy.loginfo("Pepper play audio: %s" % filename)
-		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		audio_file = PEPPER_AUDIO_PATH + filename
-		ap.playFile(audio_file)
+		time.sleep(20)
+		# ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+		# audio_file = PEPPER_AUDIO_PATH + filename
+		# ap.playFile(audio_file)
 		return IsDone("Set", "ALAudioPlayer")	
 
 	# Callback for pointing at raised hand
@@ -136,20 +137,20 @@ def Listen():
 		rospy.loginfo("Pepper point %s at x=%.2f y=%.2f, z=%.2f" % 
 			(effector, point_x, point_y, point_z))
 
-		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
-		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
-		# posture.applyPosture("StandInit", 0.5)
-		tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
-		tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
+		# tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
+		# posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+		# # posture.applyPosture("StandInit", 0.5)
+		# tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
+		# tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
 
 		return IsDone("Set", "Point")
 
 	# Increase master volume
 	def volume_up_callback(msg):
-		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		vol = ap.getMasterVolume() + 0.1
-		vol = 1 if vol > 1 else vol
-		ap.setMasterVolume(vol)
+		# ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+		# vol = ap.getMasterVolume() + 0.1
+		# vol = 1 if vol > 1 else vol
+		# ap.setMasterVolume(vol)
 		return IsDone("Set", "VolumeUp")
 
 	# Decrease master volume
@@ -173,33 +174,33 @@ def Listen():
 
 	# General TTS to be used by any module
 	thread_tts = threading.Thread(target=subscribe_listen, args=(
-		lambda: StringSubscriber(TTS_TOPIC, tts_callback, listen=False),
+		lambda: StringSubscriber(TTS_TOPIC, tts_callback, listen=0, log=False),
 		))
 
 	# ALAudioPlayer used by speech module
 	thread_ap = threading.Thread(target=subscribe_listen, args=(
-		lambda: StringSubscriber(AUDIO_PLAYER_TOPIC, audio_player_callback, listen=False),
+		lambda: StringSubscriber(AUDIO_PLAYER_TOPIC, audio_player_callback, listen=0, log=False),
 		))
 
 	# Hands info sent by CV module
-	thread_hand = threading.Thread(target=subscribe_listen, args=(
-		lambda: CVInfoSubscriber(POINT_TOPIC, point_callback, listen=False),
+	thread_point = threading.Thread(target=subscribe_listen, args=(
+		lambda: CVInfoSubscriber(POINT_TOPIC, point_callback, listen=0, log=False),
 		))
 
 	# Volume up thread
 	thread_vol_up = threading.Thread(target=subscribe_listen, args=(
-		lambda: StringSubscriber(VOLUME_UP_TOPIC, volume_up_callback, listen=False),
+		lambda: StringSubscriber(VOLUME_UP_TOPIC, volume_up_callback, listen=0, log=False),
 		))
 
 	# Volume down thread
 	thread_vol_down = threading.Thread(target=subscribe_listen, args=(
-		lambda: StringSubscriber(VOLUME_DOWN_TOPIC, volume_down_callback, listen=False),
+		lambda: StringSubscriber(VOLUME_DOWN_TOPIC, volume_down_callback, listen=0, log=False),
 		))
 
 	# Run threads
 	thread_tts.start()
 	thread_ap.start()
-	thread_hand.start()
+	thread_point.start()
 	thread_vol_up.start()
 	thread_vol_down.start()
 
@@ -211,7 +212,7 @@ def Listen():
 		event.clear()
 		thread_tts.join()
 		thread_ap.join()
-		thread_hand.join()
+		thread_point.join()
 		thread_vol_up.join()
 		thread_vol_down.join()
 

@@ -22,7 +22,6 @@ ANSWER_TOPIC = "answer"
 JOKE_TOPIC = "joke"
 SHUTUP_TOPIC = "shutup"
 AUDIO_PLAYER_TOPIC = "audio_player"
-STATE_TOPIC = "state"
 STATE_UPDATE_TOPIC = "state_update"
 POINT_TOPIC = "point"
 TAKE_CONTROL_TOPIC = "take_control"
@@ -32,6 +31,13 @@ TRIGGER_JOKE_OR_QUIZ_TOPIC = "trigger_joke_or_quiz"
 TRIGGER_JOKE_OR_SHUTUP_TOPIC = "trigger_joke_or_shutup"
 VOLUME_UP_TOPIC = "volume_up"
 VOLUME_DOWN_TOPIC = "volume_down"
+STATE_TOPIC = {
+	"Start": "state_start",
+	"AnyQuestions": "state_any_questions",
+	"NoiseLevel": "state_noise_level",
+	"Attentiveness": "state_attentiveness",
+	"NoQuestionsLoop": "state_no_questions"
+}
 
 # Start node
 def init(node):

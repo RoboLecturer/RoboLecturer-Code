@@ -33,41 +33,33 @@ class Subscriber:
 # Child subscriber classes
 """receive string"""
 class StringSubscriber(Subscriber, object):
-	def __init__(self, topic, callback, listen=True):
+	def __init__(self, topic, callback, listen=1, log=True):
 		super(StringSubscriber, self).__init__(
 			"StringSubscriber", 
 			topic, 
 			String, 
 			callback, 
-			listen)
+			listen,
+			log)
 
 """receive feature info about raised hand or detected face"""
 class CVInfoSubscriber(Subscriber, object):
-	def __init__(self, topic, callback, listen=True):
+	def __init__(self, topic, callback, listen=1, log=True):
 		super(CVInfoSubscriber, self).__init__(
 			"CVInfoSubscriber", 
 			topic, 
 			CVInfo,
 			callback, 
-			listen)
+			listen,
+			log)
 
 """receive image"""
 class ImageSubscriber(Subscriber, object):
-	def __init__(self, topic, callback, listen=True):
+	def __init__(self, topic, callback, listen=1, log=True):
 		super(ImageSubscriber, self).__init__(
 			"ImageSubscriber", 
 			topic, 
 			Image,
 			callback, 
-			listen)
-		
-"""receive state"""
-class StateSubscriber(Subscriber, object):
-	def __init__(self, topic, callback, listen=True, log=False):
-		super(StateSubscriber, self).__init__(
-			"StateSubscriber", 
-			topic, 
-			State,
-			callback, 
 			listen,
-			log)
+			log=True)

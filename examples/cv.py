@@ -1,26 +1,23 @@
 import PepperAPI
 from PepperAPI import Info
-import random, time
+import random
 
 def cv_main():
 
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
-	if not Info.Request("State", {"name":"Start"}):
-		return
-	print("\n========= STATE: Start =========")
+	Info.Request("State", {"name":"Start"})
 
 	# Wait for signal from Kinematics to start hand detection
 	Info.Request("TriggerHandDetection")
 
 
 	# ========= STATE: AnyQuestions =========
-	print("\n========= STATE: AnyQuestions =========")
-	# TODO: Detect hands
+	# TODO: Start hand detection
+	hands_info_list, num_hands = generate_random_hands_info()
 
-	# If no hands detected, update state AnyQuestions
-	NO_HANDS_DETECTED = False
-	if NO_HANDS_DETECTED:
+	# If no hands detected, update state and continue
+	if num_hands == 0:
 		Info.Send("State", {"AnyQuestions": "NoHandsRaised"})
 
 	# Else if hands detected
@@ -28,10 +25,10 @@ def cv_main():
 		# Update state
 		Info.Send("State", {"AnyQuestions": "HandsRaised"})
 
-		hands_info_list, num_hands = generate_random_hands_info()
-		# TODO: First, send total number of hands and send to Kinematics
+		# First, send total number of hands to Kinematics
 		Info.Send("NumHands", {"value": num_hands})
-		# TODO: Then, send info of each hand ony by one
+
+		# Then, send info of each hand ony by one
 		for (x,y) in hands_info_list:
 			Info.Send("RaisedHandInfo", {
 				"bounding_box": (x,y,100,120),
@@ -39,32 +36,26 @@ def cv_main():
 				"confidence_score": -1.0 # send float, if no there'll be an error
 			})
 
-	# Continue when no hands detected or QnA loop ended
-	# (In which case, Kinematics module will update state AnyQuestions to "NoHandsRaised" once all questions have been answered)
+		# Wait for end of QnA loop. State updated by Kinematics
+		while Info.Request("State", {"name":"AnyQuestions", "print":False}) != "NoHandsRaised":
+			pass
 
 
 	# ========= STATE: NoiseLevel =========
-	print("\n========= STATE: NoiseLevel =========")
 	# Wait for update on state change
-	state_noise_level = Info.Request("State", {"name": "NoiseLevel"})
-	while not state_noise_level:
-		state_noise_level = Info.Request("State", {"name": "NoiseLevel"})
+	state = Info.Request("State", {"name": "NoiseLevel"})
 
 	# If high noise level, robot makes a joke and loop restarts
-	if state_noise_level == "High":
+	if state == "High":
 		return
 
 
 	# ========= STATE: Attentiveness =========
-	print("\n========= STATE: Attentiveness =========")
-	# TODO: Start attentiveness detection and calculate total engagement score
-	time.sleep(1)
+	# TODO: Start attentiveness detection and classify into attentive or inattentive
+	CLASS_IS_ATTENTIVE = random.choice([True, False])
 
-	# Update state Attentiveness
-	# If not attentive, update state, then control will trigger joke or quiz and loop restarts
-	total_engagement_score = .8
-	threshold = .5
-	if total_engagement_score < threshold:
+	# If not attentive, update state. Loop restarts after control triggers joke/quiz
+	if not CLASS_IS_ATTENTIVE:
 		Info.Send("State", {"Attentiveness": "NotAttentive"})
 		return
 
@@ -74,15 +65,16 @@ def cv_main():
 
 
 	# ========= STATE: NoQuestionsLoop =========
-	print("\n========= STATE: NoQuestionsLoop =========")
-	# nothing to be done
+	# Nothing to be done. Just wait for state change
+	Info.Request("State", {"name": "NoQuestionsLoop"})
+
 	return	
 
 
 # TODO: This function just generates dummy info and can be deleted
 def generate_random_hands_info():
 	lst = []
-	num_hands = 1
+	num_hands = random.randint(0,3)
 	for i in range(num_hands):
 		x = random.randint(0, 1920-100)
 		y = random.randint(0, 1080-120)

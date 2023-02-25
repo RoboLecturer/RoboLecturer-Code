@@ -1,19 +1,18 @@
 import PepperAPI
 from PepperAPI import Action, Info
-import threading, time
+import threading
 
-# Counter for number of loops with no questions
+# Counter and threshold for number of loops with no questions
 no_questions_counter = 0
+no_questions_threshold = 3
 
 def main():
 
-	global no_questions_counter
+	global no_questions_counter, no_questions_threshold
 
-	Info.resetAllStates()
-	time.sleep(0.3) # give time to reset states
+	resetAllStates()
 
 	# ========= STATE: Start =========
-	print("\n========= STATE: Start =========")
 	Info.Send("State", {"Start":"1"})
 
 	# Wait for Pepper to finish delivering slides
@@ -26,16 +25,17 @@ def main():
 
 
 	# ========= STATE: AnyQuestions =========
-	print("\n========= STATE: AnyQuestions =========")
-	Info.resetState("Start")
+	resetState("Start")
 
 	# Wait for state update from CV
-	state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
-	while not state_any_questions:
-		state_any_questions = Info.Request("State", {"name":"AnyQuestions"})
+	state = Info.Request("State", {"name":"AnyQuestions"})
 	
-	# If hands raised
-	if state_any_questions == "HandsRaised":
+	# If no raised hands detected, increment no_questions_counter
+	if state == "NoHandsRaised":
+		no_questions_counter += 1
+
+	# Else if hands raised
+	else:
 
 		# Store hands info in list
 		hands_info_list = Info.Request("RaisedHandInfo")
@@ -50,29 +50,28 @@ def main():
 				pass
 			Info.Send("TriggerListen")
 
-			# When it's the last hand, update the state 
-			if i == (len(hands_info_list) - 1):
-				Info.Send("State", {"AnyQuestions": "NoHandsRaised"})
-
 			# Wait for answer to be finished playing
 			Action.IsDone("Reset", "ALAudioPlayer")
 			while not Action.IsDone("Get", "ALAudioPlayer"):
 				pass
+
+			# When it's the last hand, update the state 
+			if i == (len(hands_info_list) - 1):
+				Info.Send("State", {"AnyQuestions":"NoHandsRaised", "print":False})
+			else:
+				Info.Send("State", {"AnyQuestions":"HandsRaised", "print":False})
 
 
 	# If no hands detected, or When QnA loop ends, proceed
 
 
 	# ========= STATE: NoiseLevel =========
-	print("\n========= STATE: NoiseLevel =========")
 	# Wait for state update from Speech
-	state_noise_level = Info.Request("State", {"name": "NoiseLevel"})
-	while not state_noise_level:
-		state_noise_level = Info.Request("State", {"name": "NoiseLevel"})
+	state = Info.Request("State", {"name": "NoiseLevel"})
 
 	# If high noise level, send trigger_joke/shutup to NLP,
 	# then play audio from Speech
-	if state_noise_level == "High":
+	if state == "High":
 		Info.Send("TriggerJokeOrShutup")
 		Action.IsDone("Reset", "ALAudioPlayer")
 		while not Action.IsDone("Get", "ALAudioPlayer"):
@@ -83,14 +82,11 @@ def main():
 
 
 	# ========= STATE: Attentiveness =========
-	print("\n========= STATE: Attentiveness =========")
 	# Wait for state update from CV
-	state_attentiveness = Info.Request("State", {"name": "Attentiveness"})
-	while not state_attentiveness:
-		state_attentiveness = Info.Request("State", {"name": "Attentiveness"})
+	state = Info.Request("State", {"name": "Attentiveness"})
 
 	# If inattentive, trigger joke (NLP) or trigger quiz (Web)
-	if state_attentiveness == "NotAttentive":
+	if state == "NotAttentive":
 		signal = Info.Send("TriggerJokeOrQuiz")
 
 		# If trigger_joke, play audio from Speech
@@ -110,10 +106,8 @@ def main():
 
 
 	# ========= STATE: NoQuestionsLoop =========
-	print("\n========= STATE: NoQuestionsLoop =========")
 	# If no_questions_counter reaches threshold, update state,
 	# then trigger joke (NLP) or quiz (Web)
-	no_questions_threshold = 3
 	if no_questions_counter >= no_questions_threshold:
 		no_questions_counter = 0
 		Info.Send("State", {"NoQuestionsLoop": "CounterReached"})
@@ -128,11 +122,14 @@ def main():
 
 	else:
 		Info.Send("State", {"NoQuestionsLoop": "Continue"})
-		no_questions_counter += 1
 
 	# Restart loop
 	return
 
+
+# =================================================
+
+# Helper functions for resetting states
 
 def resetState(name):
 	Info.Send("State", {name: ""})
@@ -147,7 +144,7 @@ def resetAllStates():
 if __name__ == "__main__":
 	PepperAPI.init("test")
 	t1 = threading.Thread(target=lambda: Action.Listen())
-	t2 = threading.Thread(target=lambda: Info.Broadcast())
+	t2 = threading.Thread(target=lambda: Info.Listen())
 	t1.start()
 	t2.start()
 	while True:

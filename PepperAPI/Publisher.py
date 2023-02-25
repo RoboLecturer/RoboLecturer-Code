@@ -7,10 +7,11 @@ from PepperAPI import * # import global topic names
 
 # Parent publisher class
 class Publisher:
-	def __init__(self, name, topic, payload_type):
+	def __init__(self, name, topic, payload_type, num_subscribers=1):
 		self.name = name
 		self.topic = topic
 		self.publisher = rospy.Publisher(self.topic, payload_type, queue_size=10)
+		self.num_subscribers = num_subscribers
 		# self.log()
 
 	# Log info about publisher
@@ -24,12 +25,12 @@ class StringPublisher(Publisher, object):
 		super(StringPublisher, self).__init__(
 			"StringPublisher",
 			topic, 
-			String)
-		self.num_subscribers = num_subscribers
+			String,
+			num_subscribers)
 
 	def publish(self, msg):
 		msg = str(msg)
-		while self.publisher.get_num_connections() != self.num_subscribers:
+		while self.publisher.get_num_connections() < self.num_subscribers:
 			pass			
 		self.publisher.publish(msg)
 		rospy.loginfo("[%s] %s: %s" % (self.name, self.topic, msg))
@@ -48,7 +49,7 @@ class CVInfoPublisher(Publisher, object):
 		msg.frame_width = frame_res[0]
 		msg.frame_height = frame_res[1]
 		msg.score = confidence_score
-		while self.publisher.get_num_connections() == 0:
+		while self.publisher.get_num_connections() < self.num_subscribers:
 			pass			
 		self.publisher.publish(msg)
 		rospy.loginfo("[%s] %s: Published hand info (%.0f, %.0f)" % (self.name, self.topic, msg.x, msg.y))
@@ -62,6 +63,8 @@ class CVInfoMsgPublisher(Publisher, object):
 			CVInfo)
 
 	def publish(self, msg):
+		while self.publisher.get_num_connections() < self.num_subscribers:
+			pass			
 		self.publisher.publish(msg)
 		rospy.loginfo("[%s] %s: Published hand info" % (self.name, self.topic))
 
@@ -76,31 +79,10 @@ class ImagePublisher(Publisher, object):
 
 	def publish(self, image):
 		br = CvBridge()
-		while self.publisher.get_num_connections() == 0:
+		while self.publisher.get_num_connections() < self.num_subscribers:
 			pass			
 		self.publisher.publish(br.cv2_to_imgmsg(image))
 		rospy.loginfo("[%s] %s: Published image" % (self.name, self.topic))
-
-"""publish state info"""
-class StatePublisher(Publisher, object):
-	def __init__(self, topic, wait=True):
-		super(StatePublisher, self).__init__(
-			"StatePublisher",
-			topic,
-			State)
-		self.wait = wait
-
-	def publish(self, state_dict):
-		msg = State()
-		msg.Start = state_dict["Start"]
-		msg.AnyQuestions = state_dict["AnyQuestions"]
-		msg.NoiseLevel = state_dict["NoiseLevel"]
-		msg.Attentiveness = state_dict["Attentiveness"]
-		msg.NoQuestionsLoop = state_dict["NoQuestionsLoop"]
-		if self.wait:
-			while self.publisher.get_num_connections() == 0:			
-				pass			
-		self.publisher.publish(msg)
 
 
 # ==============================================================
@@ -108,10 +90,6 @@ class StatePublisher(Publisher, object):
 simple_msg_publisher = StringPublisher(SIMPLE_MSG_TOPIC)
 image_publisher = ImagePublisher(IMAGE_TOPIC)
 tts_publisher = StringPublisher(TTS_TOPIC)
-
-# VOLUME UP/DOWN
-volume_up_publisher = StringPublisher(VOLUME_UP_TOPIC)
-volume_down_publisher = StringPublisher(VOLUME_DOWN_TOPIC)
 
 ## WEB
 slides_publisher = StringPublisher(SLIDES_TOPIC)
@@ -136,11 +114,15 @@ audio_player_publisher = StringPublisher(AUDIO_PLAYER_TOPIC)
 trigger_hand_detection_publisher = StringPublisher(TRIGGER_HAND_DETECTION_TOPIC)
 trigger_listen_publisher = StringPublisher(TRIGGER_LISTEN_TOPIC)
 point_publisher = CVInfoMsgPublisher(POINT_TOPIC)
+volume_up_publisher = StringPublisher(VOLUME_UP_TOPIC)
+volume_down_publisher = StringPublisher(VOLUME_DOWN_TOPIC)
 
 ## CONTROL
-# state_publisher to keep publishing even without active subscribers
-state_publisher = StatePublisher(STATE_TOPIC, wait=False)
-state_update_publisher = StatePublisher(STATE_UPDATE_TOPIC)
+state_publisher = { 
+	state: StringPublisher(STATE_TOPIC[state], num_subscribers=4)
+	for state in STATE_TOPIC 
+}
+state_update_publisher = StringPublisher(STATE_UPDATE_TOPIC)
 
 ## SHARED
 trigger_joke_or_shutup_publisher = StringPublisher(TRIGGER_JOKE_OR_SHUTUP_TOPIC, num_subscribers=2)
