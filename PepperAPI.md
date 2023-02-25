@@ -42,26 +42,18 @@ if __name__ == "__main__":
   
 #### Receive
 - **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal (*String*) "joke" or "quiz". If signal received is "quiz", trigger quiz
-- **```Info.Request("ChangeSlide")```**: Receive signal ("1") to change slide
 
 ___
 ### CV
 #### Send
+- **```Info.Send("NumHands", {"value": numberOfHands})```**: Send number of hands to Kinematics before publishing hand info
+  - **params** (*Dict*) : Number of hands to be provided as *Int* to key ```value```
+  - 
 - **```Info.Send("RaisedHandInfo", params)```**: Send information about raised hand to Kinematics module 
   - **params** (*Dict*) : 
     - key ```bounding_box```: *Float* (x,y,w,h)
     - key ```frame_res```: *Int* (width, height) of frame
     - key ```confidence_score```: *Float* confidence score
-
-- **```Info.Send("FaceInfo", params)```**: Send information about detected face to Kinematics module 
-  - **params** (*Dict*) : 
-    - key ```bounding_box```: *Float* (x,y,w,h)
-    - key ```frame_res```: *Int* (width, height) of frame
-    - key ```engagement_score```: *Float* engagement score
-    - key ```number```: *Int* total number of detected faces
-
-- **```Info.Send("NumHands", {"value": numberOfHands})```**: Send number of hands to Kinematics before publishing hand info
-  - **params** (*Dict*) : Number of hands to be provided as *Int* to key ```value```
 
 - **```Info.Send("State", {"AnyQuestion":"HandsRaised"/"NoHandsRaised"})```**: Update state ```AnyQuestions```
   - **params** (*Dict*) : New state "HandsRaised" or "NoHandsRaised" to be provided as *String* to key ```AnyQuestions```
@@ -83,6 +75,9 @@ ___
 
 - **```Info.Send("Joke", {"text": myText})```**: Send joke text to Speech module
   - **params** (*Dict*) : Joke text to be provided as *String* to key ```text```
+
+- **```Action.Request("ChangeVolume", {"cmd": "up"/"down"})```**: Request for volume to be increased/decreased
+  - **params** (*Dict*) : Desired action "up"/"down" to be provided as *String* to key ```cmd```
   
 #### Receive
 - **```Info.Request("Question")```**: Receive speech-to-text of detected question from Speech module
@@ -124,24 +119,22 @@ ___
 #### Send
 - **```Info.Send("TriggerHandDetection")```**: Send signal ("1") to CV module to start detecting for raised hands after Pepper has finished the script for the slide
 - **```Info.Send("TriggerListen")```**: Send signal ("1") to Speech module to start listening to mic input after Pepper has pointed at the student
-- **```Info.Send("ChangeSlide")```**: Send signal ("1") to Web module to change slide after Pepper has finished telling the joke
 
 #### Receive
 - **```Info.Request("RaisedHandInfo")```**
-  - **return** (*Dict*) : 
-    - key ```bounding_box```: *Float* (x,y,w,h)
-    - key ```frame_res```: *Int* (width, height) of frame
-    - key ```confidence_score```: *Float* confidence score
+  - **return** (*CVInfo msg*) Raised hand info wrapped in ROS msg
 
 - **```Info.Request("TakeControl")```**: Receive signal ("1") to indicate that quiz has finished
 
 ___
 ### Control
 #### Send
-- **```Info.Send("TriggerJokeOrQuiz")```**: Send signal ("1") to Web module to trigger quiz when loop counter reaches threshold
-- **```Info.Send("TriggerJokeOrShutup")```**: Send signal ("1") to NLP module to trigger joke when loop counter reaches threshold
+- **```Info.Send("TriggerJokeOrQuiz")```**: Send signal ("joke"/"quiz") to NLP & Web module to trigger joke or quiz when loop counter reaches threshold
+- **```Info.Send("TriggerJokeOrShutup")```**: Send signal ("joke"/"quiz") to NLP module to trigger joke/shutup when loop counter reaches threshold
 
 #### Receive
 - **```Info.Request("State", params)```**: Receive state update
-  - **return** (*Dict*) : 
+  - **params** (*Dict*) : 
     - keys ```<state_name>```: *String* <new_state>
+    - keys ```<print>```: *boolean* False if no headers should be printed
+  - **return** (*String*) : Value of queried state
