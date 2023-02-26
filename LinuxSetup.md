@@ -100,21 +100,9 @@ newgrp docker
 ```
 export PATH="$PATH:$HOME/.local/bin
 ```
-3. Download the image [here](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh), extract the **ros-dev.tar** image from the gzip file, load it, then run in a container.
+3. Follow step 2 onwards for the [Docker for Mac section](#2-docker-for-macos). But for step 3, replace the ```-p 45100-45200:45100-45200``` argument with ```--net=host```, i.e.,
 ```
-cd /mnt/c/Users/<YOURUSERNAME>/Downloads/
-tar -xzvf ros-dev.tar.gz
-docker load -i ros-dev.tar
-docker run --name=<container-name> --net=host -it ros-dev
-```
-The above command is only for the first run. For subsequent runs, the created container can be accessed with
-```
-docker start <container-name>         # just run once
-docker exec -it <container-name> bash # run for each terminal you open
-```
-4. If you want to install more packages, update the container
-```
-apt-get -y update
+docker run --name=<container_name> --net=host --add-host="host.docker.internal:host-gateway" -it ros-dev
 ```
 
 **Useful commands**
