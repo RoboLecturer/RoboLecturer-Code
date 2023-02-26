@@ -5,11 +5,12 @@ import multer from 'multer'
 import path from 'path'
 import { getQuiz } from '../controller/quizController.js';
 import { insertUser, getUsers } from '../database/database.js';
+import { addResult, resetResults, uploadedFileNames } from '../controller/dbController.js';
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         if(file.fieldname === 'pdf'){
-          cb(null, 'uploadedPDFs/');
+          cb(null, '../pepperweb/public/uploadedPDFs');
 
         }else if (file.fieldname === 'quiz'){
           cb(null, 'uploadedQuiz/');
@@ -24,33 +25,35 @@ const storage = multer.diskStorage({
     }
 });
 
-// const storageQuiz = multer.diskStorage({
-//   destination: function(req, file, cb) {
-//       cb(null, 'uploadedQuiz/');
-//   },
-//   filename: function(req, file, cb) {
-//       cb(null, file.originalname);
-//   }
-// });
+
+// TODO: call parsePDF once uploadPDF is done
 
 
 var upload = multer({ storage: storage })
-// var quizLoc = multer({ storage: storageQuiz })
-
-router.post('/pdf', parsePDF);
-// field name "pdf", example html implementation:
-{/* <form action="/upload_pdf" enctype="multipart/form-data" method="post">
-  <div class="form-group">
-    <input type="file" class="form-control-file" name="pdf">
-    <input type="text" class="form-control" placeholder="Number of speakers" name="nspeakers">
-    <input type="submit" value="Get me the stats!" class="btn btn-default">
-  </div>
-</form> */}
 const uploadParams = upload.fields([{ name: 'pdf', maxCount: 1 }, { name: 'quiz', maxCount: 1 }])
+// upload pdf and quiz to backend
 router.post("/upload_pdf",uploadParams,uploadPDF);
 
+
+// process the pdf (should be called after upload pdf)
+router.post('/pdf', parsePDF);
+// use filename to get quiz JSON info
 router.get('/quiz',getQuiz)
+
+// list the file names of uploaded pdfs
+router.get('/uploadedFileNames',uploadedFileNames)
+
+
+// reset the Results table when starting a new quiz
+router.post('/resetResults', resetResults)
+// insert a new Student into the DB 
 router.post('/insertUser', insertUser)
+<<<<<<< HEAD
 router.post('/getUsers', getUsers)
+=======
+// add a Student's result to the DB
+router.post('/addResult',addResult)
+// get get results done winner once done
+>>>>>>> fa0a0749b4074d5b02a5fe581eb07a809c365326
 
 export default router;
