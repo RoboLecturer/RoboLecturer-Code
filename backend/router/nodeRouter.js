@@ -4,8 +4,7 @@ import { parsePDF,uploadPDF } from '../controller/pdfController.js';
 import multer from 'multer'
 import path from 'path'
 import { getQuiz } from '../controller/quizController.js';
-import { insertUser, getUsers } from '../database/database.js';
-import { addResult, resetResults, uploadedFileNames } from '../controller/dbController.js';
+import { addResult, resetResults, uploadedFileNames, insertUser, getUsers, getResults } from '../controller/dbController.js';
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -51,6 +50,7 @@ router.post('/insertUser', insertUser)
 router.post('/getUsers', getUsers)
 // add a Student's result to the DB
 router.post('/addResult',addResult)
-// get get results done winner once done
+// get get results
+router.get('/getResult',getResults)
 
 export default router;

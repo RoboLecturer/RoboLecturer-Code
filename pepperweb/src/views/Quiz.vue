@@ -95,7 +95,7 @@ export default class Quiz extends Vue {
     }
     this.startTimerInterval = setInterval(() => {
       this.startTimer--;
-      if (this.startTimer == 0) {
+      if (this.startTimer == 0) { //Question timer
         this.resetAnimation();
         this.quizStarted = true;
       }
@@ -103,7 +103,6 @@ export default class Quiz extends Vue {
   }
 
   incrementQuestion(): void {
-    
     if (this.questionIndex != this.questions.length - 1) {
       this.rosInterface.publishNextQuestion({ data: "" });
       this.questionIndex++;

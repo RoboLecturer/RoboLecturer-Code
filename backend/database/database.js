@@ -2,8 +2,8 @@ import mysql from "mysql";
 
 const db = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "root",
+  user: "adminuser",
+  password: "admin",
   database: "roboserver",
 });
 
@@ -25,34 +25,12 @@ export function createTablesIfNotExist() {
     }
   );
   db.query(
-    "CREATE TABLE IF NOT EXISTS Results (ResultId int NOT NULL AUTO_INCREMENT, StudentId int NOT NULL, Question_number int NOT NULL, isCorrect bool NOT NULL, Points int NOT NULL, PRIMARY KEY (ResultId));",
+    "CREATE TABLE IF NOT EXISTS Results (ResultId int NOT NULL AUTO_INCREMENT, StudentId int NOT NULL, QuestionNumber int NOT NULL, answerIndex int NOT NULL, isCorrect bool NOT NULL, Points int NOT NULL, PRIMARY KEY (ResultId), UNIQUE KEY student_result_unique_key (StudentId, QuestionNumber));",
     (err, rows, fields) => {
       if (err) throw err;
     }
   );
 }
 
-export function insertUser(req, res) {
-  var name = req.body.username;
-  db.query("INSERT INTO `Students` (`Username`) VALUES ('"+name+"');", (err, rows, fields) => {
-    if (err) {
-      res.statusMessage = err;
-      res.status(500).end();
-    } else {
-      res.sendStatus(200);
-    }
-  });
-}
 
-export function getUsers(req, res) {
-    var quiz_id = req.body.quiz_id;
-    db.query("SELECT * FROM Students;", (err, rows, fields) => { //Update to select by QuizID
-      if (err) {
-        res.statusMessage = err;
-        res.status(500).end();
-      } else {
-        res.send(rows);
-      }
-    });
-  }
 export default db;

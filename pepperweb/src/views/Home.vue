@@ -60,6 +60,7 @@ export default class Home extends Vue {
   correctAnswer = "";
   lobbyClosed = false;
   startTimerInterval = 0;
+  studentId = -1;
 
   resetAnimation(): void {
     this.timerWindowOpen = true;
@@ -127,12 +128,39 @@ export default class Home extends Vue {
   }
 
   captureAnswer(answer: string): void {
+    let index = this.questions[this.questionIndex]["options"].indexOf(answer);
     if (answer == this.correctAnswer) {
       this.statusText = "Correct answer!";
-      //Update points
+      this.storeResult(true, 100, index);
     } else {
       this.statusText = "Incorrect answer";
-      //Update points
+      this.storeResult(false, 100, index);
+    }
+  }
+
+  async storeResult(correct: boolean, points: number, answerIndex: number): Promise<void> {
+    let resp = await this.$http.post(`${this.api_url}/addResult`, {
+      StudentId: this.studentId,
+      QuestionNumber: this.questionIndex,
+      answerIndex: answerIndex,
+      isCorrect: correct,
+      Points: points,
+    });
+    if (resp.status != 200) {
+      console.log(resp);
+    }
+    this.getResults();
+  }
+
+  async getResults(): Promise<void> {
+    let resp = await this.$http.get(`${this.api_url}/getResult`, {
+      params: { question_id: this.questionIndex },
+    });
+
+    if (resp.status == 200) {
+      console.log(resp.data);
+    } else {
+      console.log(resp);
     }
   }
 
@@ -156,7 +184,8 @@ export default class Home extends Vue {
         username: this.username,
       });
       if (resp.status == 200) {
-        console.log("user stored");
+        this.studentId = resp.data.studentId;
+        console.log("user stored with id", this.studentId);
         this.statusText = "Waiting for quiz to start...";
         this.joinedLobby = true;
       } else {
