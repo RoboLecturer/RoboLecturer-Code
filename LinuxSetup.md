@@ -5,9 +5,9 @@ There're 3 options depending on your OS:
 3. VirtualBox (for both OSes).
 
 ## Contents
-1. [Windows Subsystem Linux (WSL)](#1-windows-subsystem-linux-wsl)
+1. [Windows Subsystem Linux (WSL)](#1-windows-subsystem-linux-wsl) - Includes guide for installing ROS on Ubuntu directly
 2. [Docker for MacOS](#2-docker-for-macos)
-3. [VirtualBox](#3-virtualbox)
+3. [VirtualBox](#3-virtualbox) - Includes guide for using ROS in a Docker container on Ubuntu
 
 ## 1. Windows Subsystem Linux (WSL)
 ### 1.1. Install WSL
