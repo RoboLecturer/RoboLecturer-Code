@@ -99,7 +99,7 @@ newgrp docker
 ```
 export PATH="$PATH:$HOME/.local/bin
 ```
-3. Follow step 2 onwards for the [Docker for Mac section](#2-docker-for-macos). But for step 3, replace the ```-p 45100-45200:45100-45200``` argument with ```--net=host```, i.e.,
+3. Follow step 2 onwards from [section 2](#2-docker-for-macos). But for step 3, replace the ```-p 45100-45200:45100-45200``` argument with ```--net=host```, i.e.,
 ```
 docker run --name=<container_name> --net=host --add-host="host.docker.internal:host-gateway" -it ros-dev
 ```
