@@ -1,8 +1,9 @@
 <template>
   <div>
-    <hr class="visualTimer animate" />
-    <h1>{{ statusText }}</h1>
-    <div class="container">
+    <hr v-if="joinedLobby" class="visualTimer animate" />
+    <h1 v-if="!timerWindowOpen">{{ statusText }}</h1>
+    <h1 v-if="quizInitiated">{{ startTimer }}</h1>
+    <div class="container" v-if="!joinedLobby && !quizInitiated && !lobbyClosed">
       <div class="column" style="width: 50%">
         <div class="input-field">
           <input id="last_name" type="text" v-model="username" />
@@ -12,13 +13,14 @@
       </div>
     </div>
     <div class="container">
-      <div v-if="questions != null && timerWindowOpen" class="column questions">
+      <div v-if="timerWindowOpen && joinedLobby" class="column questions">
         <h1>{{ questions[questionIndex]["prompt"] }}</h1>
         <div
           class="row card"
           v-for="(option, index) in questions[questionIndex]['options']"
           :key="index"
           :style="`background-color:${cardColors[index]}`"
+          @click="captureAnswer(option)"
         >
           {{ option }}
         </div>
@@ -42,6 +44,7 @@ export default class Home extends Vue {
   connected = false;
   ws_url = "ws://localhost:9000";
   quiz_listener: any = null;
+  question_listener: any = null;
   timer_listener: any = null;
   timerWindowOpen = false;
   questions: any = null;
@@ -49,6 +52,14 @@ export default class Home extends Vue {
   hrWidth = 0;
   cardColors = ["#ff2400", "#e8b71d", "#1de840", "#335fff", "#dd00f3", "#dd00f3", "#e81d1d", "#e3e81d", "#1ddde8"];
   username = "";
+  joinedLobby = false;
+  quizStarted = false;
+  quizInitiated = false;
+  startTimer = 5;
+  interval = null;
+  correctAnswer = "";
+  lobbyClosed = false;
+  startTimerInterval = 0;
 
   resetAnimation(): void {
     this.timerWindowOpen = true;
@@ -73,31 +84,69 @@ export default class Home extends Vue {
     }
   }
 
-  onTimerBegin(): void {
-    if (this.questions != null) {
-      this.statusText += "6s left";
-      this.resetAnimation();
+  onQuizTriggered(): void {
+    clearInterval(this.startTimerInterval);
+    if (this.joinedLobby) {
+      this.startTimer = 5;
+      this.quizInitiated = true;
+      this.statusText = "New question in...";
+      if (this.questions != null) {
+        this.startTimerInterval = setInterval(() => {
+          this.startTimer--;
+          if (this.startTimer == 0) {
+            this.quizStarted = true;
+            this.timerWindowOpen = true;
+            this.resetAnimation();
+            this.quizInitiated = false;
+            setTimeout(this.onQuestionFinished, 8000);
+          }
+        }, 1000);
+      }
+    } else {
+      this.statusText = "Lobby Closed.";
+      this.lobbyClosed = true;
     }
   }
 
-  onQuizTriggered(): void {
-    this.statusText = "Quiz begun!";
-    this.fetchQuiz();
+  onNextQuestion(): void {
+    // clearInterval(this.startTimerInterval);
+    if (this.questionIndex != this.questions.length - 1) {
+      this.timerWindowOpen = false;
+      this.questionIndex++;
+      // this.onQuizTriggered();
+    }
+  }
+
+  onQuestionFinished(): void {
+    // this.timerWindowOpen = false;
+    this.statusText = "Correct!";
+    return;
+  }
+  onQuizFinished(): void {
+    return;
+  }
+
+  captureAnswer(answer: string): void {
+    if (answer == this.correctAnswer) {
+      this.statusText = "Correct answer!";
+      //Update points
+    } else {
+      this.statusText = "Incorrect answer";
+      //Update points
+    }
   }
 
   async fetchQuiz(): Promise<void> {
     let resp = await this.$http.get(`${this.api_url}/quiz`, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
       params: { name: "test" },
     });
-    console.log(resp);
+
     if (resp.status == 200) {
       this.questions = resp.data.questions;
-      console.log(this.questions);
+      this.correctAnswer = this.questions[this.questionIndex]["answer"];
     } else {
       this.statusText == "Failed to fetch quiz :(";
+      console.log(resp);
     }
   }
 
@@ -109,6 +158,7 @@ export default class Home extends Vue {
       if (resp.status == 200) {
         console.log("user stored");
         this.statusText = "Waiting for quiz to start...";
+        this.joinedLobby = true;
       } else {
         console.log(resp);
       }
@@ -141,22 +191,21 @@ export default class Home extends Vue {
     });
     this.quiz_listener.subscribe(this.onQuizTriggered);
 
-    this.timer_listener = new ROSLIB.Topic({
+    this.question_listener = new ROSLIB.Topic({
       ros: this.ros,
-      name: "/start_timer",
+      name: "/next_question",
       messageType: "std_msgs/String",
     });
-    this.timer_listener.subscribe(this.onTimerBegin);
+    this.question_listener.subscribe(this.onNextQuestion);
   }
 
   mounted(): void {
-    console.log(this.api_url);
     var y: HTMLElement | null = document.querySelector(".visualTimer");
     if (y) {
       y.style.width = this.hrWidth + "%";
     }
-
     this.connect();
+    this.fetchQuiz();
   }
 
   beforeRouteLeave(): void {
@@ -182,7 +231,7 @@ export default class Home extends Vue {
 .visualTimer {
   display: block;
   height: 20px;
-  background-color: #039be5;
+  background-color: #22303e;
   width: 0%;
   margin: 0;
   border: none;

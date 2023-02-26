@@ -35,3 +35,15 @@ export function insertUser(req, res) {
     }
   });
 }
+
+export function getUsers(req, res) {
+    var quiz_id = req.body.quiz_id;
+    connection.query("SELECT * FROM Students;", (err, rows, fields) => { //Update to select by QuizID
+      if (err) {
+        res.statusMessage = err;
+        res.status(500).end();
+      } else {
+        res.send(rows);
+      }
+    });
+  }

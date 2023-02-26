@@ -3,7 +3,7 @@
     "question_count":"1",
     "questions":[
        {
-          "prompt":"what is x",
+          "prompt":"what is x?",
           "answer":"x",
           "options":[
              "x",
@@ -11,6 +11,16 @@
              "b",
              "c"
           ]
-       }
+       },
+       {
+         "prompt":"what is y?",
+         "answer":"x",
+         "options":[
+            "y",
+            "a",
+            "b",
+            "c"
+         ]
+      }
     ]
  }
