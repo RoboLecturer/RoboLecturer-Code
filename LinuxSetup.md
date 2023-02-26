@@ -1,7 +1,7 @@
 # Linux Setup For ROS
 There're 3 options depending on your OS: 
-1. Docker for Mac
-2. WSL (Windows Subsystem Linux) for Windows, or 
+1. WSL (Windows Subsystem Linux) for Windows,
+2. Docker for Mac, or
 3. VirtualBox (for both OSes).
 
 ## Contents
