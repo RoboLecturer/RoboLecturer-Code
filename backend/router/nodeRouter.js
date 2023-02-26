@@ -48,12 +48,9 @@ router.get('/uploadedFileNames',uploadedFileNames)
 router.post('/resetResults', resetResults)
 // insert a new Student into the DB 
 router.post('/insertUser', insertUser)
-<<<<<<< HEAD
 router.post('/getUsers', getUsers)
-=======
 // add a Student's result to the DB
 router.post('/addResult',addResult)
 // get get results done winner once done
->>>>>>> fa0a0749b4074d5b02a5fe581eb07a809c365326
 
 export default router;
