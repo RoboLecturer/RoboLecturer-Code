@@ -25,8 +25,7 @@ wsl --set-version Ubuntu-20.04 1
 ### 1.2. Install ROS
 You can install ROS manually or install Docker then pull the Docker image for ROS Noetic.
 
-If you want to install ROS manually:
-The detailed instructions can be found in the [wiki page](http://wiki.ros.org/noetic/Installation/Ubuntu). The basic steps are, for ROS Noetic:
+If you want to install ROS manually, the detailed instructions can be found in the [wiki page](http://wiki.ros.org/noetic/Installation/Ubuntu). The basic steps are, for ROS Noetic:
 ```
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt install curl
