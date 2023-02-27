@@ -58,6 +58,6 @@
         v4l2-ctl --list-devices
 
 6. Follow the rest of the workspace setup in README.md section 2.2 [here](https://github.com/RoboLecturer/RoboLecturer-Code/tree/api#21-linux-and-ros-installation:~:text=2.2.%20Setting%20up%20your%20workspace).
-    * For CV, here are further instructions on using a pre-setup workspace.
+    * For CV, [here](https://github.com/RoboLecturer/RoboLecturer-Code/blob/cv/CV_workspace_setup.md) are further instructions on using a pre-setup workspace.
 
 ## Windows: will be added later.
