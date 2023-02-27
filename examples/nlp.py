@@ -27,12 +27,11 @@ def nlp_main():
 
 		# TODO: Classify question
 		question_type = random.choice(["related","operational"])
-		question_type = "operational"
 
 		if question_type == "related":
 			# TODO: For lecture-related questions,
 			# generate answer from received question then send to Speech
-			answer = "Blue light is scattered the most"
+			answer = "Because blue light is scattered the most"
 			Info.Send("Answer", {"text": answer})
 
 		else:
@@ -58,10 +57,10 @@ def nlp_main():
 		signal = Info.Request("TriggerJokeOrShutup")
 		# TODO: Generate joke text or shutup text
 		if signal == "joke":
-			joke = "your mom"
+			joke = "I'm telling a joke. Laugh. Ha ha."
 			Info.Send("Joke", {"text": joke})
 		elif signal == "shutup":
-			shutup = "pipe down"
+			shutup = "Shut up all of you"
 			Info.Send("Shutup", {"text": shutup})
 		return
 
@@ -79,7 +78,7 @@ def nlp_main():
 		# If trigger_joke, send joke to Speech
 		if signal == "joke":
 			# TODO: generate joke text
-			joke = "your mom"
+			joke = "I'm telling a joke. Laugh. Ha ha."
 			Info.Send("Joke", {"text": joke})
 
 		# After joke has been spent, or if trigger_quiz, loop restarts
@@ -97,7 +96,7 @@ def nlp_main():
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
 			# TODO: generate joke text
-			joke = "your mom"
+			joke = "I'm telling a joke. Laugh. Ha ha."
 			Info.Send("Joke", {"text": joke})
 		return
 
