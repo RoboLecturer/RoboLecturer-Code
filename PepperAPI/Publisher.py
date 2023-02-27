@@ -7,12 +7,13 @@ from PepperAPI import * # import global topic names
 
 # Parent publisher class
 class Publisher:
-	def __init__(self, name, topic, payload_type, num_subscribers=1):
+	def __init__(self, name, topic, payload_type, num_subscribers=1, log=False):
 		self.name = name
 		self.topic = topic
 		self.publisher = rospy.Publisher(self.topic, payload_type, queue_size=10)
 		self.num_subscribers = num_subscribers
-		# self.log()
+		if log:
+			self.log()
 
 	# Log info about publisher
 	def log(self):
@@ -21,12 +22,13 @@ class Publisher:
 # Child publisher classes
 """publish string msg"""
 class StringPublisher(Publisher, object):
-	def __init__(self, topic, num_subscribers=1):
+	def __init__(self, topic, num_subscribers=1, log=False):
 		super(StringPublisher, self).__init__(
 			"StringPublisher",
 			topic, 
 			String,
-			num_subscribers)
+			num_subscribers,
+			log)
 
 	def publish(self, msg):
 		msg = str(msg)
@@ -114,7 +116,7 @@ audio_player_publisher = StringPublisher(AUDIO_PLAYER_TOPIC)
 trigger_hand_detection_publisher = StringPublisher(TRIGGER_HAND_DETECTION_TOPIC)
 trigger_listen_publisher = StringPublisher(TRIGGER_LISTEN_TOPIC)
 point_publisher = CVInfoMsgPublisher(POINT_TOPIC)
-volume_publisher = StringPublisher(VOLUME_TOPIC)
+volume_publisher = StringPublisher(VOLUME_TOPIC, log=True)
 
 ## CONTROL
 state_publisher = { 
