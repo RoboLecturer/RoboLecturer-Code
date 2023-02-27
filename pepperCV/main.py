@@ -6,7 +6,7 @@ import random
 #import rospy
   
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
 cap.set(3, 1920)
 cap.set(4, 1080)
 face_detector = cv2.CascadeClassifier("utils/models/face_detection.xml") # loading the pre-trained face detection model from OpenCV.
