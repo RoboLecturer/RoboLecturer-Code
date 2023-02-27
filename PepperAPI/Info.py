@@ -409,9 +409,9 @@ def Send(api_name, api_params={}):
 def Listen():
 
 	# Check if node initialised
-	if not node_initiated:
-		print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
-		return
+	# if not node_initiated:
+	# 	print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
+	# 	return
 
 	"""Listen to state change and update accordingly"""		
 	def callback(msg):
