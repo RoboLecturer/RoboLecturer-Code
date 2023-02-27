@@ -12,9 +12,9 @@ import paramiko
 def Request(api_name, api_params={}):
 
 	# Check if node initialised
-	if not node_initiated:
-		print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
-		return
+	# if not node_initiated:
+	# 	print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
+	# 	return
 
 	# API callbacks
 	if api_name == "ALTextToSpeech":
@@ -83,9 +83,9 @@ def Request(api_name, api_params={}):
 def Listen():
 
 	# Check if node initialised
-	if not node_initiated:
-		print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
-		return
+	# if not node_initiated:
+	# 	print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
+	# 	return
 
 	# Import NAOqi modules
 	# from naoqi import ALProxy

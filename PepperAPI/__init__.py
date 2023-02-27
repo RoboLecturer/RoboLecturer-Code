@@ -41,6 +41,8 @@ VOLUME_TOPIC = "volume"
 node_initiated = False
 # Start node
 def init(node):
+	global node_initiated
+
 	# XMLRPC & TCPROS ports to start from 45100 & 45101
 	_xmlrpc, _tcpros = 45100, 45101
 

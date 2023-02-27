@@ -10,9 +10,9 @@ import random, rospy
 def Request(api_name, api_params={}):
 	
 	# Check if node initialised
-	if not node_initiated:
-		print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
-		return
+	# if not node_initiated:
+	# 	print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
+	# 	return
 
 	# Data class defined to store data from ROS Subscribers
 	# in return value of Info.Request()
@@ -216,9 +216,9 @@ def Request(api_name, api_params={}):
 def Send(api_name, api_params={}):
 
 	# Check if node initialised
-	if not node_initiated:
-		print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
-		return
+	# if not node_initiated:
+	# 	print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
+	# 	return
 
 	# API callbacks
 	if api_name == "SimpleMsg":
