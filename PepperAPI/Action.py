@@ -5,6 +5,7 @@ from .Publisher import *
 from .Subscriber import *
 from PepperAPI import *
 import paramiko
+import sys
 
 # =========================================================
 # Request for actuator action by Pepper robot
@@ -38,15 +39,15 @@ def Request(api_name, api_params={}):
 		filename = soundfile_path.split("/")[-1]
 		pepper_path = PEPPER_AUDIO_PATH + filename
 
-		# # Setup SFTP link
-		# transport = paramiko.Transport((ROBOT_IP, 22))
-		# transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
-		# sftp = paramiko.SFTPClient.from_transport(transport)
-        #
-		# # Send file
-		# sftp.put(soundfile_path, pepper_path)
-		# sftp.close()
-		# transport.close()
+		# Setup SFTP link
+		transport = paramiko.Transport((ROBOT_IP, 22))
+		transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
+		sftp = paramiko.SFTPClient.from_transport(transport)
+
+		# Send file
+		sftp.put(soundfile_path, pepper_path)
+		sftp.close()
+		transport.close()
 
 		# Publish msg to kinematics module to play audio
 		audio_player_publisher.publish(filename)
@@ -88,12 +89,11 @@ def Listen():
 	# 	return
 
 	# Import NAOqi modules
-	# from naoqi import ALProxy
+	from naoqi import ALProxy
 
 	# Callback for ALTextToSpeech
 	def tts_callback(msg):
 		rospy.loginfo("Pepper ALTextToSpeech: Say %s" % msg.data)
-		tts = ALProxy("ALTextToSpeech", ROBOT_IP, ROBOT_PORT)
 		tts.say(msg.data)
 		return IsDone("Set", "ALTextToSpeech")	
 
@@ -101,10 +101,9 @@ def Listen():
 	def audio_player_callback(msg):
 		filename = msg.data
 		rospy.loginfo("Pepper ALAudioPlayer: Play audio %s" % filename)
-		time.sleep(20)
-		# ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		# audio_file = PEPPER_AUDIO_PATH + filename
-		# ap.playFile(audio_file)
+		audio_file = PEPPER_AUDIO_PATH + filename
+		ap.playFile(audio_file)
+		# tts.say(filename)
 		return IsDone("Set", "ALAudioPlayer")	
 
 	# Callback for pointing at raised hand
@@ -151,25 +150,35 @@ def Listen():
 		rospy.loginfo("Pepper ALTracker: Point %s at x=%.2f y=%.2f, z=%.2f" % 
 			(effector, point_x, point_y, point_z))
 
-		# tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
-		# posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
-		# # posture.applyPosture("StandInit", 0.5)
-		# tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
-		# tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
+		# posture.applyPosture("StandInit", 0.5)
+		tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
+		tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
+		# tts.say("What is your question?")
 
 		return IsDone("Set", "Point")
 
 	# Increase/decrease master volume
 	def volume_callback(msg):
-		# ap = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
-		# vol = ap.getOutputVolume()
-		# if msg.data == "up":
-		# 	vol = 100 if vol > 90 else vol+10
-		# else:
-		# 	vol = 0 if vol < 10 else vol-10
-		# ap.setOutputVolume(vol)
+		vol = ad.getOutputVolume()
+		if msg.data == "up":
+			vol = 100 if vol > 90 else vol+10
+		elif msg.data == "down":
+			vol = 0 if vol < 10 else vol-10
+		ad.setOutputVolume(vol)
 		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		return IsDone("Set", "ChangeVolume")
+
+
+	# Initialise proxies
+	try:
+		tts = ALProxy("ALTextToSpeech", ROBOT_IP, ROBOT_PORT)
+		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
+		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+		ad = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
+	except Exception as e:
+		print(e)
+		sys.exit()
 
 
 	# Define event to terminate thread on command
