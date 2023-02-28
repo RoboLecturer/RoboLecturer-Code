@@ -1,15 +1,21 @@
 import PepperAPI
 from PepperAPI import Info
 
+LOOP_COUNT = 0
 def web_main():
 
+	LOOP_COUNT += 1
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
 	Info.Request("State", {"name":"Start"})
 
-	# TODO: Change slide, then send slides text to NLP
-	slides_text = "These are the new slides."
-	Info.Send("Slides", {"text": slides_text})
+	if LOOP_COUNT == 1: # happens only in the very first loop
+		# Send text for all slides to Web one by one
+		for slide_text in list_of_slides_text:
+			# TODO: Send slides text to NLP
+			slides_text = "These are the new slides."
+			Info.Send("Slides", {"text": slides_text})
+		Info.Send("Slides", {"text": "DONE"}) # tell NLP that you've finished sending
 
 
 	# ========= STATE: AnyQuestions =========
