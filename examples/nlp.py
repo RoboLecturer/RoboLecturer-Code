@@ -1,7 +1,7 @@
 import PepperAPI
 from PepperAPI import Action, Info
 import random 
-import ScriptGenerator
+import nlp.scriptGenerator
 
 LOOP_COUNT = 0
 def nlp_main():
@@ -19,7 +19,7 @@ def nlp_main():
 		# Web can send the "DONE" string to indicate that there are no more slides
 		while slides_text != "DONE":
 			# Generate the lecture script for this slide
-			script = ScriptGenerator.createScript(slides_text)
+			script = nlp.scriptGenerator.createScript(slides_text)
 			list_of_scripts.append(script)
 			# Request slides text again
 			slides_text = Info.Request("Slides")
