@@ -25,11 +25,12 @@ def time_inference(func):
 
 try:
     sampling = argv[1]
-except Exception:
+except Exception as e:
     print("Sampling argument not provided")
+    print(e)
     sampling = False
 
-cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture("/dev/video0")#, cv2.CAP_DSHOW)
 cap.set(3, 1920)
 cap.set(4, 1080)
 
