@@ -1,10 +1,7 @@
 import PepperAPI
 from PepperAPI import Action, Info
 import random 
-<<<<<<< Updated upstream
-=======
 import ScriptGenerator
->>>>>>> Stashed changes
 
 LOOP_COUNT = 0
 def nlp_main():
