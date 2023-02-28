@@ -15,6 +15,9 @@ def main():
 	# ========= STATE: Start =========
 	Info.Send("State", {"Start":"1"})
 
+	# Send signal to Web to increment slide
+	Info.Send("ChangeSlide", {"value":"increment|0"})
+
 	# Wait for Pepper to finish delivering slides
 	Action.IsDone("Reset", "ALAudioPlayer")
 	while not Action.IsDone("Get", "ALAudioPlayer"):

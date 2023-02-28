@@ -116,7 +116,7 @@ audio_player_publisher = StringPublisher(AUDIO_PLAYER_TOPIC)
 trigger_hand_detection_publisher = StringPublisher(TRIGGER_HAND_DETECTION_TOPIC)
 trigger_listen_publisher = StringPublisher(TRIGGER_LISTEN_TOPIC)
 point_publisher = CVInfoMsgPublisher(POINT_TOPIC)
-volume_publisher = StringPublisher(VOLUME_TOPIC, log=True)
+volume_publisher = StringPublisher(VOLUME_TOPIC)
 
 ## CONTROL
 state_publisher = { 
@@ -124,6 +124,7 @@ state_publisher = {
 	for state in STATE_TOPIC 
 }
 state_update_publisher = StringPublisher(STATE_UPDATE_TOPIC)
+change_slide_publisher = StringPublisher(CHANGE_SLIDE_TOPIC)
 
 ## SHARED
 trigger_joke_or_shutup_publisher = StringPublisher(TRIGGER_JOKE_OR_SHUTUP_TOPIC, num_subscribers=2)

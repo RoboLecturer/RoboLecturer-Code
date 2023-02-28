@@ -25,6 +25,7 @@ def Request(api_name, api_params={}):
 		TriggerJokeOrQuiz = ""
 		TriggerJokeOrShutup = ""
 		State = ""
+		ChangeSlide = ""
 
 
 	# API callbacks
@@ -64,6 +65,14 @@ def Request(api_name, api_params={}):
 				rospy.loginfo("Received: trigger_quiz")
 		StringSubscriber(TRIGGER_JOKE_OR_QUIZ_TOPIC, callback)
 		return Data.TriggerJokeOrQuiz
+
+	if api_name == "ChangeSlide":
+		"""Receive command to change_slide"""
+		def callback(msg):
+			Data.ChangeSlide = msg.data
+			rospy.loginfo("Received: change_slide=%s" % Data.ChangeSlide)
+		StringSubscriber(CHANGE_SLIDE_TOPIC, callback)
+		return Data.ChangeSlide
 
 
 	## ========= CV =========
@@ -371,6 +380,15 @@ def Send(api_name, api_params={}):
 			choice = api_params["force"]
 		trigger_joke_or_shutup_publisher.publish(choice)
 		return choice
+
+	if api_name == "ChangeSlide":
+		"""Send command to Web to change slide
+		@params	api_params : dict{
+			"cmd": "increment|", "decrement|" or "goto|<slide_num>"
+		}
+		"""
+		cmd = api_params["cmd"]
+		change_slide_publisher.publish(cmd)
 
 
 	## ========= SHARED =========

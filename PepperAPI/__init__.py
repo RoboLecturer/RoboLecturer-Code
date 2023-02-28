@@ -11,6 +11,7 @@ PEPPER_AUDIO_PATH = "/home/nao/audio_files/"
 # Topics
 ANSWER_TOPIC = "answer"
 AUDIO_PLAYER_TOPIC = "audio_player"
+CHANGE_SLIDE_TOPIC = "change_slide"
 FACE_TOPIC = "face"
 HAND_TOPIC = "raised_hand"
 IMAGE_TOPIC = "image"

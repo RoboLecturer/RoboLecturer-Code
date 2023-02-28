@@ -17,6 +17,10 @@ def web_main():
 			Info.Send("Slides", {"text": slides_text})
 		Info.Send("Slides", {"text": "DONE"}) # tell NLP that you've finished sending
 
+	else: # for subsequent loops, wait for trigger to change slide
+		Info.Request("ChangeSlide") # blocking call to get trigger to change slide from Control
+		# TODO: Increment slide
+	
 
 	# ========= STATE: AnyQuestions =========
 	# Nothing to do here. Just wait for state change to "NoHandsRaised"
