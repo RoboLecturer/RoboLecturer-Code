@@ -11,15 +11,6 @@ from tqdm import tqdm
 # create a dynamic prompt that changes the lecture delivary style... Cos at the moment it is just too excited all the fucking time 
 ############################################################
 
-# recieve the incoming slide page as text file
-incomingSlide = "Our solar system contains planets and stars.\nIt is part of the Milky Way.\nOur planet, Earth, is the only planet in our solar system, to our knowledge, that sustains life."
-# incomingSlide = "Table of Contents\n\nSubmission Deadline\n\nOverall Presentation Structure\n\nThe Solar System"
-
-# Define the different nlp models
-model1 = "text-davinci-003"
-model2 = "text-curie-001"
-
-
 def genScript(inputText):
     """ Function to generate lecture script for each bullet-point in a presentation slide page
     Args: inputText - [array][string] contains lines from slide
@@ -39,7 +30,7 @@ def genScript(inputText):
         query = f"shortly introduce each of the following points, that are seperated by a new line, as an introduction to a lecture with these points, in the style of an excited lecturer: {inputText}"
         # completions
         completions = openai.Completion.create(
-            engine=model1,
+            engine="text-davinci-003",
             prompt=query,
             max_tokens=1024,
             n=1, # generate a single completion
@@ -53,7 +44,7 @@ def genScript(inputText):
             query = f"explain the following point in a single paragraph in the style of an excited lecturer: {line}"
             # completions
             completions = openai.Completion.create(
-                engine=model1,
+                engine="text-davinci-003",
                 prompt=query,
                 max_tokens=1024,
                 n=1,
@@ -84,6 +75,3 @@ def createScript(Text):
     inputText = getText(Text)
     script = genScript(inputText) 
     return script
-
-script = createScript(incomingSlide)
-print(script)
