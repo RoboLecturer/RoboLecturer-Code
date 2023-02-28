@@ -1,6 +1,7 @@
 import PepperAPI
 from PepperAPI import Action, Info
 import random 
+from nlp_ros.src.nlp_pkg import ScriptGenerator
 
 def nlp_main():
 
@@ -10,9 +11,10 @@ def nlp_main():
 
 	# Get slides text from Web, then
 	slides_text = Info.Request("Slides")
-	# TODO: Generate script for current slide based on slide text from Web
-	script_text = "This is the script"
-	Info.Send("LectureScript", {"text": script_text})
+	# Generate the lecture script for this slide
+	script = ScriptGenerator.createScript(slides_text)
+	# script_text = "This is the script"
+	Info.Send("LectureScript", {"text": script})
 
 
 	# ========= STATE: AnyQuestions =========
