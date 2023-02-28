@@ -12,11 +12,6 @@ import sys
 
 def Request(api_name, api_params={}):
 
-	# Check if node initialised
-	# if not node_initiated:
-	# 	print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
-	# 	return
-
 	# API callbacks
 	if api_name == "ALTextToSpeech":
 		"""Send message to be said by Pepper
@@ -82,11 +77,6 @@ def Request(api_name, api_params={}):
 # Only to be used by Kinematics module
 
 def Listen():
-
-	# Check if node initialised
-	# if not node_initiated:
-	# 	print("Node not initialised. Please call PepperAPI.init(yourModule) first.")
-	# 	return
 
 	# Import NAOqi modules
 	from naoqi import ALProxy
