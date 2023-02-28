@@ -5,6 +5,7 @@ from PepperAPI import Info
 import QA
 import chatgpt
 import davinci
+import ScriptGenerator
 
 PepperAPI.init("nlp")
 question = Info.Request("Question")
@@ -15,3 +16,9 @@ question = Info.Request("Question")
 answer = chatgpt.asking_chatgpt("What is apple?")
 
 Info.Send("Answer", {"text": answer})
+
+# Generate script
+slides = Info.Request("Slides")
+script = ScriptGenerator.createScript(slides)
+# return script
+Info.Send("LectureScript", {"text: script"})
