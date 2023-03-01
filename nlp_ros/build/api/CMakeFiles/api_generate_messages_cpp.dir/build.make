@@ -54,7 +54,6 @@ CMAKE_BINARY_DIR = /home/dovakeith/HCR/nlp_ros/build
 include api/CMakeFiles/api_generate_messages_cpp.dir/progress.make
 
 api/CMakeFiles/api_generate_messages_cpp: /home/dovakeith/HCR/nlp_ros/devel/include/api/CVInfo.h
-api/CMakeFiles/api_generate_messages_cpp: /home/dovakeith/HCR/nlp_ros/devel/include/api/State.h
 
 
 /home/dovakeith/HCR/nlp_ros/devel/include/api/CVInfo.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
@@ -63,15 +62,8 @@ api/CMakeFiles/api_generate_messages_cpp: /home/dovakeith/HCR/nlp_ros/devel/incl
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating C++ code from api/CVInfo.msg"
 	cd /home/dovakeith/HCR/nlp_ros/src/api && /home/dovakeith/HCR/nlp_ros/build/catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg -Iapi:/home/dovakeith/HCR/nlp_ros/src/api/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p api -o /home/dovakeith/HCR/nlp_ros/devel/include/api -e /opt/ros/noetic/share/gencpp/cmake/..
 
-/home/dovakeith/HCR/nlp_ros/devel/include/api/State.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
-/home/dovakeith/HCR/nlp_ros/devel/include/api/State.h: /home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg
-/home/dovakeith/HCR/nlp_ros/devel/include/api/State.h: /opt/ros/noetic/share/gencpp/msg.h.template
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating C++ code from api/State.msg"
-	cd /home/dovakeith/HCR/nlp_ros/src/api && /home/dovakeith/HCR/nlp_ros/build/catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg -Iapi:/home/dovakeith/HCR/nlp_ros/src/api/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p api -o /home/dovakeith/HCR/nlp_ros/devel/include/api -e /opt/ros/noetic/share/gencpp/cmake/..
-
 api_generate_messages_cpp: api/CMakeFiles/api_generate_messages_cpp
 api_generate_messages_cpp: /home/dovakeith/HCR/nlp_ros/devel/include/api/CVInfo.h
-api_generate_messages_cpp: /home/dovakeith/HCR/nlp_ros/devel/include/api/State.h
 api_generate_messages_cpp: api/CMakeFiles/api_generate_messages_cpp.dir/build.make
 
 .PHONY : api_generate_messages_cpp

@@ -376,19 +376,6 @@ api_generate_messages/fast:
 .PHONY : api_generate_messages/fast
 
 #=============================================================================
-# Target rules for targets named api_genlisp
-
-# Build rule for target.
-api_genlisp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 api_genlisp
-.PHONY : api_genlisp
-
-# fast build rule for target.
-api_genlisp/fast:
-	$(MAKE) -f api/CMakeFiles/api_genlisp.dir/build.make api/CMakeFiles/api_genlisp.dir/build
-.PHONY : api_genlisp/fast
-
-#=============================================================================
 # Target rules for targets named std_msgs_generate_messages_cpp
 
 # Build rule for target.
@@ -402,6 +389,19 @@ std_msgs_generate_messages_cpp/fast:
 .PHONY : std_msgs_generate_messages_cpp/fast
 
 #=============================================================================
+# Target rules for targets named api_genlisp
+
+# Build rule for target.
+api_genlisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 api_genlisp
+.PHONY : api_genlisp
+
+# fast build rule for target.
+api_genlisp/fast:
+	$(MAKE) -f api/CMakeFiles/api_genlisp.dir/build.make api/CMakeFiles/api_genlisp.dir/build
+.PHONY : api_genlisp/fast
+
+#=============================================================================
 # Target rules for targets named _api_generate_messages_check_deps_CVInfo
 
 # Build rule for target.
@@ -413,19 +413,6 @@ _api_generate_messages_check_deps_CVInfo: cmake_check_build_system
 _api_generate_messages_check_deps_CVInfo/fast:
 	$(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/build
 .PHONY : _api_generate_messages_check_deps_CVInfo/fast
-
-#=============================================================================
-# Target rules for targets named _api_generate_messages_check_deps_State
-
-# Build rule for target.
-_api_generate_messages_check_deps_State: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 _api_generate_messages_check_deps_State
-.PHONY : _api_generate_messages_check_deps_State
-
-# fast build rule for target.
-_api_generate_messages_check_deps_State/fast:
-	$(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_State.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_State.dir/build
-.PHONY : _api_generate_messages_check_deps_State/fast
 
 #=============================================================================
 # Target rules for targets named api_gencpp
@@ -547,10 +534,9 @@ help:
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... api_generate_messages_py"
 	@echo "... api_generate_messages"
-	@echo "... api_genlisp"
 	@echo "... std_msgs_generate_messages_cpp"
+	@echo "... api_genlisp"
 	@echo "... _api_generate_messages_check_deps_CVInfo"
-	@echo "... _api_generate_messages_check_deps_State"
 	@echo "... api_gencpp"
 	@echo "... std_msgs_generate_messages_nodejs"
 	@echo "... api_generate_messages_eus"

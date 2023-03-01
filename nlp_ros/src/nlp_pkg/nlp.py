@@ -1,7 +1,7 @@
 import PepperAPI
 from PepperAPI import Action, Info
 import random 
-from nlp_ros.src.nlp_pkg import ScriptGenerator
+import ScriptGenerator
 
 def nlp_main():
 

@@ -3,7 +3,5 @@
   (:export
    "<CVINFO>"
    "CVINFO"
-   "<STATE>"
-   "STATE"
   ))
 

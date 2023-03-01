@@ -38,10 +38,7 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/api/msg" TYPE FILE FILES
-    "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg"
-    "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg"
-    )
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/api/msg" TYPE FILE FILES "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)

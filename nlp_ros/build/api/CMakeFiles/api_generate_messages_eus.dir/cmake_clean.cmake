@@ -1,7 +1,6 @@
 file(REMOVE_RECURSE
   "/home/dovakeith/HCR/nlp_ros/devel/share/roseus/ros/api/manifest.l"
   "/home/dovakeith/HCR/nlp_ros/devel/share/roseus/ros/api/msg/CVInfo.l"
-  "/home/dovakeith/HCR/nlp_ros/devel/share/roseus/ros/api/msg/State.l"
   "CMakeFiles/api_generate_messages_eus"
 )
 

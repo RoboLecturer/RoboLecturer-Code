@@ -273,21 +273,6 @@ api_generate_messages/fast:
 .PHONY : api_generate_messages/fast
 
 # Convenience name for target.
-api/CMakeFiles/api_genlisp.dir/rule:
-	cd /home/dovakeith/HCR/nlp_ros/build && $(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_genlisp.dir/rule
-.PHONY : api/CMakeFiles/api_genlisp.dir/rule
-
-# Convenience name for target.
-api_genlisp: api/CMakeFiles/api_genlisp.dir/rule
-
-.PHONY : api_genlisp
-
-# fast build rule for target.
-api_genlisp/fast:
-	cd /home/dovakeith/HCR/nlp_ros/build && $(MAKE) -f api/CMakeFiles/api_genlisp.dir/build.make api/CMakeFiles/api_genlisp.dir/build
-.PHONY : api_genlisp/fast
-
-# Convenience name for target.
 api/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule:
 	cd /home/dovakeith/HCR/nlp_ros/build && $(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
 .PHONY : api/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
@@ -303,6 +288,21 @@ std_msgs_generate_messages_cpp/fast:
 .PHONY : std_msgs_generate_messages_cpp/fast
 
 # Convenience name for target.
+api/CMakeFiles/api_genlisp.dir/rule:
+	cd /home/dovakeith/HCR/nlp_ros/build && $(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/api_genlisp.dir/rule
+.PHONY : api/CMakeFiles/api_genlisp.dir/rule
+
+# Convenience name for target.
+api_genlisp: api/CMakeFiles/api_genlisp.dir/rule
+
+.PHONY : api_genlisp
+
+# fast build rule for target.
+api_genlisp/fast:
+	cd /home/dovakeith/HCR/nlp_ros/build && $(MAKE) -f api/CMakeFiles/api_genlisp.dir/build.make api/CMakeFiles/api_genlisp.dir/build
+.PHONY : api_genlisp/fast
+
+# Convenience name for target.
 api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/rule:
 	cd /home/dovakeith/HCR/nlp_ros/build && $(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/rule
 .PHONY : api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/rule
@@ -316,21 +316,6 @@ _api_generate_messages_check_deps_CVInfo: api/CMakeFiles/_api_generate_messages_
 _api_generate_messages_check_deps_CVInfo/fast:
 	cd /home/dovakeith/HCR/nlp_ros/build && $(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_CVInfo.dir/build
 .PHONY : _api_generate_messages_check_deps_CVInfo/fast
-
-# Convenience name for target.
-api/CMakeFiles/_api_generate_messages_check_deps_State.dir/rule:
-	cd /home/dovakeith/HCR/nlp_ros/build && $(MAKE) -f CMakeFiles/Makefile2 api/CMakeFiles/_api_generate_messages_check_deps_State.dir/rule
-.PHONY : api/CMakeFiles/_api_generate_messages_check_deps_State.dir/rule
-
-# Convenience name for target.
-_api_generate_messages_check_deps_State: api/CMakeFiles/_api_generate_messages_check_deps_State.dir/rule
-
-.PHONY : _api_generate_messages_check_deps_State
-
-# fast build rule for target.
-_api_generate_messages_check_deps_State/fast:
-	cd /home/dovakeith/HCR/nlp_ros/build && $(MAKE) -f api/CMakeFiles/_api_generate_messages_check_deps_State.dir/build.make api/CMakeFiles/_api_generate_messages_check_deps_State.dir/build
-.PHONY : _api_generate_messages_check_deps_State/fast
 
 # Convenience name for target.
 api/CMakeFiles/api_gencpp.dir/rule:
@@ -457,10 +442,9 @@ help:
 	@echo "... api_generate_messages_py"
 	@echo "... api_generate_messages"
 	@echo "... install/strip"
-	@echo "... api_genlisp"
 	@echo "... std_msgs_generate_messages_cpp"
+	@echo "... api_genlisp"
 	@echo "... _api_generate_messages_check_deps_CVInfo"
-	@echo "... _api_generate_messages_check_deps_State"
 	@echo "... api_gencpp"
 	@echo "... std_msgs_generate_messages_nodejs"
 	@echo "... api_generate_messages_eus"

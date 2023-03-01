@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "/home/dovakeith/HCR/nlp_ros/devel/share/common-lisp/ros/api/msg/CVInfo.lisp"
-  "/home/dovakeith/HCR/nlp_ros/devel/share/common-lisp/ros/api/msg/State.lisp"
   "CMakeFiles/api_generate_messages_lisp"
 )
 

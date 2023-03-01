@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.context.in
 
-messages_str = "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg;/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg"
+messages_str = "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg"
 services_str = ""
 pkg_name = "api"
 dependencies_str = "std_msgs"

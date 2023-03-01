@@ -54,7 +54,6 @@ CMAKE_BINARY_DIR = /home/dovakeith/HCR/nlp_ros/build
 include api/CMakeFiles/api_generate_messages_py.dir/progress.make
 
 api/CMakeFiles/api_generate_messages_py: /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/_CVInfo.py
-api/CMakeFiles/api_generate_messages_py: /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/_State.py
 api/CMakeFiles/api_generate_messages_py: /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/__init__.py
 
 
@@ -63,20 +62,13 @@ api/CMakeFiles/api_generate_messages_py: /home/dovakeith/HCR/nlp_ros/devel/lib/p
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating Python from MSG api/CVInfo"
 	cd /home/dovakeith/HCR/nlp_ros/build/api && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg -Iapi:/home/dovakeith/HCR/nlp_ros/src/api/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p api -o /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg
 
-/home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/_State.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
-/home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/_State.py: /home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating Python from MSG api/State"
-	cd /home/dovakeith/HCR/nlp_ros/build/api && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg -Iapi:/home/dovakeith/HCR/nlp_ros/src/api/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p api -o /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg
-
 /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/__init__.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
 /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/__init__.py: /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/_CVInfo.py
-/home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/__init__.py: /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/_State.py
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Generating Python msg __init__.py for api"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/dovakeith/HCR/nlp_ros/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating Python msg __init__.py for api"
 	cd /home/dovakeith/HCR/nlp_ros/build/api && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py -o /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg --initpy
 
 api_generate_messages_py: api/CMakeFiles/api_generate_messages_py
 api_generate_messages_py: /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/_CVInfo.py
-api_generate_messages_py: /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/_State.py
 api_generate_messages_py: /home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/__init__.py
 api_generate_messages_py: api/CMakeFiles/api_generate_messages_py.dir/build.make
 

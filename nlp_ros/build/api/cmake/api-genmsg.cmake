@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.cmake.em
 
-message(STATUS "api: 2 messages, 0 services")
+message(STATUS "api: 1 messages, 0 services")
 
 set(MSG_I_FLAGS "-Iapi:/home/dovakeith/HCR/nlp_ros/src/api/msg;-Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg")
 
@@ -22,11 +22,6 @@ add_custom_target(_api_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "api" "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg" ""
 )
 
-get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg" NAME_WE)
-add_custom_target(_api_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "api" "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg" ""
-)
-
 #
 #  langs = gencpp;geneus;genlisp;gennodejs;genpy
 #
@@ -35,12 +30,6 @@ add_custom_target(_api_generate_messages_check_deps_${_filename}
 ### Generating Messages
 _generate_msg_cpp(api
   "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/api
-)
-_generate_msg_cpp(api
-  "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/api
@@ -62,8 +51,6 @@ add_dependencies(api_generate_messages api_generate_messages_cpp)
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg" NAME_WE)
 add_dependencies(api_generate_messages_cpp _api_generate_messages_check_deps_${_filename})
-get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg" NAME_WE)
-add_dependencies(api_generate_messages_cpp _api_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility
 add_custom_target(api_gencpp)
@@ -76,12 +63,6 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS api_generate_messages_cpp)
 ### Generating Messages
 _generate_msg_eus(api
   "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/api
-)
-_generate_msg_eus(api
-  "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/api
@@ -103,8 +84,6 @@ add_dependencies(api_generate_messages api_generate_messages_eus)
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg" NAME_WE)
 add_dependencies(api_generate_messages_eus _api_generate_messages_check_deps_${_filename})
-get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg" NAME_WE)
-add_dependencies(api_generate_messages_eus _api_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility
 add_custom_target(api_geneus)
@@ -117,12 +96,6 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS api_generate_messages_eus)
 ### Generating Messages
 _generate_msg_lisp(api
   "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/api
-)
-_generate_msg_lisp(api
-  "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/api
@@ -144,8 +117,6 @@ add_dependencies(api_generate_messages api_generate_messages_lisp)
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg" NAME_WE)
 add_dependencies(api_generate_messages_lisp _api_generate_messages_check_deps_${_filename})
-get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg" NAME_WE)
-add_dependencies(api_generate_messages_lisp _api_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility
 add_custom_target(api_genlisp)
@@ -158,12 +129,6 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS api_generate_messages_lisp)
 ### Generating Messages
 _generate_msg_nodejs(api
   "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/api
-)
-_generate_msg_nodejs(api
-  "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/api
@@ -185,8 +150,6 @@ add_dependencies(api_generate_messages api_generate_messages_nodejs)
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg" NAME_WE)
 add_dependencies(api_generate_messages_nodejs _api_generate_messages_check_deps_${_filename})
-get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg" NAME_WE)
-add_dependencies(api_generate_messages_nodejs _api_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility
 add_custom_target(api_gennodejs)
@@ -199,12 +162,6 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS api_generate_messages_nodejs)
 ### Generating Messages
 _generate_msg_py(api
   "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/api
-)
-_generate_msg_py(api
-  "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/api
@@ -225,8 +182,6 @@ add_dependencies(api_generate_messages api_generate_messages_py)
 
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/CVInfo.msg" NAME_WE)
-add_dependencies(api_generate_messages_py _api_generate_messages_check_deps_${_filename})
-get_filename_component(_filename "/home/dovakeith/HCR/nlp_ros/src/api/msg/State.msg" NAME_WE)
 add_dependencies(api_generate_messages_py _api_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility

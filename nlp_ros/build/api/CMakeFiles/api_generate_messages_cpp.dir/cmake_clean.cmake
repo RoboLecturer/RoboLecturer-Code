@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "/home/dovakeith/HCR/nlp_ros/devel/include/api/CVInfo.h"
-  "/home/dovakeith/HCR/nlp_ros/devel/include/api/State.h"
   "CMakeFiles/api_generate_messages_cpp"
 )
 

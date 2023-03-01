@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "/home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/_CVInfo.py"
-  "/home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/_State.py"
   "/home/dovakeith/HCR/nlp_ros/devel/lib/python3/dist-packages/api/msg/__init__.py"
   "CMakeFiles/api_generate_messages_py"
 )
