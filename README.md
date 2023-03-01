@@ -32,7 +32,7 @@ See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api
 ### 2.2. Catkin workspace
 **Note:** if you load and run the [provided image](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh), a sample workspace and package has been created for you.
 
-This section is needed to convert the ROS messages needed into Python packages that you can import in your scripts (e.g. std_msgs.msg.String, api.msg). Otherwise, you'll probably get the warning **```No module found: XXX```**. The basic steps are:
+This section is needed to convert the ROS messages needed into Python packages that you can import in your scripts (e.g. ```std_msgs.msg.String```, ```api.msg```). Otherwise, you'll probably get the warning **```No module found: XXX```**. The basic steps are:
 ```
 mkdir -p ~/<workspace_name>/src         # create workspace folder with "src" folder inside
 cd <workspace_name>/src
@@ -50,7 +50,7 @@ The directory listing should be:
 |    \----src
 |    |    +----api
 ```
-The workspace can be created anywhere. For convenienve, the steps create it in your **/home/$USER/** folder (**~/**).
+The workspace can be created anywhere. For convenience, these instructions create it in your **/home/$USER/** folder (**~/**).
 
 Everytime you open a new terminal, be sure to run ```source ~/<workspace_name>/devel/setup.bash```.
 
@@ -81,7 +81,7 @@ For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLec
 ## 4. FAQs
 - **ERROR: Unable to communicate with master!** when running ROS commands
   1. Is a ```roscore``` running?
-  2. If the line ```source /opt/ros/noetic/setup.bash``` is not in your ```~/.bashrc```, run it, then add it to your ```~/.bashrc``` so you can avoid hving to run it everytime you open a terminal.
+  2. If the line ```source /opt/ros/noetic/setup.bash``` is not in your ```~/.bashrc```, run it, then add it to your ```~/.bashrc``` so you can avoid having to run it everytime you open a terminal.
   3. Run ```source ~/<workspace_name>/devel/setup.bash```.
   4. Your ```ROS_MASTER_URI``` may be different from that of the Master running roscore.
   
@@ -91,4 +91,4 @@ For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLec
 
 - **```No module found: api```**
 
-  You might not have built the api package (see [Section 3.1](#31-building-the-api-package)). If you have, make sure you've run ```source devel/setup.bash```.
+  You might not have built the api package (see [Section 2.2](#22-catkin-workspace)). If you have, make sure you've run ```source devel/setup.bash```.
