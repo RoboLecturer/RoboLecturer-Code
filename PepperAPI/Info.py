@@ -436,6 +436,35 @@ def Listen():
 		if value:
 			state_publisher[name].publish(value)
 			rospy.loginfo("Received: Update %s=%s" % (name,value))
-	StringSubscriber(STATE_UPDATE_TOPIC, callback, listen=0)
+
+	def subscribe_listen():
+		StringSubscriber(STATE_UPDATE_TOPIC, callback, listen=0)
+		while event.is_set() and not rospy.is_shutdown():
+			rospy.rostime.wallsleep(0.5)
+
+	event = threading.Event()
+	event.set()
+	t = threading.Thread(target=subscribe_listen)
+	t.start()
+
+	# Exit when KeyboardInterrupt or when killed
+	global kill_listen
+	try:
+		while True:
+			if not kill_listen:
+				continue
+			event.clear()
+			t.join()
+			break
+	except KeyboardInterrupt:
+		print("KeyboardInterrupt")
+		event.clear()
+		t.join()
 
 	return
+
+# Kill Info.Listen()
+kill_listen = False
+def StopListen():
+	global kill_listen
+	kill_listen = True

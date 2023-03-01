@@ -30,6 +30,7 @@ def main():
 
 	# ========= STATE: AnyQuestions =========
 	resetState("Start")
+	# raw_input()
 
 	# Wait for state update from CV
 	state = Info.Request("State", {"name":"AnyQuestions"})
@@ -147,9 +148,17 @@ def resetAllStates():
 
 if __name__ == "__main__":
 	PepperAPI.init("test")
-	t1 = threading.Thread(target=lambda: Action.Listen())
-	t2 = threading.Thread(target=lambda: Info.Listen())
+	t1 = threading.Thread(target=Action.Listen)
+	t2 = threading.Thread(target=Info.Listen)
 	t1.start()
 	t2.start()
-	while True:
-		main()
+
+	try:
+		while True:
+			main()
+	except KeyboardInterrupt:
+		print("KeyboardInterrupt")
+		Action.StopListen()
+		Info.StopListen()
+		t1.join()
+		t2.join()

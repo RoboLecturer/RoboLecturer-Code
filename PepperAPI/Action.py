@@ -1,3 +1,4 @@
+import sys
 import time
 import threading
 import rospy
@@ -5,7 +6,6 @@ from .Publisher import *
 from .Subscriber import *
 from PepperAPI import *
 import paramiko
-import sys
 
 # =========================================================
 # Request for actuator action by Pepper robot
@@ -208,11 +208,20 @@ def Listen():
 	thread_point.start()
 	thread_volume.start()
 
-	# Exit when KeyboardInterrupt
+	# Exit when KeyboardInterrupt or when killed
+	global kill_listen
 	try:
 		while True:
-			time.sleep(1)
+			if not kill_listen:
+				continue
+			event.clear()
+			thread_tts.join()
+			thread_ap.join()
+			thread_point.join()
+			thread_volume.join()
+			break
 	except KeyboardInterrupt:
+		print("KeyboardInterrupt")
 		event.clear()
 		thread_tts.join()
 		thread_ap.join()
@@ -221,6 +230,11 @@ def Listen():
 
 	return
 
+# Kill Action.Listen()
+kill_listen = False
+def StopListen():
+	global kill_listen
+	kill_listen = True
 
 # ==============================================================
 # Get status action. IsDone=False means action is still running.
