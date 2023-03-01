@@ -69,7 +69,7 @@ def Request(api_name, api_params={}):
 		return True
 
 	
-	print("API does not exist. Please check name again.")
+	print("Action.Request(%s) does not exist. Please check name again." % api_name)
 	return
 
 
