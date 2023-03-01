@@ -4,6 +4,7 @@ import random
 from nlp import scriptGenerator
 from nlp import questionAnswer
 from nlp import questionClassifier
+from nlp import jokeGenerator
 
 list_of_scripts = []
 LOOP_COUNT = 0
@@ -57,16 +58,15 @@ def nlp_main():
 
 		elif Q.main_type == "operational":
 			# if the quesiton is operational, check the command type
-			match Q.subtype:
-				case "increase speech volume":
-					Action.Request("ChangeVolume", {"cmd":"up"})
-					response = "Got it, I'll speak louder"
-					Info.Send("Answer", {"text": response})
-				case "decrease speech volume":
-					Action.Request("ChangeVolume", {"cmd":"down"})
-					response = "Got it, I'll speak quieter"
-					Info.Send("Answer", {"text": response})
-				# TODO: ADD the rest of the operational call when they are implemented
+			if Q.subtype == "increase speech volume":
+				Action.Request("ChangeVolume", {"cmd":"up"})
+				response = "Got it, I'll speak louder"
+				Info.Send("Answer", {"text": response})
+			elif Q.subtype == "decrease speech volume":
+				Action.Request("ChangeVolume", {"cmd":"down"})
+				response = "Got it, I'll speak quieter"
+				Info.Send("Answer", {"text": response})
+			# TODO: ADD the rest of the operational call when they are implemented
 
 		else:
 			# if question is non-relevant then respond as such
@@ -88,11 +88,11 @@ def nlp_main():
 		signal = Info.Request("TriggerJokeOrShutup")
 		# TODO: Generate joke text or shutup text
 		if signal == "joke":
-			joke = "knock knock. Ha ha."
+			joke = jokeGenerator.genJoke("noiseHigh")
 			Info.Send("Joke", {"text": joke})
 		elif signal == "shutup":
-			shutup = "Shut up all of you"
-			Info.Send("Shutup", {"text": shutup})
+			response = "Come on guys. Please try and concentrate, this is some interesting shit i'm teaching here"
+			Info.Send("Shutup", {"text": response})
 		return
 
 	# Else if low noise level, proceed to next state
@@ -108,8 +108,8 @@ def nlp_main():
 		
 		# If trigger_joke, send joke to Speech
 		if signal == "joke":
-			# TODO: generate joke text
-			joke = "I'm telling a joke. Laugh. Ha ha."
+			# generate joke text
+			joke = jokeGenerator.genJoke("attentionLow")
 			Info.Send("Joke", {"text": joke})
 
 		# After joke has been spent, or if trigger_quiz, loop restarts
@@ -126,9 +126,11 @@ def nlp_main():
 	if state == "CounterReached":
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
-			# TODO: generate joke text
-			joke = "I'm telling a joke. Laugh. Ha ha."
+			# generate joke text
+			joke = jokeGenerator.genJoke("")
 			Info.Send("Joke", {"text": joke})
+		
+		# After joke has been sent, or if trigger_quiz, loop restarts 
 		return
 
 	# Else, restart loop
