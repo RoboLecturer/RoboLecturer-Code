@@ -27,22 +27,27 @@ def Request(api_name, api_params={}):
 		"""Request for audio file to be played through Pepper's speakers
 		@param api_params : dict{
 			"path": (String) path of audio file in your machine
+			"file": (String) name of file that's already in Pepper (skips uploading)
 		}
 		"""
-		# Define paths
-		soundfile_path = api_params["path"]
-		filename = soundfile_path.split("/")[-1]
-		pepper_path = PEPPER_AUDIO_PATH + filename
+		if "file" not in api_params:
+			# Define paths
+			soundfile_path = api_params["path"]
+			filename = soundfile_path.split("/")[-1]
+			pepper_path = PEPPER_AUDIO_PATH + filename
 
-		# Setup SFTP link
-		transport = paramiko.Transport((ROBOT_IP, 22))
-		transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
-		sftp = paramiko.SFTPClient.from_transport(transport)
+			# Setup SFTP link
+			transport = paramiko.Transport((ROBOT_IP, 22))
+			transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
+			sftp = paramiko.SFTPClient.from_transport(transport)
 
-		# Send file
-		sftp.put(soundfile_path, pepper_path)
-		sftp.close()
-		transport.close()
+			# Send file
+			sftp.put(soundfile_path, pepper_path)
+			sftp.close()
+			transport.close()
+
+		else:
+			filename = api_params["file"]
 
 		# Publish msg to kinematics module to play audio
 		audio_player_publisher.publish(filename)
