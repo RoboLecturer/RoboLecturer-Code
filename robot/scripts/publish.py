@@ -13,7 +13,5 @@ def talk_to_me():
 
 
 if __name__ == '__main__':
-    try:
-        talk_to_me()
-    except rospy.ROSInterruptExecption:
-        pass
+    talk_to_me()
+    

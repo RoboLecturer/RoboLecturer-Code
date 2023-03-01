@@ -30,6 +30,20 @@ export function resetResults(req, res) {
     });
   };
 
+  export function resetLobby(req, res) {
+    // Delete all rows in the "Results" table
+    const query = 'DELETE FROM Students';
+    db.query(query, (err, result) => {
+      if (err) {
+        console.error('Error reseting students: ', err);
+        res.status(500).send('Error resetting students.');
+        return;
+      }
+      console.log('Reset Lobby:', result);
+      res.status(200).send('Successfully Reseted lobby.');
+    });
+  };
+
 export function uploadedFileNames(req, res) {
   const directoryPath = './uploadedPDFs';
 
@@ -69,7 +83,19 @@ export function getUsers(req, res) {
 
   export function getResults(req, res) {
     var qid = req.query.question_id
-    db.query("SELECT count(answerIndex) as count FROM Results WHERE QuestionNumber = ? GROUP BY answerIndex;",[parseInt(qid)], (err, rows, fields) => { //Update to select by QuizID
+    db.query("SELECT answerIndex, count(answerIndex) as count FROM Results WHERE QuestionNumber = ? GROUP BY answerIndex;",[parseInt(qid)], (err, rows, fields) => { //Update to select by QuizID
+      if (err) {
+        res.statusMessage = err;
+        res.status(500).end();
+      } else {
+        console.log(rows)
+        res.send(rows);
+      }
+    });
+  }
+
+  export function getLeaderboard(req, res) {
+    db.query("select StudentId, Username, sum(isCorrect*100) as total_points from Results inner join Students using(StudentId) group by StudentId order by total_points desc;", (err, rows, fields) => { //Update to select by QuizID
       if (err) {
         res.statusMessage = err;
         res.status(500).end();
@@ -78,3 +104,6 @@ export function getUsers(req, res) {
       }
     });
   }
+
+
+  

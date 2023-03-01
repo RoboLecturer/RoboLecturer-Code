@@ -2,7 +2,11 @@
   <div>
     <hr v-if="joinedLobby" class="visualTimer animate" />
     <h1 v-if="!timerWindowOpen">{{ statusText }}</h1>
+
+    <!-- SHOW WHEN NO QUESTION BEING ASKED -->
     <h1 v-if="quizInitiated">{{ startTimer }}</h1>
+
+    <!-- IF TIMER WINDOW OPEN and JOINED LOBBY -->
     <div class="container" v-if="!joinedLobby && !quizInitiated && !lobbyClosed">
       <div class="column" style="width: 50%">
         <div class="input-field">
@@ -12,17 +16,20 @@
         <a class="waves-effect waves-light btn" @click="storeUser"><i class="material-icons left">cloud</i>Join</a>
       </div>
     </div>
+    <!-- IF TIMER WINDOW OPEN and JOINED LOBBY: SHOW QUESTIONS -->
     <div class="container">
-      <div v-if="timerWindowOpen && joinedLobby" class="column questions">
-        <h1>{{ questions[questionIndex]["prompt"] }}</h1>
-        <div
-          class="row card"
-          v-for="(option, index) in questions[questionIndex]['options']"
-          :key="index"
-          :style="`background-color:${cardColors[index]}`"
-          @click="captureAnswer(option)"
-        >
-          {{ option }}
+      <div v-if="timerWindowOpen && joinedLobby" class="column">
+        <h1 class="row s3 l3 m3">{{ questions[questionIndex]["prompt"] }}</h1>
+        <div class="options row s9 l9 m9">
+          <div
+            class="card"
+            v-for="(option, index) in questions[questionIndex]['options']"
+            :key="index"
+            :style="`background-color:${cardColors[index]}`"
+            @click="captureAnswer(option)"
+          >
+            <div class="card-content">{{ option }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -46,21 +53,22 @@ export default class Home extends Vue {
   quiz_listener: any = null;
   question_listener: any = null;
   timer_listener: any = null;
+  quiz_over_listener: any = null;
   timerWindowOpen = false;
   questions: any = null;
   questionIndex = 0;
   hrWidth = 0;
-  cardColors = ["#ff2400", "#e8b71d", "#1de840", "#335fff", "#dd00f3", "#dd00f3", "#e81d1d", "#e3e81d", "#1ddde8"];
+  cardColors = ["#ff2400", "#e8b71d", "#1de840", "#1ddee8", "#dd00f3", "#dd00f3", "#e81d1d", "#e3e81d", "#1ddde8"];
   username = "";
   joinedLobby = false;
   quizStarted = false;
   quizInitiated = false;
   startTimer = 5;
   interval = null;
-  correctAnswer = "";
   lobbyClosed = false;
   startTimerInterval = 0;
   studentId = -1;
+  answerIndex = -1;
 
   resetAnimation(): void {
     this.timerWindowOpen = true;
@@ -97,9 +105,9 @@ export default class Home extends Vue {
           if (this.startTimer == 0) {
             this.quizStarted = true;
             this.timerWindowOpen = true;
-            this.resetAnimation();
             this.quizInitiated = false;
-            setTimeout(this.onQuestionFinished, 8000);
+            this.resetAnimation();
+            setTimeout(() => null, 8000);
           }
         }, 1000);
       }
@@ -114,26 +122,34 @@ export default class Home extends Vue {
     if (this.questionIndex != this.questions.length - 1) {
       this.timerWindowOpen = false;
       this.questionIndex++;
-      // this.onQuizTriggered();
     }
   }
 
-  onQuestionFinished(): void {
-    // this.timerWindowOpen = false;
-    this.statusText = "Correct!";
-    return;
-  }
-  onQuizFinished(): void {
-    return;
+  onQuizOver(): void {
+    this.statusText = "Join the lobby";
+    this.username = "";
+    this.joinedLobby = false;
+    this.quizStarted = false;
+    this.quizInitiated = false;
+    this.timerWindowOpen = false;
+    this.lobbyClosed = false;
+    this.questionIndex = 0;
   }
 
   captureAnswer(answer: string): void {
     let index = this.questions[this.questionIndex]["options"].indexOf(answer);
-    if (answer == this.correctAnswer) {
-      this.statusText = "Correct answer!";
+    let correctAnswer = this.questions[this.questionIndex]["answer"];
+    this.answerIndex = index;
+    var elements = document.querySelectorAll(".card");
+    elements.forEach((element, index) => {
+      element.classList.add("noHover");
+      if (index != this.answerIndex) {
+        element.classList.add("unselectedAnswer");
+      }
+    });
+    if (answer == correctAnswer) {
       this.storeResult(true, 100, index);
     } else {
-      this.statusText = "Incorrect answer";
       this.storeResult(false, 100, index);
     }
   }
@@ -171,7 +187,6 @@ export default class Home extends Vue {
 
     if (resp.status == 200) {
       this.questions = resp.data.questions;
-      this.correctAnswer = this.questions[this.questionIndex]["answer"];
     } else {
       this.statusText == "Failed to fetch quiz :(";
       console.log(resp);
@@ -226,6 +241,13 @@ export default class Home extends Vue {
       messageType: "std_msgs/String",
     });
     this.question_listener.subscribe(this.onNextQuestion);
+
+    this.quiz_over_listener = new ROSLIB.Topic({
+      ros: this.ros,
+      name: "/take_control_forwarder",
+      messageType: "std_msgs/String",
+    });
+    this.quiz_over_listener.subscribe(this.onQuizOver);
   }
 
   mounted(): void {
@@ -237,23 +259,50 @@ export default class Home extends Vue {
     this.fetchQuiz();
   }
 
-  beforeRouteLeave(): void {
-    this.ros.close();
-    this.connected = false;
-  }
+  // beforeRouteLeave() {
+  //   console.log("BEFORE RL Home");
+  //   // this.ros.close();
+  //   // this.connected = false;
+  // }
 }
 </script>
 
 <style scoped>
-:root {
-  --time: 10s;
+.noHover {
+  pointer-events: none;
+}
+.unselectedAnswer {
+  background-color: rgba(128, 128, 128, 0.784) !important;
+}
+
+.column {
+  width: 80%;
+}
+
+.card-content {
+  font-size: 18px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 30px;
+}
+
+.card {
+  height: 75px;
+}
+.card:hover {
+  opacity: 0.5;
+  font-size: 20px;
 }
 
 .questions {
   width: 100%;
-}
-.card:hover {
-  opacity: 0.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 /* progress bar */

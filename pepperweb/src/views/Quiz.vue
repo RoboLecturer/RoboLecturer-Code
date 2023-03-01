@@ -1,18 +1,42 @@
 <template>
-  <div class="rainbow">
+  <div>
+    <div class="rainbow" style="position: absolute"></div>
     <hr class="visualTimer animate" />
-    <div v-if="quizStarted" class="container column">
-      <h1>{{ questions[questionIndex]["prompt"] }}</h1>
-    </div>
-    <div class="column" v-else>
-      <div class="row s3 m3 l3">
-        <h1>
-          {{ statusText }}
-        </h1>
-        <h1 v-if="quizInitiated">{{ startTimer }}</h1>
+    <!-- IF QUIZ STARTED -->
+    <div class="quiz" v-if="!quizOver">
+      <div v-if="quizStarted" class="container column">
+        <h1>{{ questions[questionIndex]["prompt"] }}</h1>
+        <ResultBarChar
+          v-if="showResults"
+          :results="results"
+          :options="questions[questionIndex]['options']"
+          :colors="colors"
+          :leaderboard="false"
+        ></ResultBarChar>
       </div>
-      <div v-if="!quizInitiated" class="row s9 m9 l9">
-        <p v-for="(user, index) in users" :key="index">{{ user["Username"] }}</p>
+      <!-- IF QUIZ NOT STARTED -->
+      <div class="column" v-if="!quizStarted">
+        <div class="row s3 m3 l3 statusText">
+          <h1>
+            {{ statusText }}
+          </h1>
+          <h1 v-if="quizInitiated">{{ startTimer }}</h1>
+        </div>
+        <div v-if="!quizInitiated" class="row s9 m9 l9">
+          <p v-for="(user, index) in users" :key="index">{{ user["Username"] }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- IF QUIZ FINISHED -->
+    <div class="quiz" v-else>
+      <div v-if="quizStarted" class="container column">
+        <h1>{{ statusText }}</h1>
+        <ResultBarChar
+          :results="leaderboard.map((el:any)=>el.total_points)"
+          :options="leaderboard.map((el:any)=>el.Username)"
+          :colors="leaderboardColors"
+          :leaderboard="true"
+        ></ResultBarChar>
       </div>
     </div>
 
@@ -29,11 +53,12 @@
 
 <script lang="ts">
 import RosInterface from "@/interface/ros";
+import ResultBarChar from "@/components/ResultBarChat.vue";
 import { Options, Vue } from "vue-class-component";
 
 Vue.registerHooks(["beforeRouteLeave"]);
 
-@Options({})
+@Options({ components: { ResultBarChar } })
 export default class Quiz extends Vue {
   api_url: any;
   $cookies: any;
@@ -46,6 +71,22 @@ export default class Quiz extends Vue {
   timerWindowOpen = false;
   startTimer = 5;
   startTimerInterval = 0;
+  showResults = false;
+  quizOver = false;
+  results = [];
+  leaderboard = [];
+  colors: Array<string> = [];
+  leaderboardColors: Array<string> = [
+    "#ff2200",
+    "#dd00f3",
+    "#e81d1d",
+    "#df00f3",
+    "#e8b91d",
+    "#4066ef",
+    "#e5e81d",
+    "#1ddee8",
+    "#1de83f",
+  ];
   rosInterface: RosInterface = new RosInterface(
     "ws://localhost:9000",
     () => {
@@ -69,6 +110,38 @@ export default class Quiz extends Vue {
     }
   }
 
+  async getResults(): Promise<void> {
+    let resp = await this.$http.get(`${this.api_url}/getResult`, {
+      params: { question_id: this.questionIndex },
+    });
+
+    if (resp.status == 200) {
+      this.results = resp.data;
+      var options: any = this.questions[this.questionIndex]["options"];
+      for (let i = 0; i < options.length; i++) {
+        this.colors.push("#DB4C77");
+      }
+      var correctAnswer = options.indexOf(this.questions[this.questionIndex]["answer"]);
+      this.colors[correctAnswer] = "#1de840";
+      setTimeout(() => {
+        this.showResults = true;
+      }, 2000);
+    } else {
+      console.log(resp);
+    }
+  }
+
+  async getLeaderboard(): Promise<void> {
+    let resp = await this.$http.get(`${this.api_url}/getLeaderboard`, {});
+    if (resp.status == 200) {
+      console.log(resp.data);
+      this.leaderboard = resp.data;
+      this.quizOver = true;
+    } else {
+      console.log(resp);
+    }
+  }
+
   async fetchQuiz(): Promise<void> {
     let resp = await this.$http.get(`${this.api_url}/quiz`, {
       params: { name: "test" },
@@ -86,6 +159,7 @@ export default class Quiz extends Vue {
     clearInterval(this.startTimerInterval);
     this.startTimer = 5;
     this.quizStarted = false;
+    this.showResults = false;
     this.quizInitiated = true;
     this.rosInterface.publishStartQuiz({ data: "1" }); //starts 5 second timer on all clients
     if (this.questionIndex > 0) {
@@ -95,11 +169,18 @@ export default class Quiz extends Vue {
     }
     this.startTimerInterval = setInterval(() => {
       this.startTimer--;
-      if (this.startTimer == 0) { //Question timer
+      if (this.startTimer == 0) {
+        //Question timer
         this.resetAnimation();
         this.quizStarted = true;
+        setTimeout(this.onQuestionFinished, 8000);
       }
     }, 1000);
+  }
+
+  onQuestionFinished(): void {
+    clearInterval(this.startTimerInterval);
+    this.getResults();
   }
 
   incrementQuestion(): void {
@@ -109,6 +190,29 @@ export default class Quiz extends Vue {
       this.startQuiz();
     } else {
       this.statusText = "Quiz Over!";
+      this.getLeaderboard();
+    }
+  }
+
+  async resetResults(): Promise<void> {
+    let resp = await this.$http.post(`${this.api_url}/resetResults`, {
+      quiz_id: 0,
+    });
+    if (resp.status == 200) {
+      this.users = resp.data;
+    } else {
+      console.log(resp);
+    }
+  }
+
+  async resetLobby(): Promise<void> {
+    let resp = await this.$http.post(`${this.api_url}/resetLobby`, {
+      quiz_id: 0,
+    });
+    if (resp.status == 200) {
+      this.users = resp.data;
+    } else {
+      console.log(resp);
     }
   }
 
@@ -137,7 +241,9 @@ export default class Quiz extends Vue {
 
   mounted(): void {
     this.rosInterface.connect();
-    console.log(this.$cookies.get("quizCookie"));
+    // console.log(this.$cookies.get("quizCookie"));
+    this.resetResults();
+    this.resetLobby();
     document.addEventListener(
       "keyup",
       (event) => {
@@ -177,21 +283,31 @@ export default class Quiz extends Vue {
     setInterval(this.getUsersInLobby, 2000);
   }
 
-  beforeRouteLeave() {
-    this.rosInterface.disconnect();
-  }
+  // beforeRouteLeave() {
+  //   console.log("Before leave quiz")
+  //   // this.rosInterface.disconnect();
+  // }
 }
 </script>
 
 <style scoped>
+.statusText {
+  padding: 0px 100px 0px 100px;
+}
 .container {
   flex-direction: column;
   height: 100%;
-  padding-bottom: 150px;
+  padding-bottom: 50px;
 }
 .question {
   /* 2c3e50 */
   color: #22303e;
+}
+
+.quiz {
+  position: absolute;
+  height: 100%;
+  width: 100%;
 }
 .rainbow {
   height: 100%;
@@ -201,19 +317,9 @@ export default class Quiz extends Vue {
   top: 0;
   bottom: 0;
   position: absolute;
-  background: linear-gradient(
-    124deg,
-    #ff2400,
-    #e81d1d,
-    #e8b71d,
-    #e3e81d,
-    #1de840,
-    #1ddde8,
-    #4066efbc,
-    #dd00f3,
-    #dd00f3
-  );
+  background: linear-gradient(124deg, #ff2200, #e81d1d, #e8b91d, #e5e81d, #1de83f, #1ddee8, #4066ef, #df00f3, #dd00f3);
   background-size: 1800% 1800%;
+  opacity: 0.7;
 
   -webkit-animation: rainbow 18s ease infinite;
   -z-animation: rainbow 18s ease infinite;
@@ -245,7 +351,7 @@ export default class Quiz extends Vue {
 .navguide {
   position: absolute;
   top: 50px;
-  right: 50px;
+  right: 30px;
 }
 
 .usercount {
@@ -253,7 +359,7 @@ export default class Quiz extends Vue {
   flex-direction: row;
   position: absolute;
   top: 50px;
-  left: 50px;
+  left: 30px;
 }
 
 .kbc-button {

@@ -15,7 +15,6 @@ export class RosInterface {
   ws_url: string;
   text_listener: any = null;
   quiz_starter: any = null;
-  time_starter: any = null;
   control_publisher: any = null;
   next_question_publisher: any = null;
   onQuizTriggered: (msg: any) => void;
@@ -53,12 +52,6 @@ export class RosInterface {
       messageType: "std_msgs/String",
     });
 
-    this.time_starter = new ROSLIB.Topic({
-      ros: this.ros,
-      name: "/start_timer",
-      messageType: "std_msgs/String",
-    });
-
     this.control_publisher = new ROSLIB.Topic({
       ros: this.ros,
       name: "/take_control_forwarder",
@@ -78,10 +71,6 @@ export class RosInterface {
 
   publishStartQuiz(message: ROSLIB.Message): void {
     this.quiz_starter.publish(message);
-  }
-
-  publishStartTimer(message: ROSLIB.Message): void {
-    this.time_starter.publish(message);
   }
 
   publishNextQuestion(message: ROSLIB.Message): void {
