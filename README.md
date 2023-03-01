@@ -50,8 +50,9 @@ The directory listing should be:
 |    \----src
 |    |    +----api
 ```
+The workspace can be created anywhere. For convenienve, the steps create it in your **/home/$USER/** folder (**~/**).
 
-Everytime you open a new terminal, be sure to run ```source <workspace_name>/src/devel/setup.bash```.
+Everytime you open a new terminal, be sure to run ```source ~/<workspace_name>/devel/setup.bash```.
 
 ### 2.3. Setting ROS variables
 To connect other machines, your ROS variables need to be set accordingly:
@@ -68,14 +69,9 @@ export ROS_IP=<your_ip_address>
 **Note:** if you load and run the [provided image](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh), this has already been done to your ```.bashrc```.
 
 ### 2.4. Running your scripts
-```
-cd ~/<workspace_name>
-source devel/setup.bash
-cd src/<package_name>/ # or whatever path your main script is in
-python3 myScript.py
-```
-
-Note: Every time you open a terminal, you have to run ```source <workspace_path>/devel/setup.bash``` in order to import the necessary environment variables to run ROS.
+1. Ensure that there's an updated version of the **PepperAPI** package folder in the same directory as your main script.
+2. You should've already [built your catkin workspace](#22-catkin-workspace) somewhere. Source the variables with ```source ~/<workspace_name>/devel/setup.bash```.
+3. Navigate to the folder with your main script and run ```python myScript.py```.
 
 ## 3. PepperAPI
 For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/PepperAPI.md)**.
