@@ -14,7 +14,8 @@ def Request(api_name, api_params={}):
 	class Data:
 		SimpleMsg = ""
 		Image = None
-		Slides = ""
+		Slides = []
+		NumSlides = 0
 		LectureScript = ""
 		Question = ""
 		Answer = ""
@@ -89,9 +90,12 @@ def Request(api_name, api_params={}):
 		@return	slides text : String
 		"""
 		def callback(msg):
-			Data.Slides = msg.data
+			Data.NumSlides = int(msg.data)
+		StringSubscriber(NUM_HANDS_TOPIC, callback)
+		def callback(msg):
+			Data.Slides.append(msg)
 			rospy.loginfo("Received: Slides=%s" % Data.Slides)
-		StringSubscriber(SLIDES_TOPIC, callback)
+		StringSubscriber(SLIDES_TOPIC, callback, listen=Data.NumSlides)
 		return Data.Slides
 
 	if api_name == "Question":
@@ -250,6 +254,16 @@ def Send(api_name, api_params={}):
 		"""
 		text = api_params["text"]
 		slides_publisher.publish(text)
+		return True
+
+	if api_name == "NumSlides":
+		"""Send number of hands to Kinematics before sending RaisedHandInfo
+		@param	api_params : dict{
+			"value": number of slides
+		}
+		"""
+		num_slides = api_params["value"]
+		num_slides_publisher.publish(num_slides)
 		return True
 
 	if api_name == "TakeControl":

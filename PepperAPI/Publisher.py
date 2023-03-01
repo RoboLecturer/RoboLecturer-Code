@@ -96,6 +96,7 @@ tts_publisher = StringPublisher(TTS_TOPIC)
 ## WEB
 slides_publisher = StringPublisher(SLIDES_TOPIC)
 take_control_publisher = StringPublisher(TAKE_CONTROL_TOPIC)
+num_slides_publisher = StringPublisher(NUM_SLIDES_TOPIC)
 
 ## CV
 hand_publisher = CVInfoPublisher(HAND_TOPIC)
