@@ -2,7 +2,7 @@ from PepperAPI import * # import global topic names
 from .Publisher import *
 from .Subscriber import *
 from api.msg import CVInfo
-import random, rospy
+import random, rospy, threading
 
 # =========================================================
 # Get information from other subteams
@@ -91,7 +91,7 @@ def Request(api_name, api_params={}):
 		"""
 		def callback(msg):
 			Data.NumSlides = int(msg.data)
-		StringSubscriber(NUM_HANDS_TOPIC, callback)
+		StringSubscriber(NUM_SLIDES_TOPIC, callback)
 		def callback(msg):
 			Data.Slides.append(msg)
 			rospy.loginfo("Received: Slides=%s" % Data.Slides)
@@ -403,6 +403,7 @@ def Send(api_name, api_params={}):
 		"""
 		cmd = api_params["cmd"]
 		change_slide_publisher.publish(cmd)
+		return True
 
 
 	## ========= SHARED =========
