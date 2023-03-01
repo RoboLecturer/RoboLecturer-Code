@@ -1,25 +1,36 @@
 import PepperAPI
 from PepperAPI import Info
+import time
 
 LOOP_COUNT = 0
 def web_main():
 
+	global LOOP_COUNT
 	LOOP_COUNT += 1
+	
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
 	Info.Request("State", {"name":"Start"})
 
-	if LOOP_COUNT == 1: # happens only in the very first loop
-		# Send text for all slides to Web one by one
-		for slide_text in list_of_slides_text:
-			# TODO: Send slides text to NLP
-			slides_text = "These are the new slides."
-			Info.Send("Slides", {"text": slides_text})
-		Info.Send("Slides", {"text": "DONE"}) # tell NLP that you've finished sending
+	# happens only in the very first loop
+	if LOOP_COUNT == 1:
 
-	else: # for subsequent loops, wait for trigger to change slide
-		Info.Request("ChangeSlide") # blocking call to get trigger to change slide from Control
-		# TODO: Increment slide
+		# TODO: Get slides text
+		list_of_slides_text = [
+			"Table of Contents\nOur Solar System\nHow stars are born\nThe Universe",
+			"Our solar system contains planets and stars\nThe earth is the only planet that sustains life",
+			"How are stars born"
+		]
+
+		# Send text for all slides to Web one by one
+		number_of_slides = len(list_of_slides_text)
+		Info.Send("NumSlides", {"value": number_of_slides})	# tells NLP how many slides to receive
+		for slide in list_of_slides_text:
+			Info.Send("Slides", {"text": slide})
+
+	# wait for trigger to change slide
+	cmd = Info.Request("ChangeSlide") # blocking call to get trigger to change slide from Control
+	# TODO: Increment slide
 	
 
 	# ========= STATE: AnyQuestions =========
@@ -51,6 +62,7 @@ def web_main():
 		# If trigger_quiz, start quiz
 		if signal == "quiz":
 			# TODO: trigger quiz
+			time.sleep(5)
 			# Send take_control signal back to Control
 			Info.Send("TakeControl")
 
@@ -69,6 +81,7 @@ def web_main():
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "quiz":
 			# TODO: trigger quiz
+			time.sleep(5)
 			# Send take_control signal back to Control
 			Info.Send("TakeControl")
 		return

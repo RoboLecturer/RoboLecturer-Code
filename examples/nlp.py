@@ -1,35 +1,33 @@
 import PepperAPI
 from PepperAPI import Action, Info
 import random 
-<<<<<<< Updated upstream
-=======
-import ScriptGenerator
->>>>>>> Stashed changes
 
 LOOP_COUNT = 0
-def nlp_main():
+list_of_scripts = []
 
+def nlp_main():
+	
+	global LOOP_COUNT, list_of_scripts
 	LOOP_COUNT += 1
+
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
 	Info.Request("State", {"name":"Start"})
 
-	list_of_scripts = []
-	if LOOP_COUNT == 1: # happens only in the very first loop
+	# happens only in the very first loop iteration
+	if LOOP_COUNT == 1:
+	
 		# Get slides text from Web, then
-		slides_text = Info.Request("Slides")
+		list_of_slides_text = Info.Request("Slides")
 
-		# Web can send the "DONE" string to indicate that there are no more slides
-		while slides_text != "DONE":
-			# Generate the lecture script for this slide
-			script = ScriptGenerator.createScript(slides_text)
+		# Generate script and append to list
+		for slide in list_of_slides_text:
+			script = slide
 			list_of_scripts.append(script)
-			# Request slides text again
-			slides_text = Info.Request("Slides")
 
-	else: # for subsequent loops, just send the script in the list
-		script = list_of_scripts[LOOP_COUNT-1]
-		Info.Send("LectureScript", {"text": script})
+	# for subsequent loops, just send the script in the list
+	script = list_of_scripts[LOOP_COUNT-1]
+	Info.Send("LectureScript", {"text": script})
 
 
 	# ========= STATE: AnyQuestions =========
