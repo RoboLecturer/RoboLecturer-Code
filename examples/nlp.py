@@ -3,26 +3,28 @@ from PepperAPI import Action, Info
 import random 
 import nlp.scriptGenerator
 
+list_of_scripts = []
+
 LOOP_COUNT = 0
 def nlp_main():
+
+	global list_of_scripts
 
 	LOOP_COUNT += 1
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
 	Info.Request("State", {"name":"Start"})
 
-	list_of_scripts = []
 	if LOOP_COUNT == 1: # happens only in the very first loop
 		# Get slides text from Web, then
-		slides_text = Info.Request("Slides")
+		list_of_slides = Info.Request("Slides")
 
 		# Web can send the "DONE" string to indicate that there are no more slides
-		while slides_text != "DONE":
-			# Generate the lecture script for this slide
-			script = nlp.scriptGenerator.createScript(slides_text)
-			list_of_scripts.append(script)
-			# Request slides text again
-			slides_text = Info.Request("Slides")
+		for slide in list_of_slides:
+			script = nlp.scriptGenerator.createScript(slide)
+			list_of_scripts.append(script) 
+		
+		Info.Send("LectureScript", {"text": list_of_scripts[0]})
 
 	else: # for subsequent loops, just send the script in the list
 		script = list_of_scripts[LOOP_COUNT-1]
@@ -40,13 +42,14 @@ def nlp_main():
 		question = Info.Request("Question")
 
 		# TODO: Classify question
-		question_type = random.choice(["related","operational"])
+		# question_type = random.choice(["related","operational"])
+		question_type = "related"
 
 		if question_type == "related":
 			# TODO: For lecture-related questions,
 			# generate answer from received question then send to Speech
 			answer = "Because blue light is scattered the most"
-			Info.Send("Answer", {"text": answer})
+			Info.Send("Answer", {"text": question})
 
 		else:
 			# TODO: For operational questions, 
@@ -71,7 +74,7 @@ def nlp_main():
 		signal = Info.Request("TriggerJokeOrShutup")
 		# TODO: Generate joke text or shutup text
 		if signal == "joke":
-			joke = "I'm telling a joke. Laugh. Ha ha."
+			joke = "knock knock. Ha ha."
 			Info.Send("Joke", {"text": joke})
 		elif signal == "shutup":
 			shutup = "Shut up all of you"
