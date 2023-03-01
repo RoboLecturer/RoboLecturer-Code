@@ -4,11 +4,11 @@ import random
 from nlp import scriptGenerator
 
 list_of_scripts = []
-
 LOOP_COUNT = 0
+
 def nlp_main():
 
-	global list_of_scripts
+	global list_of_scripts, LOOP_COUNT
 
 	LOOP_COUNT += 1
 	# ========= STATE: Start =========
@@ -23,12 +23,9 @@ def nlp_main():
 		for slide in list_of_slides:
 			script = scriptGenerator.createScript(slide)
 			list_of_scripts.append(script) 
-		
-		Info.Send("LectureScript", {"text": list_of_scripts[0]})
+		# Send entrie lecture content to the Speech Processing module for pre-processing
+		Info.Send("LectureScript", {"text": list_of_scripts})
 
-	else: # for subsequent loops, just send the script in the list
-		script = list_of_scripts[LOOP_COUNT-1]
-		Info.Send("LectureScript", {"text": script})
 
 
 	# ========= STATE: AnyQuestions =========
