@@ -2,13 +2,20 @@ import PepperAPI
 from PepperAPI import Action, Info
 import random 
 from nlp import scriptGenerator
+from nlp import questionAnswer
+from nlp import questionClassifier
 
 list_of_scripts = []
 LOOP_COUNT = 0
+class Q:
+	question = ""
+	main_type = ""
+	sub_type = ""
+	answer = ""
 
 def nlp_main():
 
-	global list_of_scripts, LOOP_COUNT
+	global list_of_scripts, LOOP_COUNT, Q
 
 	LOOP_COUNT += 1
 	# ========= STATE: Start =========
@@ -36,25 +43,35 @@ def nlp_main():
 	while state == "HandsRaised":
 
 		# Wait for student's question from Speech
-		question = Info.Request("Question")
+		Q.question = Info.Request("Question")
 
-		# TODO: Classify question
-		# question_type = random.choice(["related","operational"])
-		question_type = "related"
+		# Classify question into main type and sub types
+		Q.main_type, Q.sub_type = questionClassifier(Q.question)
+		# Q.main_type = "related" 
 
-		if question_type == "related":
-			# TODO: For lecture-related questions,
+		if Q.main_type == "related":
 			# generate answer from received question then send to Speech
-			answer = "Because blue light is scattered the most by the earths atmosphere, therefore blue is the dominant colour."
-			Info.Send("Answer", {"text": answer})
+			Q.answer = questionAnswer.answerGen(Q.question)
+			response = f"{Q.answer}.. Does that answer your question?"
+			Info.Send("Answer", {"text": response})
+
+		elif Q.main_type == "operational":
+			# if the quesiton is operational, check the command type
+			match Q.subtype:
+				case "increase speech volume":
+					Action.Request("ChangeVolume", {"cmd":"up"})
+					response = "Got it, I'll speak louder"
+					Info.Send("Answer", {"text": response})
+				case "decrease speech volume":
+					Action.Request("ChangeVolume", {"cmd":"down"})
+					response = "Got it, I'll speak quieter"
+					Info.Send("Answer", {"text": response})
+				# TODO: ADD the rest of the operational call when they are implemented
 
 		else:
-			# TODO: For operational questions, 
-			# request for the corresponding action,
-			# then generate response and send to Speech
-			Action.Request("ChangeVolume", {"cmd":"up"})
-			answer = "Got it, I'll speak louder"
-			Info.Send("Answer", {"text": answer})
+			# if question is non-relevant then respond as such
+			response = "Your question doesn't relate to the lecture content, lets get back on track"
+			Info.Send("Answer", {"text": response})
 
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
