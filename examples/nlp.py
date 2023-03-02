@@ -2,6 +2,7 @@ import PepperAPI
 from PepperAPI import Action, Info
 import random 
 
+# initialise
 LOOP_COUNT = 0
 list_of_scripts = []
 
