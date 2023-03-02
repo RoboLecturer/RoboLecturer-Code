@@ -90,7 +90,7 @@ def Request(api_name, api_params={}):
 def Listen():
 
 	# Import NAOqi modules
-	from naoqi import ALProxy
+	from naoqi import ALProxy, ALBroker
 
 	# Callback for ALTextToSpeech
 	def tts_callback(msg):
@@ -104,7 +104,6 @@ def Listen():
 		rospy.loginfo("Pepper ALAudioPlayer: Play audio %s" % filename)
 		audio_file = PEPPER_AUDIO_PATH + filename
 		ap.playFile(audio_file)
-		# tts.say(filename)
 		return IsDone("Set", "ALAudioPlayer")	
 
 	# Callback for pointing at raised hand
@@ -154,12 +153,13 @@ def Listen():
 		# posture.applyPosture("StandInit", 0.5)
 		tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
 		tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
-		# tts.say("What is your question?")
+		ap.playFile(PEPPER_AUDIO_PATH + "what_is_your_qn.wav")
 
 		return IsDone("Set", "Point")
 
 	# Increase/decrease master volume
 	def volume_callback(msg):
+		# ad = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
 		vol = ad.getOutputVolume()
 		if msg.data == "up":
 			vol = 100 if vol > 90 else vol+10
@@ -172,11 +172,12 @@ def Listen():
 
 	# Initialise proxies
 	try:
-		tts = ALProxy("ALTextToSpeech", ROBOT_IP, ROBOT_PORT)
-		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
-		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
-		ad = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
+		broker = ALBroker("broker", "0.0.0.0", 54000, ROBOT_IP, ROBOT_PORT)
+		tts = ALProxy("ALTextToSpeech")
+		ap = ALProxy("ALAudioPlayer")
+		tracker = ALProxy("ALTracker")
+		posture = ALProxy("ALRobotPosture")
+		ad = ALProxy("ALAudioDevice")
 	except Exception as e:
 		print(e)
 		sys.exit()
