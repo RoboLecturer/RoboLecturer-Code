@@ -83,3 +83,20 @@ def createDescription(slide,script,class_description):
     class_description[f"{title}"] = keywords
 
     return class_description
+
+# initialise the class description dictionary with the operational classes
+def initDict():
+    """This function initialises the class_description dictionary with the operational keys
+    Returns:
+            class_descriptions - [dict] { [string]: [[list][string]] }
+    """
+    class_descriptions = {
+        "increase speech speed": ["speed up", "faster", "quickly"],
+        "decrease speech speed": ["slow down", "slower", "more slowly"],
+        "increase speech volume": ["louder", "increase volume", "raise voice","speak up"],
+        "decrease speech volume": ["softer", "lower volume", "quieter"],
+        "go to previous slide": ["previous slide", "go back"],
+        "go to next slide": ["next slide", "advance slide"],
+        "go to specific slide number": ["go to slide"],
+    }
+    return class_descriptions

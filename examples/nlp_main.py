@@ -28,6 +28,8 @@ def nlp_main():
 	if LOOP_COUNT == 1: # happens only in the very first loop
 		# Get all slides from web
 		list_of_slides = Info.Request("Slides")
+		# initialise the class_descriptions dictionary with operational keys
+		class_description = descriptionGenerator.initDict()
 		slide_number = 1
 		# for each slide, generate script and keyword descriptions
 		for slide in list_of_slides:
