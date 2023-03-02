@@ -13,6 +13,13 @@ from PepperAPI import *
 
 def Request(api_name, api_params={}):
 
+	class FastTransport(paramiko.Transport):
+		def __init__(self, sock):
+			super(FastTransport, self).__init__(sock)
+			self.window_size = 2147483647
+			self.packetizer.REKEY_BYTES = pow(2, 40)
+			self.packetizer.REKEY_PACKETS = pow(2, 40)
+
 	# API callbacks
 	if api_name == "ALTextToSpeech":
 		"""Send message to be said by Pepper
@@ -41,7 +48,7 @@ def Request(api_name, api_params={}):
 			pepper_path = PEPPER_AUDIO_PATH + filename
 
 			# Setup SFTP link
-			transport = paramiko.Transport((ROBOT_IP, 22))
+			transport = FastTransport((ROBOT_IP, 22))
 			transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
 			transport.default_max_packet_size = 1000000000
 			transport.default_window_size = 1000000000
