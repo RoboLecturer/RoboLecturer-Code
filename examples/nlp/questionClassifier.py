@@ -3,38 +3,26 @@
 # Sub-Class
 
 #############################################################################
-# TODO: Return Class and Sub-Class
-# TODO: Create the descriptions using Davinci
-# TODO: Wrap for use in main script
-# TODO: wrap class description for function use
+# TODO: Return Class and Sub-Class --->> DONE
+# TODO: Create the descriptions using Davinci --->> DONE
+# TODO: Wrap for use in main script --->> DONE
+# TODO: wrap class description for function use --->> DONE
 ############################################################################# 
 
 # import and installations
 # pip install sentence_transformers
 from sentence_transformers import SentenceTransformer, util
 
-# Define the class descriptions
-class_descriptions = {
-    # operational classes
-    "increase speech speed": ["speed up", "faster", "quickly"],
-    "decrease speech speed": ["slow down", "slower", "more slowly"],
-    "increase speech volume": ["louder", "increase volume", "raise voice","speak up"],
-    "decrease speech volume": ["softer", "lower volume", "quieter"],
-    "go to previous slide": ["previous slide", "go back"],
-    "go to next slide": ["next slide", "advance slide"],
-    "go to specific slide number": ["go to slide"],
-    # lecture content classes
-    "astronomy": ["astronomy","stars", "planets", "universe"],
-    "photosynthesis": ["photosynthesis","plants", "sunlight", "chlorophyll"],
-    "plant cells": ["cell wall", "chloroplast", "vacuole"],
-    "animal cells": ["mitochondria", "nucleus", "cytoplasm"]
-}
 
 # Define a function to classify questions
-def classify_question(question):
+def classify_question(question, class_descriptions):
     """Function to classify questions into their class type and sub-class type
-    Args: question - [string] incoming question for classification
-    Returns: chosen_class - [string] Class type string
+    Args: 
+            question - [string] incoming question for classification
+            class_descriptions - [dict] { [string]: [[list][string]] } dictionary containing the class and corresponding keyworkds
+    Returns: 
+            main_type - [string] main class output (relevnat / non-relevant / operations)
+            sub_type - [string] sub-class output (specific operational request, specific slide title)
     """
 
     # Load a pre-trained sentence transformer model
@@ -46,19 +34,33 @@ def classify_question(question):
     # Define the classification threshold
     threshold = 0.4
 
-    # Calculate the similarity between the question embedding and each class description
+    # define operational keys for later main_class checking
+    operationalKeys = ["increase speech speed",
+        "decrease speech speed",
+        "increase speech volume",
+        "decrease speech volume",
+        "go to previous slide",
+        "go to next slide",
+        "go to specific slide number"]
     max_sim = -1
-    chosen_class = "non-lecture related question"
-    
+    main_class = "non-related"
+    sub_class = ""
+    # Calculate the similarity between the question embedding and each class description
     for class_name, class_desc in class_descriptions.items():
         sim = util.pytorch_cos_sim(question_embedding, model.encode(class_desc)).max().item()
         if sim > max_sim:
             max_sim = sim
-            chosen_class = class_name
+            sub_class = class_name
+            if sub_class in operationalKeys:
+                main_class = "operational"
+            else:
+                main_class = "related"
 
     # Classify the question based on the maximum similarity
     if max_sim < threshold:
-        return "non-lecture related question"
+        main_class = "non-related"
+        sub_class = ""
+        return main_class, sub_class
     else:
-        return chosen_class
+        return main_class, sub_class
     
