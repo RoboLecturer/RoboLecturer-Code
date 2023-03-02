@@ -1,11 +1,12 @@
+from __future__ import print_function
 import sys
 import time
 import threading
 import rospy
+import paramiko
 from .Publisher import *
 from .Subscriber import *
 from PepperAPI import *
-import paramiko
 
 # =========================================================
 # Request for actuator action by Pepper robot
@@ -30,6 +31,9 @@ def Request(api_name, api_params={}):
 			"file": (String) name of file that's already in Pepper (skips uploading)
 		}
 		"""
+		def printProgress(transferred, left):
+			print("Transferred: {0}\tOut of: {1}".format(transferred, left), end="\r")
+
 		if "file" not in api_params:
 			# Define paths
 			soundfile_path = api_params["path"]
@@ -39,10 +43,12 @@ def Request(api_name, api_params={}):
 			# Setup SFTP link
 			transport = paramiko.Transport((ROBOT_IP, 22))
 			transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
+			transport.default_max_packet_size = 1000000000
+			transport.default_window_size = 1000000000
 			sftp = paramiko.SFTPClient.from_transport(transport)
 
 			# Send file
-			sftp.put(soundfile_path, pepper_path)
+			sftp.put(soundfile_path, pepper_path, callback=printProgress)
 			sftp.close()
 			transport.close()
 
