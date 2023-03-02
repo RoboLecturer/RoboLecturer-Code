@@ -83,6 +83,9 @@ ___
 
 - **```Action.Request("ChangeVolume", {"cmd": "up"/"down"})```**: Request for volume to be increased/decreased
   - **params** (*Dict*) : Desired action "up"/"down" to be provided as *String* to key ```cmd```
+
+- **```Info.Send("ChangeSlide", {"cmd": changeSlideCommand})```**: Send command to change slide - ```"increment|0"``` to increment the slide, ```"decrement|0"``` to decrement the slide and ```"goto|<slide_num>"``` to go to a slide num
+  - **params** (*Dict*) : Command be provided as *String* to key ```cmd```
   
 #### Receive
 - **```Info.Request("Question")```**: Receive speech-to-text of detected question from Speech module
@@ -136,8 +139,8 @@ ___
 #### Send
 - **```Info.Send("TriggerJokeOrQuiz")```**: Send signal ("joke"/"quiz") to NLP & Web module to trigger joke or quiz when loop counter reaches threshold
 - **```Info.Send("TriggerJokeOrShutup")```**: Send signal ("joke"/"quiz") to NLP module to trigger joke/shutup when loop counter reaches threshold
-- **```Info.Send("ChangeSlide", {"cmd": changeSlideCommand})```**: Send command to change slide ("increment|0"/"decrement|0"/"goto|<slide_num>")
-  - **params** (*Dict*) : Change slide command be provided as *String* to key ```cmd```
+- **```Info.Send("ChangeSlide", {"cmd": changeSlideCommand})```**: Send command to change slide - ```"increment|0"``` to increment the slide, ```"decrement|0"``` to decrement the slide and ```"goto|<slide_num>"``` to go to a slide num
+  - **params** (*Dict*) : Command be provided as *String* to key ```cmd```
 - **```Info.Send("State", params)```**: Update state
   - **params** (*Dict*) : 
     - key ```<state_name>```: *String* New state value
