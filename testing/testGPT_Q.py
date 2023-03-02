@@ -3,7 +3,6 @@ import json
 import time
 
 def get_chat_completion():
-	line = "How are stars born"
 	url = "https://api.openai.com/v1/chat/completions"
 	headers = {
 		"Authorization": "Bearer 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",
@@ -11,7 +10,7 @@ def get_chat_completion():
 	}
 	data = {
 		"model": "gpt-3.5-turbo",
-		"messages": [{"role": "user", "content": f"explain the following point in a single paragraph in the style of an excited lecturer: {line}"}]
+		"messages": [{"role": "user", "content": "What is Arsenal football club?"}]
 	}
 	response = requests.post(url, headers=headers, data=json.dumps(data))
 	return response.json()
