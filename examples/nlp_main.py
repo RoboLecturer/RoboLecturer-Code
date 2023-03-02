@@ -5,9 +5,11 @@ from nlp import scriptGenerator
 from nlp import questionAnswer
 from nlp import questionClassifier
 from nlp import jokeGenerator
+from nlp import descriptionGenerator
 
 list_of_scripts = []
 LOOP_COUNT = 0
+class_description = {}
 class Q:
 	question = ""
 	main_type = ""
@@ -16,7 +18,7 @@ class Q:
 
 def nlp_main():
 
-	global list_of_scripts, LOOP_COUNT, Q
+	global list_of_scripts, LOOP_COUNT, Q, class_description
 
 	LOOP_COUNT += 1
 	# ========= STATE: Start =========
@@ -24,16 +26,16 @@ def nlp_main():
 	Info.Request("State", {"name":"Start"})
 
 	if LOOP_COUNT == 1: # happens only in the very first loop
-		# Get slides text from Web, then
+		# Get all slides from web
 		list_of_slides = Info.Request("Slides")
 		slide_number = 1
-		# Web can send the "DONE" string to indicate that there are no more slides
+		# for each slide, generate script and keyword descriptions
 		for slide in list_of_slides:
 			script = scriptGenerator.createScript(slide, slide_number)
 			list_of_scripts.append(script) 
 			if slide_number > 2:
-				# TODO: create question classification content classes and keyword descriptions
-				continue
+				# create question classification content classes and keyword descriptions
+				class_description = descriptionGenerator.createDescription(slide,script)
 			slide_number += 1
 		# Send entrie lecture content to the Speech Processing module for pre-processing
 		Info.Send("LectureScript", {"text": list_of_scripts})
@@ -50,7 +52,7 @@ def nlp_main():
 		Q.question = Info.Request("Question")
 
 		# Classify question into main type and sub types
-		Q.main_type, Q.sub_type = questionClassifier(Q.question)
+		Q.main_type, Q.sub_type = questionClassifier(Q.question,class_description)
 		# Q.main_type = "related" 
 
 		if Q.main_type == "related":

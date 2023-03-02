@@ -4,8 +4,7 @@
 import openai
 from tqdm import tqdm
 ############################################################ 
-# TODO: create code to deal with the title 
-# for the title page... take all the text and use a good prompt to get a simple explination return
+
 # TODO: add CURIE GPT and see the speed diff and content diff
 
 # create a dynamic prompt that changes the lecture delivary style... Cos at the moment it is just too excited all the fucking time 
@@ -15,7 +14,7 @@ def genScript(inputText, slideNum):
     """ Function to generate lecture script for each bullet-point in a presentation slide page
     Args:   inputText - [array][string] contains lines from slide
             slideNum - [int] the current slide number to track when we are on the title page
-    Returns: script - [array][string] contains the lecture script for the slide
+    Returns: script - [string] contains the lecture script for the slide
     """
     # script = []
     script = ""
