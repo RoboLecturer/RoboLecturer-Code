@@ -26,14 +26,17 @@ def nlp_main():
 	if LOOP_COUNT == 1: # happens only in the very first loop
 		# Get slides text from Web, then
 		list_of_slides = Info.Request("Slides")
-
+		slide_number = 1
 		# Web can send the "DONE" string to indicate that there are no more slides
 		for slide in list_of_slides:
-			script = scriptGenerator.createScript(slide)
+			script = scriptGenerator.createScript(slide, slide_number)
 			list_of_scripts.append(script) 
+			if slide_number > 2:
+				# TODO: create question classification content classes and keyword descriptions
+				continue
+			slide_number += 1
 		# Send entrie lecture content to the Speech Processing module for pre-processing
 		Info.Send("LectureScript", {"text": list_of_scripts})
-
 
 
 	# ========= STATE: AnyQuestions =========

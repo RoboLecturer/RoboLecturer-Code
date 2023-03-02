@@ -25,12 +25,12 @@ def genJoke(jokeType):
 
     #  create completion
     completions = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=query,
-            max_tokens=1024,
-            n=1, # generate a single completion
-            temperature=0.2, # keeps responses narrow
-        )
+        engine="text-davinci-003",
+        prompt=query,
+        max_tokens=1024,
+        n=1, # generate a single completion
+        temperature=0.2, # keeps responses narrow
+    )
     # retrive response
     response = completions.choices[0]["text"]
     # return response

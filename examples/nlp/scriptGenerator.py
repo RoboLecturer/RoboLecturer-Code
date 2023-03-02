@@ -11,9 +11,10 @@ from tqdm import tqdm
 # create a dynamic prompt that changes the lecture delivary style... Cos at the moment it is just too excited all the fucking time 
 ############################################################
 
-def genScript(inputText):
+def genScript(inputText, slideNum):
     """ Function to generate lecture script for each bullet-point in a presentation slide page
-    Args: inputText - [array][string] contains lines from slide
+    Args:   inputText - [array][string] contains lines from slide
+            slideNum - [int] the current slide number to track when we are on the title page
     Returns: script - [array][string] contains the lecture script for the slide
     """
     # script = []
@@ -22,12 +23,28 @@ def genScript(inputText):
     # set-up the API key
     openai.api_key = "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"
 
-    # Is the incoming slide the table of contents?
-    if inputText[0].lower() == "table of contents":
+    # if the incoming slide is the title slide
+    if slideNum == 0:
+        # join title slide lines together, seperated by a commar 
+        inputText = ", ".join(inputText)
+        query = f"introudce the following presentation title page in the style of an excited lecturer: {inputText}"
+        # create completion
+        completions = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=query,
+            max_tokens=1024,
+            n=1, # generate a single completion
+            temperature=0.2, # keeps responses narrow
+        )
+        response = completions.choices[0]["text"]
+        return response
+
+    # if incoming slide is the table of contents
+    elif inputText[0].lower() == "table of contents":
         inputText = inputText[1:]
         # create a single string input with contents seperated by a new line
         inputText = "\n".join(inputText)
-        query = f"shortly introduce each of the following points, that are seperated by a new line, as an introduction to a lecture with these points, in the style of an excited lecturer: {inputText}"
+        query = f"shortly introduce each of the following points, that are seperated by a new line, as a table of contents to a lecture with these points, in the style of an excited lecturer: {inputText}"
         # completions
         completions = openai.Completion.create(
             engine="text-davinci-003",
@@ -38,6 +55,7 @@ def genScript(inputText):
         )
         response = completions.choices[0]["text"]
         return response 
+    
     else:
         for line in tqdm(inputText):
             # summarise the bullet point in a few sentences
