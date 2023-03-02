@@ -7,18 +7,38 @@ from nlp import questionClassifier
 from nlp import jokeGenerator
 from nlp import descriptionGenerator
 
+#############################################################################
+# TODO: create a slide class with the following attributes --->> DONE
+# - slide title [key]
+# - slide number 
+# - slide content
+# - script content
+#############################################################################
+
 list_of_scripts = []
 LOOP_COUNT = 0
 class_description = {}
+Slide_instances = []
 class Q:
 	question = ""
 	main_type = ""
 	sub_type = ""
 	answer = ""
 
+class Slide:
+	# MAYBE THIS IS BETTER DONE AS DICTIIONARY???????
+	def __init__(self, slide_number, slide_title, slide_contents, script_contents):
+		self.title = slide_title
+		self.slideNo = slide_number
+		self.slideContent = slide_contents
+		self.scriptContent = script_contents
+
+
+
+
 def nlp_main():
 
-	global list_of_scripts, LOOP_COUNT, Q, class_description
+	global list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances
 
 	LOOP_COUNT += 1
 	# ========= STATE: Start =========
@@ -26,19 +46,29 @@ def nlp_main():
 	Info.Request("State", {"name":"Start"})
 
 	if LOOP_COUNT == 1: # happens only in the very first loop
+
 		# Get all slides from web
 		list_of_slides = Info.Request("Slides")
 		# initialise the class_descriptions dictionary with operational keys
 		class_description = descriptionGenerator.initDict()
 		slide_number = 1
+
 		# for each slide, generate script and keyword descriptions
 		for slide in list_of_slides:
 			script = scriptGenerator.createScript(slide, slide_number)
 			list_of_scripts.append(script) 
+
+			# SET SLIDE CLASS
+			# get slide title 
+			title = descriptionGenerator.getTitle(slide)
+			# set class
+			Slide_instances.append(Slide(slide_number, title, slide, script))
+
 			if slide_number > 2:
 				# create question classification content classes and keyword descriptions
 				class_description = descriptionGenerator.createDescription(slide,script)
 			slide_number += 1
+
 		# Send entrie lecture content to the Speech Processing module for pre-processing
 		Info.Send("LectureScript", {"text": list_of_scripts})
 
@@ -58,10 +88,15 @@ def nlp_main():
 		# Q.main_type = "related" 
 
 		if Q.main_type == "related":
+			# TODO: POST MVP: High/Low order question classification for different speed model answer generation
 			# generate answer from received question then send to Speech
 			Q.answer = questionAnswer.answerGen(Q.question)
 			response = f"{Q.answer}.. Does that answer your question?"
 			Info.Send("Answer", {"text": response})
+			# request slide change after sending text to Speech Processing module as text->speech takes time
+			for instance in Slide_instances:
+				if instance.title == Q.sub_type :
+					Action.Request("ChangeSlide", {"cmd":f"{instance.slideNo}"})
 
 		elif Q.main_type == "operational":
 			# if the quesiton is operational, check the command type

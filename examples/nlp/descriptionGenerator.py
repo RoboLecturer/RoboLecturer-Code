@@ -52,10 +52,9 @@ def createKeywords(response):
     return keywords        
 
 # get title and script content
-def processText(slide, script):
+def getTitle(slide):
     """This function extracts the slide title and the script content for use in keyword creation function
     Args:   slide - [string] contents of a slide
-            script - [string] lecture script content as a single string
     Returns: 
         title - [string] title of the current slide
         content - [string] content of the current slide script
@@ -64,8 +63,7 @@ def processText(slide, script):
     lines_of_slide = slide.split("\n")
     # title is the first line
     title = lines_of_slide[0]
-    content = script
-    return title, content 
+    return title 
 
 # create the description and keywords
 def createDescription(slide,script,class_description):
@@ -77,8 +75,8 @@ def createDescription(slide,script,class_description):
         class_description - [dict] { [string]: [[list][string]] } dictionary containing the class and corresponding keyworkds
     """
     # process text
-    title, content = processText(slide, script)
-    keywords = genKeywords(content)
+    title = getTitle(slide)
+    keywords = genKeywords(script)
     # add element to dictionary
     class_description[f"{title}"] = keywords
 
