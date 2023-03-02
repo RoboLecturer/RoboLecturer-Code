@@ -226,11 +226,16 @@ def Listen():
 		while True:
 			if not kill_listen:
 				continue
+			try:
+				ap.stopAll()
+			except:
+				pass
 			event.clear()
 			thread_tts.join()
 			thread_ap.join()
 			thread_point.join()
 			thread_volume.join()
+			broker.shutdown()
 			break
 	except KeyboardInterrupt:
 		print("KeyboardInterrupt")
