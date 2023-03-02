@@ -34,6 +34,9 @@ if __name__ == "__main__":
 ## APIs
 ### Web
 #### Send
+- **```Info.Send("NumSlides", {"value": numberOfSlides})```**: Send number of slides to NLP before publishing slides text
+  - **params** (*Dict*) : Number of slides to be provided as *Int* to key ```value```
+ 
 - **```Info.Send("Slides", {"text": myText})```**: Send slides text to NLP module  
   - **params** (*Dict*) : Slides text to be provided as *String* to key ```text```
 
@@ -42,12 +45,15 @@ if __name__ == "__main__":
 #### Receive
 - **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal (*String*) "joke" or "quiz". If signal received is "quiz", trigger quiz
 
+- **```Info.Request("ChangeSlide")```**: Receive command for changing slide (increment/decrement/goto)
+  - **return** (*String*) : Change slide command (increment|0, decrement|0 or goto|n)
+
 ___
 ### CV
 #### Send
 - **```Info.Send("NumHands", {"value": numberOfHands})```**: Send number of hands to Kinematics before publishing hand info
   - **params** (*Dict*) : Number of hands to be provided as *Int* to key ```value```
-  - 
+
 - **```Info.Send("RaisedHandInfo", params)```**: Send information about raised hand to Kinematics module 
   - **params** (*Dict*) : 
     - key ```bounding_box```: *Float* (x,y,w,h)
@@ -130,6 +136,8 @@ ___
 #### Send
 - **```Info.Send("TriggerJokeOrQuiz")```**: Send signal ("joke"/"quiz") to NLP & Web module to trigger joke or quiz when loop counter reaches threshold
 - **```Info.Send("TriggerJokeOrShutup")```**: Send signal ("joke"/"quiz") to NLP module to trigger joke/shutup when loop counter reaches threshold
+- **```Info.Send("ChangeSlide", {"cmd": changeSlideCommand})```**: Send command to change slide ("increment|0"/"decrement|0"/"goto|<slide_num>")
+  - **params** (*Dict*) : Change slide command be provided as *String* to key ```cmd```
 - **```Info.Send("State", params)```**: Update state
   - **params** (*Dict*) : 
     - key ```<state_name>```: *String* New state value
