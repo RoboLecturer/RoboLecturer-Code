@@ -16,8 +16,10 @@ incomingSlide = "Our solar system contains planets and stars.\nIt is part of the
 # incomingSlide = "Table of Contents\n\nSubmission Deadline\n\nOverall Presentation Structure\n\nThe Solar System"
 
 # Define the different nlp models
-model1 = "text-davinci-003"
-model2 = "text-curie-001"
+model = "text-davinci-003"
+# model = "text-curie-001"
+# model = "gpt-3.5-turbo"
+
 
 
 def genScript(inputText):
@@ -38,13 +40,24 @@ def genScript(inputText):
         inputText = "\n".join(inputText)
         query = f"shortly introduce each of the following points, that are seperated by a new line, as an introduction to a lecture with these points, in the style of an excited lecturer: {inputText}"
         # completions
-        completions = openai.Completion.create(
-            engine=model1,
-            prompt=query,
-            max_tokens=1024,
-            n=1, # generate a single completion
-            temperature=0.2, # keeps responses narrow
-        )
+        if model == "gpt-3.5-turbo":
+            print(f"Made using {model}")
+            completions = openai.ChatCompletion.create(
+                model=model,
+                messages=[{
+                "role": "user",
+                "content": query
+                }]
+            )
+        else:
+            print(f"Made using {model}")
+            completions = openai.Completion.create(
+                engine=model,
+                prompt=query,
+                max_tokens=1024,
+                n=1, # generate a single completion
+                temperature=0.2, # keeps responses narrow
+            )
         response = completions.choices[0]["text"]
         return response 
     else:
@@ -52,13 +65,24 @@ def genScript(inputText):
             # summarise the bullet point in a few sentences
             query = f"explain the following point in a single paragraph in the style of an excited lecturer: {line}"
             # completions
-            completions = openai.Completion.create(
-                engine=model1,
-                prompt=query,
-                max_tokens=1024,
-                n=1,
-                temperature=0.2,
-            )
+            if model == "gpt-3.5-turbo":
+                print(f"Made using {model}")
+                completions = openai.ChatCompletion.create(
+                    model=model,
+                    messages=[{
+                    "role": "user",
+                    "content": query
+                    }]
+                )
+            else:
+                print(f"Made using {model}")
+                completions = openai.Completion.create(
+                    engine=model,
+                    prompt=query,
+                    max_tokens=1024,
+                    n=1, # generate a single completion
+                    temperature=0.2, # keeps responses narrow
+                )
             response = completions.choices[0]["text"]
             # append the output if we need an array of string
             # script.append(response)
