@@ -1,6 +1,7 @@
 import PepperAPI
 from PepperAPI import Action, Info
-import random 
+import random
+from tqdm import tqdm 
 from nlp import scriptGenerator
 from nlp import questionAnswer
 from nlp import questionClassifier
@@ -54,7 +55,7 @@ def nlp_main():
 		slide_number = 1
 
 		# for each slide, generate script and keyword descriptions
-		for slide in list_of_slides:
+		for slide in tqdm(list_of_slides):
 			script = scriptGenerator.createScript(slide, slide_number)
 			list_of_scripts.append(script) 
 
