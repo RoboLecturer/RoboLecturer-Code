@@ -104,6 +104,7 @@ def Listen():
 		rospy.loginfo("Pepper ALAudioPlayer: Play audio %s" % filename)
 		audio_file = PEPPER_AUDIO_PATH + filename
 		ap.playFile(audio_file)
+		# time.sleep(5)
 		return IsDone("Set", "ALAudioPlayer")	
 
 	# Callback for pointing at raised hand
@@ -159,14 +160,13 @@ def Listen():
 
 	# Increase/decrease master volume
 	def volume_callback(msg):
-		# ad = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
+		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		vol = ad.getOutputVolume()
 		if msg.data == "up":
 			vol = 100 if vol > 90 else vol+10
 		elif msg.data == "down":
 			vol = 0 if vol < 10 else vol-10
 		ad.setOutputVolume(vol)
-		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		return IsDone("Set", "ChangeVolume")
 
 
@@ -221,10 +221,10 @@ def Listen():
 	thread_volume.start()
 
 	# Exit when KeyboardInterrupt or when killed
-	global kill_listen
+	global kill_threads
 	try:
 		while True:
-			if not kill_listen:
+			if not kill_threads:
 				continue
 			try:
 				ap.stopAll()
@@ -248,10 +248,10 @@ def Listen():
 	return
 
 # Kill Action.Listen()
-kill_listen = False
-def StopListen():
-	global kill_listen
-	kill_listen = True
+kill_threads = False
+def KillThreads():
+	global kill_threads
+	kill_threads = True
 
 # ==============================================================
 # Get status action. IsDone=False means action is still running.
