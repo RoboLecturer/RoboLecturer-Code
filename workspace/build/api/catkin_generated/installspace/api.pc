@@ -1,0 +1,8 @@
+prefix=/home/matt/Desktop/RoboLecturer-Code/workspace/install
+
+Name: api
+Description: Description of api
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: rospy message_runtime
