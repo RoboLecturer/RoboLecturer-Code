@@ -35,7 +35,8 @@ class StringPublisher(Publisher, object):
 		while self.publisher.get_num_connections() < self.num_subscribers:
 			pass			
 		self.publisher.publish(msg)
-		rospy.loginfo("[%s] %s: %s" % (self.name, self.topic, msg))
+		if self.topic not in [CHANGE_SLIDE_TOPIC, TRIGGER_QUIZ_TOPIC]:
+			rospy.loginfo("[%s] %s: %s" % (self.name, self.topic, msg))
 
 """publish array of xy float coordinates"""
 class CVInfoPublisher(Publisher, object):
@@ -121,12 +122,13 @@ volume_publisher = StringPublisher(VOLUME_TOPIC)
 
 ## CONTROL
 state_publisher = { 
-	state: StringPublisher(STATE_TOPIC[state], num_subscribers=4)
+	state: StringPublisher(STATE_TOPIC[state], num_subscribers=3)
 	for state in STATE_TOPIC 
 }
 state_update_publisher = StringPublisher(STATE_UPDATE_TOPIC)
-change_slide_publisher = StringPublisher(CHANGE_SLIDE_TOPIC)
+change_slide_publisher = StringPublisher(CHANGE_SLIDE_TOPIC, num_subscribers=0)
+trigger_quiz_publisher = StringPublisher(TRIGGER_QUIZ_TOPIC, num_subscribers=0)
 
 ## SHARED
 trigger_joke_or_shutup_publisher = StringPublisher(TRIGGER_JOKE_OR_SHUTUP_TOPIC, num_subscribers=2)
-trigger_joke_or_quiz_publisher = StringPublisher(TRIGGER_JOKE_OR_QUIZ_TOPIC, num_subscribers=3)
+trigger_joke_or_quiz_publisher = StringPublisher(TRIGGER_JOKE_OR_QUIZ_TOPIC, num_subscribers=2)
