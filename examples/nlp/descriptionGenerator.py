@@ -17,14 +17,13 @@ def genKeywords(content):
     # create query
     query = f"give me a list of 5 keywords associated with the following text: {content}"
     # create completion
-    completions = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt = query,
-        max_tokens=1024,
-        n=1,
-        temperature=0.2,
-    )
-    response = completions.choices[0]["text"]
+    completions = openai.ChatCompletion.create(
+		    model="gpt-3.5-turbo",
+		    messages=[
+				    {"role": "system", "content": f"{query}"},
+			    ]
+	    )
+    response = completions['choices'][0]['message']['content']
     # reformat for use
     keywords = createKeywords(response)
     return keywords

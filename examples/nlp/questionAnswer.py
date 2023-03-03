@@ -16,14 +16,12 @@ def answerGen(question):
     # create query
     query = f"Answer the following questions in a short paragraph in the style of an interesting lecturer: {question}"
     # create completion
-    completions = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=query,
-            max_tokens=1024,
-            n=1, # generate a single completion
-            temperature=0.2, # keeps responses narrow
-        )
-    # retrieve answer
-    response = completions.choices[0]["text"]
+    completions = openai.ChatCompletion.create(
+		    model="gpt-3.5-turbo",
+		    messages=[
+				    {"role": "system", "content": f"{query}"},
+			    ]
+	    )
+    response = completions['choices'][0]['message']['content']
     # returns answer
     return response

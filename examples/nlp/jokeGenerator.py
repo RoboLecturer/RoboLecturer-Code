@@ -24,14 +24,12 @@ def genJoke(jokeType):
         query = f"come up with a short, funny joke for me to tell my students"
 
     #  create completion
-    completions = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=query,
-        max_tokens=1024,
-        n=1, # generate a single completion
-        temperature=0.2, # keeps responses narrow
-    )
-    # retrive response
-    response = completions.choices[0]["text"]
+    completions = openai.ChatCompletion.create(
+		    model="gpt-3.5-turbo",
+		    messages=[
+				    {"role": "system", "content": f"{query}"},
+			    ]
+	    )
+    response = completions['choices'][0]['message']['content']
     # return response
     return response

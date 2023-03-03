@@ -28,14 +28,13 @@ def genScript(inputText, slideNum):
         inputText = ", ".join(inputText)
         query = f"introudce the following presentation title page in the style of an excited lecturer: {inputText}"
         # create completion
-        completions = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=query,
-            max_tokens=1024,
-            n=1, # generate a single completion
-            temperature=0.2, # keeps responses narrow
-        )
-        response = completions.choices[0]["text"]
+        completions = openai.ChatCompletion.create(
+		    model="gpt-3.5-turbo",
+		    messages=[
+				    {"role": "system", "content": f"{query}"},
+			    ]
+	    )
+        response = completions['choices'][0]['message']['content']
         return response
 
     # if incoming slide is the table of contents
@@ -45,14 +44,13 @@ def genScript(inputText, slideNum):
         inputText = "\n".join(inputText)
         query = f"shortly introduce each of the following points, that are seperated by a new line, as a table of contents to a lecture with these points, in the style of an excited lecturer: {inputText}"
         # completions
-        completions = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=query,
-            max_tokens=1024,
-            n=1, # generate a single completion
-            temperature=0.2, # keeps responses narrow
-        )
-        response = completions.choices[0]["text"]
+        completions = openai.ChatCompletion.create(
+		    model="gpt-3.5-turbo",
+		    messages=[
+				    {"role": "system", "content": f"{query}"},
+			    ]
+	    )
+        response = completions['choices'][0]['message']['content']
         return response 
     
     else:
@@ -60,14 +58,13 @@ def genScript(inputText, slideNum):
             # summarise the bullet point in a few sentences
             query = f"explain the following point in a single paragraph in the style of an excited lecturer: {line}"
             # completions
-            completions = openai.Completion.create(
-                engine="text-davinci-003",
-                prompt=query,
-                max_tokens=1024,
-                n=1,
-                temperature=0.2,
-            )
-            response = completions.choices[0]["text"]
+            completions = openai.ChatCompletion.create(
+		        model="gpt-3.5-turbo",
+		        messages=[
+				        {"role": "system", "content": f"{query}"},
+			        ]
+	        )
+            response = completions['choices'][0]['message']['content']
             # append the output if we need an array of string
             # script.append(response)
             # concatenate the output if we need a single string
