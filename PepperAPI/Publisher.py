@@ -121,7 +121,7 @@ volume_publisher = StringPublisher(VOLUME_TOPIC)
 
 ## CONTROL
 state_publisher = { 
-	state: StringPublisher(STATE_TOPIC[state], num_subscribers=4)
+	state: StringPublisher(STATE_TOPIC[state], num_subscribers=3)
 	for state in STATE_TOPIC 
 }
 state_update_publisher = StringPublisher(STATE_UPDATE_TOPIC)
