@@ -14,6 +14,7 @@ The three functions are:
   - [Speech](#speech)
   - [Kinematics](#kinematics)
   - [Control](#control)
+- [Developer docs](#developer-docs)
 
 ## Importing & Initialising
 For each script in which you need to call the API, import the **PepperAPI** package and initialise it with the name of your module (e.g. **cv_module**). This name should remain the same for all scripts, or it'll trigger a port error.
@@ -149,3 +150,38 @@ ___
     - key ```name```: *String* Name of state to be queried
     - (Optional) key ```print```: *boolean* False if no headers should be printed
   - **return** (*String*) : Value of queried state
+  
+## Developer docs
+### Info.Send
+1. Add the topic you want to publish to to **\_\_init.py\_\_** as constant.
+2. Create publisher in **Publisher.py**
+```
+my_publisher = StringPublisher(MY_TOPIC, num_subscribers=2)
+```
+The ```num_subscribers``` argument defines how many modules should be listening before the message is published. Default is 1.
+3. Add your api callback to **Info.py** under ```Send()```. 
+```
+if api_name == "MyApi":
+    msg = api_params["msg"]
+    my_publisher.publish(msg)
+```
+will result in the call ```Info.Send("MyApi", {"msg": "HelloWorld"}```.
+
+### Info.Request
+1. Ensure your topic has been added to **\_\_init.py\_\_**.
+2. Add your api callback to **Info.py** under ```Request()```.
+```
+if api_name == "MyApi":
+    # Define what happens when msg is received
+    def callback(msg):
+        received_string = msg.data # actual string is in attr data
+        Data.MyApi = received_string # saves the data so it can be returned
+    
+    # Create your subscriber
+    StringSubscriber(MY_TOPIC, callback, listen=1)
+    
+    return Data.MyApi
+```
+- The ```listen``` argument takes in how many messages the subscriber should receive before unregistering. 
+- If you need ```Info.Request()``` to return a value, add an attribute to the ```Data``` class in ```Request()``` and store your data there in your subscriber callback.
+- The list of available subscriber (payload) types are in **Subscriber.py**.
