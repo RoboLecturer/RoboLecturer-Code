@@ -7,6 +7,7 @@ from pkg import questionAnswer
 from pkg import questionClassifier
 from pkg import jokeGenerator
 from pkg import descriptionGenerator
+from pkg import quizGeneration
 
 #############################################################################
 # TODO: 
@@ -16,6 +17,7 @@ list_of_scripts = []
 LOOP_COUNT = 0
 class_description = {}
 Slide_instances = []
+list_of_quizes = []
 class Q:
 	question = ""
 	main_type = ""
@@ -35,7 +37,7 @@ class Slide:
 
 def nlp_main():
 
-	global list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances
+	global list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes
 
 	LOOP_COUNT += 1
 	# ========= STATE: Start =========
@@ -64,10 +66,15 @@ def nlp_main():
 			if slide_number > 2:
 				# create question classification content classes and keyword descriptions
 				class_description = descriptionGenerator.createDescription(slide,script)
+				# create quiz for this slide
+				# quiz = quizGeneration.quizGen(script)
+				# list_of_quizes.append(list_of_quizes, quiz)
 			slide_number += 1
 
 		# Send entrie lecture content to the Speech Processing module for pre-processing
 		Info.Send("LectureScript", {"text": list_of_scripts})
+		# Send entire quiz list to web
+		# Info.Send("Quiz", {"text": list_of_quizes})
 
 
 	# ========= STATE: AnyQuestions =========
@@ -93,7 +100,7 @@ def nlp_main():
 			# request slide change after sending text to Speech Processing module as text->speech takes time
 			for instance in Slide_instances:
 				if instance.title == Q.sub_type :
-					Action.Request("ChangeSlide", {"cmd":f"{instance.slideNo}"})
+					Info.Request("ChangeSlide", {"cmd":f"{instance.slideNo}"})
 
 		elif Q.main_type == "operational":
 			# if the quesiton is operational, check the command type
@@ -125,7 +132,7 @@ def nlp_main():
 	# Then send joke/shutup text to Speech. And the loop restarts
 	if state == "High":
 		signal = Info.Request("TriggerJokeOrShutup")
-		# TODO: Generate joke text or shutup text
+		# Generate joke text or shutup text
 		if signal == "joke":
 			joke = jokeGenerator.genJoke("noiseHigh")
 			Info.Send("Joke", {"text": joke})
