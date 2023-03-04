@@ -24,7 +24,7 @@ def get_chat_completion():
 	)	
 	return response
 
-num_iters = 20
+num_iters = 2
 sum = 0
 for i in range(num_iters):
 	start_time = time.time()

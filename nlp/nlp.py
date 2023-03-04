@@ -1,19 +1,15 @@
 import PepperAPI
 from PepperAPI import Action, Info
-import random
+# import random
 from tqdm import tqdm 
-from nlp import scriptGenerator
-from nlp import questionAnswer
-from nlp import questionClassifier
-from nlp import jokeGenerator
-from nlp import descriptionGenerator
+from pkg import scriptGenerator
+from pkg import questionAnswer
+from pkg import questionClassifier
+from pkg import jokeGenerator
+from pkg import descriptionGenerator
 
 #############################################################################
-# TODO: create a slide class with the following attributes --->> DONE
-# - slide title [key]
-# - slide number 
-# - slide content
-# - script content
+# TODO: 
 #############################################################################
 
 list_of_scripts = []
