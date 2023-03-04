@@ -10,7 +10,10 @@ from pkg import descriptionGenerator
 from pkg import quizGeneration
 
 #############################################################################
-# TODO: 
+# TODO: How do we extrct the slide number for a specific slide request?
+#  		If the slide request is based on the content of that slide... how 
+# 		Do we detemine the slide number that we need.... antoher 
+# 		classification?
 #############################################################################
 
 list_of_scripts = []
@@ -108,11 +111,38 @@ def nlp_main():
 				Action.Request("ChangeVolume", {"cmd":"up"})
 				response = "Got it, I'll speak louder"
 				Info.Send("Answer", {"text": response})
+
 			elif Q.subtype == "decrease speech volume":
 				Action.Request("ChangeVolume", {"cmd":"down"})
 				response = "Got it, I'll speak quieter"
 				Info.Send("Answer", {"text": response})
 			# TODO: ADD the rest of the operational call when they are implemented
+
+			elif Q.subtype == "increase speech speed":
+				Action.Request("ChangeSpeed", {"cmd":"up"})
+				response = "Got it, I'll speed up"
+				Info.Send("Answer", {"test": response})
+
+			elif Q.subtype == "decrease speech speed":
+				Action.Request("ChangeSpeed", {"cmd":"down"})
+				response = "Got it, I'll slow down"
+				Info.Send("Answer", {"test": response})
+
+			elif Q.sub_type == "go to next slide":
+				Info.Request("ChangeSlide", {"cmd": "next"})
+				response = "Got it, I'll go to the next slide"
+				Info.Send("Answer", {"text": response})
+
+			elif Q.sub_type == "go to previous slide":
+				Info.Request("ChangeSlide", {"cmd": "previous"})
+				response = "Got it, I'll go to the previous slide"
+				Info.Send("Anwer", {"text": response})
+
+			elif Q.sub_type == "go to specific slide number":
+				# how do we extract the slide number that they want?
+				Info.Request("ChangeSlide", {"cmd": f"5"})
+				response = "Got it, I'll go to that slide"
+				Info.Send("Answer", {"text": response})
 
 		else:
 			# if question is non-relevant then respond as such
