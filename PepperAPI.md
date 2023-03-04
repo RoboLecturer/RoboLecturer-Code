@@ -192,3 +192,45 @@ if api_name == "MyApi":
 - The ```listen``` argument takes in how many messages the subscriber should receive before unregistering. 
 - If you need ```Info.Request()``` to return a value, add an attribute to the ```Data``` class in ```Request()``` and store your data there in your subscriber callback.
 - The list of available subscriber (payload) types are in **Subscriber.py**.
+
+## Action.Request()
+The module will call ```Action.Request()```, which will publish a message to the Kinematics module which is calling ```Action.Listen()``` to perform a callback when the message is received.
+
+1. Determine the NAOqi API needed to perform the desired callback. A list is [here](http://doc.aldebaran.com/2-1/naoqi/index.html). For example, Pepper's TTS is ALTextToSpeech. The desired method is probably ```say()```, which means that the module calling ```Action.Request()``` would need to supplement the message they want to be said as an argument.
+```
+Action.Request("ALTextToSpeech", {"value": "Hello World"})
+```
+
+2. Follow steps 1-2 of [Info.Send()](#infosend) to add your topic and create a publisher for it.
+
+3. Add your block to **Action.py** under ```Request()```.
+```
+if api_name == "MyApi":
+    string_to_say = api_params["value"]
+    my_publisher.publish(string_to_say)
+```
+
+4. Now, define what happens when Kinematics receives the message (i.e. what Pepper should do). First, call the NAOqi module needed through a proxy. This is called under ```
+Listen()``` of **Action.py**. 
+```
+try:
+    broker = ALBroker(...)
+    ...
+    my_proxy = ALProxy("ALTextToSpeech")
+```
+
+5. Define the desired callback once the ```Action.Request()``` is received. ALTextToSpeech needs a message for its ```say()``` method.
+```
+def my_callback(msg):
+    string_to_say = msg.data
+    my_proxy.say(string_to_say)
+```
+
+6. Create a thread for your callback so it can run continuously.
+```
+thread_my_callback = threading.Thread(target=subscribe_listen, args=[lambda: StringSubscriber(MY_TOPIC, my_callback, listen=0)])
+```
+
+The ```subscribe_listen()``` function is predefined to allow your Subscriber to wait for the msg to be received (i.e. ```rospy.spin()```). The ```listen=0``` means your subscriber never unregisters.
+
+7. Allow your thread to start and end by adding ```t.start()``` and ```t.join()``` where you see similar lines.
