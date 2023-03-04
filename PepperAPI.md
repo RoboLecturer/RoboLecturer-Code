@@ -15,6 +15,8 @@ The three functions are:
   - [Kinematics](#kinematics)
   - [Control](#control)
 - [Developer docs](#developer-docs)
+  - [Info.Send()](#infosend)
+  - [Info.Request()](#inforequest)
 
 ## Importing & Initialising
 For each script in which you need to call the API, import the **PepperAPI** package and initialise it with the name of your module (e.g. **cv_module**). This name should remain the same for all scripts, or it'll trigger a port error.
@@ -152,13 +154,14 @@ ___
   - **return** (*String*) : Value of queried state
   
 ## Developer docs
-### Info.Send
+### Info.Send()
 1. Add the topic you want to publish to to **\_\_init.py\_\_** as constant.
 2. Create publisher in **Publisher.py**
 ```
 my_publisher = StringPublisher(MY_TOPIC, num_subscribers=2)
 ```
 The ```num_subscribers``` argument defines how many modules should be listening before the message is published. Default is 1.
+
 3. Add your api callback to **Info.py** under ```Send()```. 
 ```
 if api_name == "MyApi":
@@ -167,7 +170,7 @@ if api_name == "MyApi":
 ```
 will result in the call ```Info.Send("MyApi", {"msg": "HelloWorld"}```.
 
-### Info.Request
+### Info.Request()
 1. Ensure your topic has been added to **\_\_init.py\_\_**.
 2. Add your api callback to **Info.py** under ```Request()```.
 ```
