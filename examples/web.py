@@ -28,10 +28,7 @@ def web_main():
 		for slide in list_of_slides_text:
 			Info.Send("Slides", {"text": slide})
 
-	# wait for trigger to change slide
-	cmd = Info.Request("ChangeSlide") # blocking call to get trigger to change slide from Control
-	# TODO: Increment slide
-	
+
 
 	# ========= STATE: AnyQuestions =========
 	# Nothing to do here. Just wait for state change to "NoHandsRaised"
