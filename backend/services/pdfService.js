@@ -26,8 +26,8 @@ return ros
 export function publishPdfParseTopic(filename,pageNumber,text,ros ){
 var publishTopic = new ROSLIB.Topic({
 ros : ros,
-name : '/pdfOcr',
-messageType : 'topic/pdfOcr'
+name : '/slides',
+messageType : 'std_msgs/String'
 });
 
 var msg = new ROSLIB.Message({
@@ -46,7 +46,7 @@ export function publishNumSlides(filename,pagecount,ros ){
     var publishTopic = new ROSLIB.Topic({
     ros : ros,
     name : '/num_slides',
-    messageType : 'topic/num_slides'
+    messageType : 'std_msgs/String'
     });
     
     var msg = new ROSLIB.Message({
