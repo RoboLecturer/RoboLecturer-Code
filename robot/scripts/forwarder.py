@@ -11,7 +11,6 @@ def listener():
     rospy.Subscriber('take_control_forwarder', String, callback)
     rospy.spin()
 
-
 if __name__ == '__main__':
     try:
         listener()

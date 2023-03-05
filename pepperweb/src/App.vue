@@ -19,7 +19,7 @@ export default class App extends Vue {
     M.AutoInit(); //initialise materialise css
   }
   async created() {
-    document.title = "RoboLek";
+    document.title = "Roboserver";
   }
 }
 </script>

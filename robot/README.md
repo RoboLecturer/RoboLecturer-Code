@@ -17,7 +17,9 @@ This docker image makes use of the ROS Melodic distrbution in a Ubuntu 18.0.4 en
 
 Once running, we can publish and listen to topics as follows:
 
-* Publish: `rostopic pub /txt_msg std_msgs/String "data: 'Test message'" -1`, where /txt_msg is the name of the topic and std_msgs/String is the message format.
+* Change slide: `rostopic pub /change_slide std_msgs/String "data: 'increment|0'" -1`
+
+* Trigger quiz: `rostopic pub /trigger_quiz std_msgs/String "data: 'increment|0'" -1`
 
 * Listen and display receieved messages: `rostopic echo /txt_msg` where /txt_msg is the topic name.
 
@@ -26,9 +28,9 @@ Once running, we can publish and listen to topics as follows:
 1. Start docker container 
 2. Catkin build
 3. source devel/setup.bash
-4. export ROS_MASTER_URI
+4. export ROS_MASTER_URI=http://192.168.0.102:11311
 5. Launch Web socket
-6. export ROS_IP to allow for publishing
+6. export ROS_IP to allow for publishing //setting this prevents from local comms
 
 
 ## Resources

@@ -41,7 +41,8 @@ export default class Slides extends Vue {
   }
 
   onQuizTriggered(msg: ROSLIB.Message): void {
-    this.$cookies.set("quizCookie", "this is a global cookie");
+    console.log(msg);
+    // this.$cookies.set("quizCookie", "this is a global cookie");
     this.$router.push({
       name: "Quiz",
     });
@@ -69,15 +70,12 @@ export default class Slides extends Vue {
       default:
         break;
     }
+    this.$cookies.set("currentSlideNumber", this.currentPage);
   }
 
   publishText(msg: string): void {
     var data: ROSLIB.Message = new ROSLIB.Message({ data: msg });
     this.ros.publishTakeControl(data);
-  }
-
-  setSelectedTopic(): string {
-    return "";
   }
 
   connect(): void {
@@ -128,8 +126,12 @@ export default class Slides extends Vue {
   }
 
   mounted(): void {
-    this.$cookies.set("quizCookie", "globalCookie test");
-    console.log(this.$cookies.get("quizCookie"));
+    var pageCookie = this.$cookies.get("currentSlideNumber");
+    console.log(pageCookie);
+    if (pageCookie) {
+      this.currentPage = parseInt(pageCookie);
+    }
+
     this.initialize();
     this.connect();
     document.addEventListener(
@@ -148,9 +150,11 @@ export default class Slides extends Vue {
     );
   }
 
-  beforeRouteLeave(): void {
-    this.ros.close();
-  }
+  // beforeRouteLeave() {
+  //   console.log("BEFORE RL")
+
+  //   // this.ros.close();
+  // }
 }
 </script>
 

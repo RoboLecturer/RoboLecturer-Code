@@ -3,14 +3,24 @@
     "question_count":"1",
     "questions":[
        {
-          "prompt":"what is x",
-          "answer":"x",
+          "prompt":"what is x?",
+          "answer":"Option x",
           "options":[
-             "x",
-             "a",
-             "b",
-             "c"
+             "Option x",
+             "Option a",
+             "Option b",
+             "Option c"
           ]
-       }
+       },
+       {
+         "prompt":"what is y?",
+         "answer":"Option y",
+         "options":[
+            "Option y",
+            "Option a",
+            "Option b",
+            "Option c"
+         ]
+      }
     ]
  }
