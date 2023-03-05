@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import wave
-import sys
+# import sys
 from math import log10
 
 # m4a_file = r"/Users/hazemmassoud/Desktop/SPEAKERS/rode 2.mp4"

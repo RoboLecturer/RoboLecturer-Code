@@ -1,29 +1,31 @@
 import pyaudio
 import time
 from math import log10
-import audioop  
+import audioop
 import time
-import matplotlib as plt
-#initiate object
+
+# initiate object
 p = pyaudio.PyAudio()
 
-#set paramaters needed. 
+# setting the mic being used to a variable Mic
 MIC = 2
-WIDTH = 2                                                           #Bit_Size of audio (2 bytes- 16 bits)
-RATE = int(p.get_device_info_by_index(MIC)['defaultSampleRate']) #getting the default sample rate of the mic being used]                  #setting the mic being used to a variable Mic
-rms = 1                                                            #Initiating RMS
-db=0                                            
-#print(p.get_default_input_device_info())
+# bit_Size of audio (2 bytes - 16 bits)
+WIDTH = 2
+# getting the default sample rate of the mic being used]                  
+RATE = int(p.get_device_info_by_index(MIC)['defaultSampleRate'])
+# Initiating RMS
+rms = 1
+db = 0
 
-#Define a callback function 
+# print(p.get_default_input_device_info())
 
+# Define a callback function 
 def callback(in_data, frame_count, time_info, status):
    global rms
    rms = audioop.rms(in_data, WIDTH) 
    return in_data, pyaudio.paContinue
 
-# #Open A stream of PyAudio to start listening
-
+# Open A stream of PyAudio to start listening
 stream = p.open(format=p.get_format_from_width(WIDTH),
                 input_device_index=MIC,
                 channels=1,
@@ -35,10 +37,8 @@ stream = p.open(format=p.get_format_from_width(WIDTH),
    
 stream.start_stream()
 
-#While loop to calculate db of noise, print it
-#and refresh every 0.3 seconds
-
-
+# While loop to calculate db of noise, print it
+# and refresh every 0.3 seconds
 
 def Shush(limit,timel):
     start_time = time.time()
@@ -51,12 +51,11 @@ def Shush(limit,timel):
             return True
         
         elapsed_time = time.time() - start_time
-        #print(elapsed_time)
         # refresh every 0.3 seconds 
         time.sleep(0.3)
     return False
         
-#print(Shush(70, 10))
+# print(Shush(70, 10))
 # stream.stop_stream()
 # stream.close()
 
