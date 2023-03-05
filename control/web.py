@@ -27,7 +27,7 @@ def web_main():
 		Info.Send("NumSlides", {"value": number_of_slides})	# tells NLP how many slides to receive
 		for slide in list_of_slides_text:
 			Info.Send("Slides", {"text": slide})
-
+      
 
 
 	# ========= STATE: AnyQuestions =========
