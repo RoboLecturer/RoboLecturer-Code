@@ -11,10 +11,15 @@ with open(INPUT_PATH, 'r') as file:
 # List available 🐸TTS models and choose the first one
 # model_name = TTS.list_models()[0]
 
-# Init TTS with the target model name
-# print(TTS.list_models())
-tts = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC", progress_bar=True, gpu=False)
-# Text to speech with a numpy output
-# wav = tts.tts(txt, speaker=tts.speakers[0], language=tts.languages[0])
-# Run TTS
-tts.tts_to_file(text=txt, file_path=OUTPUT_PATH)
+def runT2S(txt):
+    # Init TTS with the target model name
+    # print(TTS.list_models())
+    tts = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC", progress_bar=True, gpu=False)
+    # Text to speech with a numpy output
+    # wav = tts.tts(txt, speaker=tts.speakers[0], language=tts.languages[0])
+    # Run TTS
+    tts.tts_to_file(text=txt, file_path=OUTPUT_PATH)
+
+    return OUTPUT_PATH
+
+runT2S(txt)
