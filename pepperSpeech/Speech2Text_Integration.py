@@ -1,6 +1,9 @@
 #pip install SpeechRecognition pyaudio
 
 import speech_recognition as sr
+import PepperAPI
+from PepperAPI import info
+
 
 filename = "6241-61943-0027.flac"
 
@@ -33,20 +36,28 @@ def whisper(audio):
         print("Whisper could not understand audio")
     except sr.RequestError as e:
         print("Could not request results from Whisper")
-
-
 r = sr.Recognizer()
 
-# List available mics
-print(sr.Microphone.list_microphone_names())
+if __name__ == "__main__":
+    #initialize API
+    PepperAPI.init("speech_module")
+    script = Info.Request("LectureScript")
+    #run t2s
+    
+    # List available mics
+    #print(sr.Microphone.list_microphone_names())
 
-# Test with mic
-with sr.Microphone(device_index=0) as source:
-    print("Say something!")
-    mic_input = r.listen(source)
-    text = Sphinx(mic_input)
-     # GSR(mic_input)
-    print(text)
+    # Test with mic
+    with sr.Microphone(device_index=0) as source:
+        print("Say something!")
+        mic_input = r.listen(source)
+        question = Sphinx(mic_input)
+        # GSR(mic_input)
+        #print(text)
+    Info.send("Question", {"text": question})
+    answer = Info.Request("Answer")
+    #run t2s with answer
+
 
 # Test with audio file
 #with sr.AudioFile(filename) as source:
