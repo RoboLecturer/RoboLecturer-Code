@@ -78,6 +78,17 @@ def Request(api_name, api_params={}):
 		val = api_params["cmd"]
 		volume_publisher.publish(val)
 		return True
+	
+	# imput the speed cahnge api call
+	if api_name == "ChangeSpeed":
+		"""Request for Pepper to change speed of speech
+		@param api_params : dict{
+			"cmd": (String) "increase" or "decrease"
+		}
+		"""
+		val = api_params["cmd"]
+		speed_publisher.publish(val)
+		return True
 
 	
 	print("Action.Request(%s) does not exist. Please check name again." % api_name)
