@@ -48,8 +48,6 @@ if __name__ == "__main__":
 #### Receive
 - **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal (*String*) "joke" or "quiz". If signal received is "quiz", trigger quiz
 
-- **```Info.Request("ChangeSlide")```**: Receive command for changing slide (increment/decrement/goto)
-  - **return** (*String*) : Change slide command (increment|0, decrement|0 or goto|n)
 
 ___
 ### CV
