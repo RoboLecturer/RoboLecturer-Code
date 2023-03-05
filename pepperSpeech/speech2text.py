@@ -41,12 +41,13 @@ r = sr.Recognizer()
 print(sr.Microphone.list_microphone_names())
 
 # Test with mic
-with sr.Microphone(device_index=0) as source:
-    print("Say something!")
-    mic_input = r.listen(source)
-    text = Sphinx(mic_input)
-     # GSR(mic_input)
-    print(text)
+def runSTT(index):
+    with sr.Microphone(device_index=index) as source:
+        #print("Say something!")
+        mic_input = r.listen(source)
+        text = Sphinx(mic_input)
+        # GSR(mic_input)
+    return text
 
 # Test with audio file
 #with sr.AudioFile(filename) as source:
