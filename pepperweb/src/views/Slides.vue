@@ -108,6 +108,9 @@ export default class Slides extends Vue {
       ros: this.ros,
       name: "/change_slide",
       messageType: "std_msgs/String",
+      queue_length: 10,
+      throttle_rate: 1,
+      reconnect_on_close:true,
     });
     this.slide_listener.subscribe(this.onChangeSlide);
 

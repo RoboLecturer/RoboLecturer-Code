@@ -199,7 +199,7 @@ export default class Quiz extends Vue {
       quiz_id: 0,
     });
     if (resp.status == 200) {
-      this.users = resp.data;
+      this.users = [];
     } else {
       console.log(resp);
     }
@@ -210,7 +210,7 @@ export default class Quiz extends Vue {
       quiz_id: 0,
     });
     if (resp.status == 200) {
-      this.users = resp.data;
+      this.users = [];
     } else {
       console.log(resp);
     }
@@ -251,7 +251,7 @@ export default class Quiz extends Vue {
         // As the user releases the Ctrl key, the key is no longer active,
         // so event.ctrlKey is false.
         if (keyName === "q") {
-          this.rosInterface.publishTakeControl({ data: "Hiya" });
+          this.rosInterface.publishTakeControl({ data: "Quiz over." });
           this.$router.push({
             name: "Slides",
           });
