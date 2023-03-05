@@ -107,7 +107,7 @@ def Listen():
 	def tts_callback(msg):
 		rospy.loginfo("Pepper ALTextToSpeech: Say %s" % msg.data)
 		tts.say(msg.data)
-		return IsDone("Set", "ALTextToSpeech")	
+		return IsDone("Set", "ALTextToSpeech")
 
 	# Callback for ALAudioPlayer
 	def audio_player_callback(msg):
@@ -116,7 +116,7 @@ def Listen():
 		audio_file = PEPPER_AUDIO_PATH + filename
 		ap.playFile(audio_file)
 		# time.sleep(5)
-		return IsDone("Set", "ALAudioPlayer")	
+		return IsDone("Set", "ALAudioPlayer")
 
 	# Callback for pointing at raised hand
 	def point_callback(msg):
@@ -179,6 +179,17 @@ def Listen():
 			vol = 0 if vol < 10 else vol-10
 		ad.setOutputVolume(vol)
 		return IsDone("Set", "ChangeVolume")
+	
+	# Increase/decrease master volume
+	def speed_callback(msg):
+		rospy.loginfo("Pepper ALAudioDevice: Speed " + msg.data)
+		speed = tts.getParameter("speed")
+		if msg.data == "increase":
+			speed = 400 if speed > 390 else speed+10
+		elif msg.data == "decrease":
+			speed = 50 if speed < 60 else speed-10
+		tts.setParameter("speed", float(speed))
+		return IsDone("Set", "ChangeSpeed")
 
 
 	# Initialise proxies
@@ -224,12 +235,18 @@ def Listen():
 	thread_volume = threading.Thread(target=subscribe_listen, args=(
 		lambda: StringSubscriber(VOLUME_TOPIC, volume_callback, listen=0, log=False),
 		))
+	
+	# Change speed command called by NLP
+	thread_speed = threading.Thread(target=subscribe_listen, args=(
+		lambda: StringSubscriber(SPEED_TOPIC, speed_callback, listen=0, log=False),
+	))
 
 	# Run threads
 	thread_tts.start()
 	thread_ap.start()
 	thread_point.start()
 	thread_volume.start()
+	thread_speed.start()
 
 	# Exit when KeyboardInterrupt or when killed
 	global kill_threads
@@ -246,6 +263,7 @@ def Listen():
 			thread_ap.join()
 			thread_point.join()
 			thread_volume.join()
+			thread_speed.join()
 			broker.shutdown()
 			break
 	except KeyboardInterrupt:
@@ -255,6 +273,7 @@ def Listen():
 		thread_ap.join()
 		thread_point.join()
 		thread_volume.join()
+		thread_speed.join()
 
 	return
 
@@ -271,7 +290,8 @@ action_status_dict = {
 	"ALTextToSpeech": False,
 	"ALAudioPlayer": False,
 	"Point": False,
-	"ChangeVolume": False
+	"ChangeVolume": False,
+	"ChangeSpeed": False,
 }
 def IsDone(action, name):
 	

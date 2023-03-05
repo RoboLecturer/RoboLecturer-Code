@@ -40,6 +40,7 @@ TRIGGER_LISTEN_TOPIC = "trigger_listen"
 TRIGGER_QUIZ_TOPIC = "trigger_quiz"
 TTS_TOPIC = "tts"
 VOLUME_TOPIC = "volume"
+SPEED_TOPIC = "speed"
 
 # Start node
 def init(node):
