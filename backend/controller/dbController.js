@@ -45,7 +45,7 @@ export function resetResults(req, res) {
   };
 
 export function uploadedFileNames(req, res) {
-  const directoryPath = './uploadedPDFs';
+  const directoryPath = '../pepperweb/public/uploadedPDFs';
 
   fs.readdir(directoryPath, (err, files) => {
     if (err) {

@@ -40,8 +40,9 @@ export function parsePDF(req, res) {
   getDirectories(outputDirectory, async function (err, content) {
     
     try {
-      // const ros = connectROS()
+      const ros = connectROS()
       
+      publishNumSlides(pdfName,content.length,ros)
       for (let i = 1; i <content.length+1; i++) {
         // iterate by filename
         const imgName = outputDirectory+"/untitled."+i+".png"
@@ -50,7 +51,7 @@ export function parsePDF(req, res) {
         // temp demo
         console.log(text)
         // WIP publish to ROS
-        // publishPdfParseTopic(pdfName,i+1,text,ros)
+        publishPdfParseTopic(pdfName,i+1,text,ros)
       } 
     } catch (error) {
       // failed to connect to ROS 
