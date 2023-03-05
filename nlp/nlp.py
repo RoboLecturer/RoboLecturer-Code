@@ -129,18 +129,20 @@ def nlp_main():
 				Info.Send("Answer", {"test": response})
 
 			elif Q.sub_type == "go to next slide":
-				Info.Request("ChangeSlide", {"cmd": "next"})
+				Info.Request("ChangeSlide", {"cmd": "increment|"})
 				response = "Got it, I'll go to the next slide"
 				Info.Send("Answer", {"text": response})
 
 			elif Q.sub_type == "go to previous slide":
-				Info.Request("ChangeSlide", {"cmd": "previous"})
+				Info.Request("ChangeSlide", {"cmd": "decrement|"})
 				response = "Got it, I'll go to the previous slide"
 				Info.Send("Anwer", {"text": response})
 
 			elif Q.sub_type == "go to specific slide number":
 				# how do we extract the slide number that they want?
-				Info.Request("ChangeSlide", {"cmd": f"5"})
+				# TODO: how to get the specific slide
+				slide_no = 5
+				Info.Request("ChangeSlide", {"cmd": f"goto|{slide_no}"})
 				response = "Got it, I'll go to that slide"
 				Info.Send("Answer", {"text": response})
 
