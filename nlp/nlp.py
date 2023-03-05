@@ -129,12 +129,12 @@ def nlp_main():
 				Info.Send("Answer", {"test": response})
 
 			elif Q.sub_type == "go to next slide":
-				Info.Request("ChangeSlide", {"cmd": "increment|"})
+				Info.Request("ChangeSlide", {"cmd": "increment|0"})
 				response = "Got it, I'll go to the next slide"
 				Info.Send("Answer", {"text": response})
 
 			elif Q.sub_type == "go to previous slide":
-				Info.Request("ChangeSlide", {"cmd": "decrement|"})
+				Info.Request("ChangeSlide", {"cmd": "decrement|0"})
 				response = "Got it, I'll go to the previous slide"
 				Info.Send("Anwer", {"text": response})
 
