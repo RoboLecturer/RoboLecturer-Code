@@ -1,25 +1,20 @@
 # pip install TTS
+# brew install espeak
 from TTS.api import TTS
 
-with open('text.txt', 'r') as file:
+OUTPUT_PATH = "output.wav"
+INPUT_PATH = "text.txt"
+
+with open(INPUT_PATH, 'r') as file:
     txt = file.read().rstrip()
 
-# Running a multi-speaker and multi-lingual model
-
 # List available 🐸TTS models and choose the first one
-model_name = TTS.list_models()[0]
-# Init TTS
-tts = TTS(model_name)
-# Run TTS
-# ❗ Since this model is multi-speaker and multi-lingual, we must set the target speaker and the language
-# Text to speech with a numpy output
-# wav = tts.tts(txt, speaker=tts.speakers[0], language=tts.languages[0])
-# Text to speech to a file
-tts.tts_to_file(text=txt, speaker=tts.speakers[0], language=tts.languages[0], file_path="output.wav")
-
-# Running a single speaker model
+# model_name = TTS.list_models()[0]
 
 # Init TTS with the target model name
-# tts = TTS(model_name="tts_models/de/thorsten/tacotron2-DDC", progress_bar=False, gpu=False)
+# print(TTS.list_models())
+tts = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC", progress_bar=True, gpu=False)
+# Text to speech with a numpy output
+# wav = tts.tts(txt, speaker=tts.speakers[0], language=tts.languages[0])
 # Run TTS
-# tts.tts_to_file(text="Ich bin eine Testnachricht.", file_path=OUTPUT_PATH)
+tts.tts_to_file(text=txt, file_path=OUTPUT_PATH)
