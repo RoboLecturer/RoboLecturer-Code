@@ -32,7 +32,7 @@ messageType : 'topic/pdfOcr'
 
 var msg = new ROSLIB.Message({
 metadata : {
-filename : filename,
+fileName : filename,
 pageNumber : pageNumber
 },
 data : {
@@ -41,6 +41,22 @@ text
 });
 publishTopic.publish(msg);
 }
+
+export function publishNumSlides(filename,pagecount,ros ){
+    var publishTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : '/num_slides',
+    messageType : 'topic/num_slides'
+    });
+    
+    var msg = new ROSLIB.Message({
+    FormDataEvent : {
+    fileName : filename,
+    pageCount : pagecount
+    }
+    });
+    publishTopic.publish(msg);
+    }
 
 export async function imageOCR (imagePath) {
     const worker = await createWorker();  
