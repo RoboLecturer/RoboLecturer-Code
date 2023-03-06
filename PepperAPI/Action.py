@@ -79,17 +79,6 @@ def Request(api_name, api_params={}):
 		volume_publisher.publish(val)
 		return True
 	
-	# imput the speed cahnge api call
-	if api_name == "ChangeSpeed":
-		"""Request for Pepper to change speed of speech
-		@param api_params : dict{
-			"cmd": (String) "increase" or "decrease"
-		}
-		"""
-		val = api_params["cmd"]
-		speed_publisher.publish(val)
-		return True
-
 	
 	print("Action.Request(%s) does not exist. Please check name again." % api_name)
 	return
@@ -180,16 +169,6 @@ def Listen():
 		ad.setOutputVolume(vol)
 		return IsDone("Set", "ChangeVolume")
 	
-	# Increase/decrease master volume
-	def speed_callback(msg):
-		rospy.loginfo("Pepper ALAudioDevice: Speed " + msg.data)
-		speed = tts.getParameter("speed")
-		if msg.data == "increase":
-			speed = 400 if speed > 390 else speed+10
-		elif msg.data == "decrease":
-			speed = 50 if speed < 60 else speed-10
-		tts.setParameter("speed", float(speed))
-		return IsDone("Set", "ChangeSpeed")
 
 
 	# Initialise proxies
@@ -236,17 +215,12 @@ def Listen():
 		lambda: StringSubscriber(VOLUME_TOPIC, volume_callback, listen=0, log=False),
 		))
 	
-	# Change speed command called by NLP
-	thread_speed = threading.Thread(target=subscribe_listen, args=(
-		lambda: StringSubscriber(SPEED_TOPIC, speed_callback, listen=0, log=False),
-	))
 
 	# Run threads
 	thread_tts.start()
 	thread_ap.start()
 	thread_point.start()
 	thread_volume.start()
-	thread_speed.start()
 
 	# Exit when KeyboardInterrupt or when killed
 	global kill_threads
@@ -263,7 +237,6 @@ def Listen():
 			thread_ap.join()
 			thread_point.join()
 			thread_volume.join()
-			thread_speed.join()
 			broker.shutdown()
 			break
 	except KeyboardInterrupt:
@@ -273,7 +246,6 @@ def Listen():
 		thread_ap.join()
 		thread_point.join()
 		thread_volume.join()
-		thread_speed.join()
 
 	return
 

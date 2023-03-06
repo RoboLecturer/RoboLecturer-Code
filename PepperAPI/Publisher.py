@@ -119,7 +119,6 @@ trigger_hand_detection_publisher = StringPublisher(TRIGGER_HAND_DETECTION_TOPIC)
 trigger_listen_publisher = StringPublisher(TRIGGER_LISTEN_TOPIC)
 point_publisher = CVInfoMsgPublisher(POINT_TOPIC)
 volume_publisher = StringPublisher(VOLUME_TOPIC)
-speed_pubisher = StringPublisher(SPEED_TOPIC) 
 
 ## CONTROL
 state_publisher = { 
