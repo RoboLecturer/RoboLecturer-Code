@@ -1,0 +1,6 @@
+Collecting torch
+  Using cached torch-1.13.1-cp39-cp39-win_amd64.whl (162.5 MB)
+Collecting typing-extensions
+  Downloading typing_extensions-4.5.0-py3-none-any.whl (27 kB)
+Installing collected packages: typing-extensions, torch
+Successfully installed torch-1.13.1 typing-extensions-4.5.0
