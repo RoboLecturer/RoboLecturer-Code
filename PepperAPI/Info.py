@@ -26,7 +26,6 @@ def Request(api_name, api_params={}):
 		TriggerJokeOrQuiz = ""
 		TriggerJokeOrShutup = ""
 		State = ""
-		ChangeSlide = ""
 
 
 	# API callbacks
@@ -66,14 +65,6 @@ def Request(api_name, api_params={}):
 				rospy.loginfo("Received: trigger_quiz")
 		StringSubscriber(TRIGGER_JOKE_OR_QUIZ_TOPIC, callback)
 		return Data.TriggerJokeOrQuiz
-
-	# if api_name == "ChangeSlide":
-	# 	"""Receive command to change_slide"""
-	# 	def callback(msg):
-	# 		Data.ChangeSlide = msg.data
-	# 		rospy.loginfo("Received: change_slide=%s" % Data.ChangeSlide)
-	# 	StringSubscriber(CHANGE_SLIDE_TOPIC, callback)
-	# 	return Data.ChangeSlide
 
 
 	## ========= CV =========
