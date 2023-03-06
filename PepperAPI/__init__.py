@@ -2,7 +2,7 @@ import rospy
 import rosnode
 
 # Globals
-ROBOT_IP = "192.168.0.103"
+ROBOT_IP = "192.168.0.104"
 ROBOT_PORT = 9559
 PEPPER_USER = "nao"
 PEPPER_PASSWORD = "BioARTLab123"
@@ -18,6 +18,7 @@ IMAGE_TOPIC = "image"
 JOKE_TOPIC = "joke"
 LECTURE_SCRIPT_TOPIC = "lecture_script"
 NUM_HANDS_TOPIC = "num_hands"
+NUM_SCRIPTS_TOPIC = "num_scripts"
 NUM_SLIDES_TOPIC = "num_slides"
 POINT_TOPIC = "point"
 QUESTION_TOPIC = "question"
