@@ -42,3 +42,15 @@ def daVinci(query):
 	)
     response = completions.choices[0]["text"]
     return response
+
+def getResponse(query):
+    """get a response to the query using the selected chat model
+    @params: query [string]
+    @returns: response [string]
+    """
+    model = getModel()
+    if model == "chatgpt":
+        response = chatGPT(query)
+    elif model == "davinci":
+        response = daVinci(query)
+    return response
