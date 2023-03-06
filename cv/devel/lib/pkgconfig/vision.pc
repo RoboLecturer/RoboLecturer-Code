@@ -1,8 +1,0 @@
-prefix=/home/matt/Desktop/RoboLecturer-Code/workspace/devel
-
-Name: vision
-Description: Description of vision
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
