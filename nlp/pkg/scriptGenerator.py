@@ -81,12 +81,12 @@ def getText(slideText):
     inputText = slideText.split("\n")
     return inputText
 
-def createScript(Text):
+def createScript(Text, slide_num):
     """Main function to create a lecture script from lecture slides
     Args: Text - [string] input slide text
     Returns: Script - [string] lecture script
     """
-    inputText = getText(Text)
+    inputText = getText(Text, slide_num)
     script = genScript(inputText) 
     return script
 
