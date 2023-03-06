@@ -75,7 +75,8 @@ def nlp_main():
 			slide_number += 1
 
 		# Send entrie lecture content to the Speech Processing module for pre-processing
-		Info.Send("LectureScript", {"text": list_of_scripts})
+		Info.Send("NumScripts", {"value": slide_number})
+        Info.Send("LectureScript", {"text": list_of_scripts})
 		# Send entire quiz list to web
 		# Info.Send("Quiz", {"text": list_of_quizes})
 
