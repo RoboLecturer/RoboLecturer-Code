@@ -85,8 +85,6 @@ ___
 - **```Action.Request("ChangeVolume", {"cmd": "up"/"down"})```**: Request for volume to be increased/decreased
   - **params** (*Dict*) : Desired action "up"/"down" to be provided as *String* to key ```cmd```
 
-- **```Action.Request("ChangeSpeed", {"cmd": "increase"/"decrease"}```**: Request for speech speed to be icnreased/decreased
-  -**params** (*Dict*) : Desired action "increase"/"decrease" to be procided as *String* to key ```cmd```
 
 - **```Info.Send("ChangeSlide", {"cmd": changeSlideCommand})```**: Send command to change slide - ```"increment|0"``` to increment the slide, ```"decrement|0"``` to decrement the slide and ```"goto|<slide_num>"``` to go to a slide num
   - **params** (*Dict*) : Command be provided as *String* to key ```cmd```
