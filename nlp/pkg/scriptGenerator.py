@@ -1,7 +1,7 @@
 # script for the generation of a lecture script based on recieved lecture slides
 
 # import packages
-import openai
+from chat import chat_model
 from tqdm import tqdm
 ############################################################ 
 
@@ -19,22 +19,14 @@ def genScript(inputText, slideNum):
     # script = []
     script = ""
 
-    # set-up the API key
-    openai.api_key = "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"
-
     # if the incoming slide is the title slide
     if slideNum == 0:
         # join title slide lines together, seperated by a commar 
         inputText = ", ".join(inputText)
         query = f"introudce the following presentation title page in the style of an excited lecturer: {inputText}"
-        # create completion
-        completions = openai.ChatCompletion.create(
-		    model="gpt-3.5-turbo",
-		    messages=[
-				    {"role": "system", "content": f"{query}"},
-			    ]
-	    )
-        response = completions['choices'][0]['message']['content']
+        # get response to query using selelcted model
+        response = chat_model.getResponse(query)
+        
         return response
 
     # if incoming slide is the table of contents
@@ -42,31 +34,22 @@ def genScript(inputText, slideNum):
         inputText = inputText[1:]
         # create a single string input with contents seperated by a new line
         inputText = "\n".join(inputText)
+
         query = f"shortly introduce each of the following points, that are seperated by a new line, as a table of contents to a lecture with these points, in the style of an excited lecturer: {inputText}"
-        # completions
-        completions = openai.ChatCompletion.create(
-		    model="gpt-3.5-turbo",
-		    messages=[
-				    {"role": "system", "content": f"{query}"},
-			    ]
-	    )
-        response = completions['choices'][0]['message']['content']
-        return response 
+
+        # get response to query using selelcted model
+        response = chat_model.getResponse(query)
+        
+        return response
     
     else:
         for line in tqdm(inputText):
             # summarise the bullet point in a few sentences
             query = f"explain the following point in a single paragraph in the style of an excited lecturer: {line}"
-            # completions
-            completions = openai.ChatCompletion.create(
-		        model="gpt-3.5-turbo",
-		        messages=[
-				        {"role": "system", "content": f"{query}"},
-			        ]
-	        )
-            response = completions['choices'][0]['message']['content']
-            # append the output if we need an array of string
-            # script.append(response)
+
+            # get response to query using selelcted model
+            response = chat_model.getResponse(query)        
+
             # concatenate the output if we need a single string
             script = "\n".join([script,response])
 
