@@ -2,12 +2,12 @@ import PepperAPI
 from PepperAPI import Action, Info
 # import random
 from tqdm import tqdm 
-from pkg import scriptGenerator
-from pkg import questionAnswer
-from pkg import questionClassifier
-from pkg import jokeGenerator
-from pkg import descriptionGenerator
-from pkg import quizGeneration
+from pkg import scriptGenerator as sg
+from pkg import questionAnswer as qa
+from pkg import questionClassifier as qc
+from pkg import jokeGenerator as jg
+from pkg import descriptionGenerator as dg
+from pkg import quizGeneration as qg
 
 #############################################################################
 # TODO: How do we extrct the slide number for a specific slide request?
@@ -52,23 +52,23 @@ def nlp_main():
 		# Get all slides from web
 		list_of_slides = Info.Request("Slides")
 		# initialise the class_descriptions dictionary with operational keys
-		class_description = descriptionGenerator.initDict()
+		class_description = dg.initDict()
 		slide_number = 1
 
 		# for each slide, generate script and keyword descriptions
 		for slide in tqdm(list_of_slides):
-			script = scriptGenerator.createScript(slide, slide_number)
+			script = sg.createScript(slide, slide_number)
 			list_of_scripts.append(script) 
 
 			# SET SLIDE CLASS
 			# get slide title 
-			title = descriptionGenerator.getTitle(slide)
+			title = dg.getTitle(slide)
 			# set class
 			Slide_instances.append(Slide(slide_number, title, slide, script))
 
 			if slide_number > 2:
 				# create question classification content classes and keyword descriptions
-				class_description = descriptionGenerator.createDescription(slide,script,class_description)
+				class_description = dg.createDescription(slide,script,class_description)
 				# create quiz for this slide
 				# quiz = quizGeneration.quizGen(script)
 				# list_of_quizes.append(list_of_quizes, quiz)
@@ -92,13 +92,13 @@ def nlp_main():
 		Q.question = Info.Request("Question")
 
 		# Classify question into main type and sub types
-		Q.main_type, Q.sub_type = questionClassifier(Q.question,class_description)
+		Q.main_type, Q.sub_type = qc(Q.question,class_description)
 		# Q.main_type = "related" 
 
 		if Q.main_type == "related":
 			# TODO: POST MVP: High/Low order question classification for different speed model answer generation
 			# generate answer from received question then send to Speech
-			Q.answer = questionAnswer.answerGen(Q.question)
+			Q.answer = qa.answerGen(Q.question)
 			response = f"{Q.answer}.. Does that answer your question?"
 			Info.Send("Answer", {"text": response})
 			# request slide change after sending text to Speech Processing module as text->speech takes time
@@ -165,7 +165,7 @@ def nlp_main():
 		signal = Info.Request("TriggerJokeOrShutup")
 		# Generate joke text or shutup text
 		if signal == "joke":
-			joke = jokeGenerator.genJoke("noiseHigh")
+			joke = jg.genJoke("noiseHigh")
 			Info.Send("Joke", {"text": joke})
 		elif signal == "shutup":
 			response = "Come on guys. Please try and concentrate, this is some interesting shit i'm teaching here"
@@ -186,7 +186,7 @@ def nlp_main():
 		# If trigger_joke, send joke to Speech
 		if signal == "joke":
 			# generate joke text
-			joke = jokeGenerator.genJoke("attentionLow")
+			joke = jg.genJoke("attentionLow")
 			Info.Send("Joke", {"text": joke})
 
 		# After joke has been spent, or if trigger_quiz, loop restarts
@@ -204,7 +204,7 @@ def nlp_main():
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
 			# generate joke text
-			joke = jokeGenerator.genJoke("")
+			joke = jg.genJoke("")
 			Info.Send("Joke", {"text": joke})
 		
 		# After joke has been sent, or if trigger_quiz, loop restarts 
