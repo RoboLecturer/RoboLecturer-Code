@@ -84,7 +84,7 @@ def Request(api_name, api_params={}):
 			Data.NumSlides = int(msg.data)
 		StringSubscriber(NUM_SLIDES_TOPIC, callback)
 		def callback(msg):
-			Data.Slides.append(msg)
+			Data.Slides.append(msg.data)
 			rospy.loginfo("Received: Slides=%s" % Data.Slides)
 		StringSubscriber(SLIDES_TOPIC, callback, listen=Data.NumSlides)
 		return Data.Slides
