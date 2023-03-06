@@ -118,15 +118,13 @@ def nlp_main():
 				Info.Send("Answer", {"text": response})
 			# TODO: ADD the rest of the operational call when they are implemented
 
-			# elif Q.subtype == "increase speech speed":
-			# 	Action.Request("ChangeSpeed", {"cmd":"up"})
-			# 	response = "Got it, I'll speed up"
-			# 	Info.Send("Answer", {"test": response})
+			elif Q.subtype == "increase speech speed":
+				response = "Got it, I'll speed up"
+				Info.Send("Answer", {"test": response})
 
-			# elif Q.subtype == "decrease speech speed":
-			# 	Action.Request("ChangeSpeed", {"cmd":"down"})
-			# 	response = "Got it, I'll slow down"
-			# 	Info.Send("Answer", {"test": response})
+			elif Q.subtype == "decrease speech speed":
+				response = "Got it, I'll slow down"
+				Info.Send("Answer", {"test": response})
 
 			elif Q.sub_type == "go to next slide":
 				Info.Request("ChangeSlide", {"cmd": "increment|0"})
