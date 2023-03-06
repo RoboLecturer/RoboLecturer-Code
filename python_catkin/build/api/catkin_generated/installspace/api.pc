@@ -1,8 +1,0 @@
-prefix=/home/vinayakunnithan/python_catkin/install
-
-Name: api
-Description: Description of api
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib 
-Requires: rospy message_runtime
