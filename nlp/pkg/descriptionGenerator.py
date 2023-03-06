@@ -1,7 +1,8 @@
 # This script produces the content class (1 per slide) and the descriptive keywords associate with the slide content #
 
 # import packages
-import openai
+# import openai
+from chat import chat_model
 
 # function to create the descriptions
 def genKeywords(content):
@@ -11,20 +12,11 @@ def genKeywords(content):
     Returns: 
             keywords - [list][string] array of keywords
     """
-
-    # set up API key
-    openai.api_key = "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"
-    # create query
-    query = f"give me a list of 5 keywords associated with the following text: {content}"
-    # create completion
-    completions = openai.ChatCompletion.create(
-		    model="gpt-3.5-turbo",
-		    messages=[
-				    {"role": "system", "content": f"{query}"},
-			    ]
-	    )
-    response = completions['choices'][0]['message']['content']
-    # reformat for use
+    # set query
+    query = f"give me a list of 5 keywords associated with the following text: {content}" 
+    # get response to query using selelcted model
+    response = chat_model.getResponse(query)
+    
     keywords = createKeywords(response)
     return keywords
 

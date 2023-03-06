@@ -1,7 +1,7 @@
 # This scirpt generates a joke based on different requirements #
 
 #  import packages
-import openai
+from chat import chat_model
 
 # function the generate a joke
 def genJoke(jokeType):
@@ -12,9 +12,6 @@ def genJoke(jokeType):
     Returns: response - [string] Return the joke
     """
 
-    # define the API key
-    openai.api_key = "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"
-
     # define the query depending on the type
     if jokeType == "noiseHigh":
         query = f"come up with a short, funny joke to retain the concentration of a noisy classroom"
@@ -23,13 +20,7 @@ def genJoke(jokeType):
     else:
         query = f"come up with a short, funny joke for me to tell my students"
 
-    #  create completion
-    completions = openai.ChatCompletion.create(
-		    model="gpt-3.5-turbo",
-		    messages=[
-				    {"role": "system", "content": f"{query}"},
-			    ]
-	    )
-    response = completions['choices'][0]['message']['content']
-    # return response
+    # get response to query using selelcted model
+    response = chat_model.getResponse(query)
+    
     return response

@@ -1,7 +1,7 @@
 # this script is for creating a quiz based on a slide, the answers (true and false) and then a short explination of the answer 
 
 # imports
-import openai
+from chat import chat_model
 
 # function for generating the quiz
 def quizGen(script):
@@ -9,15 +9,11 @@ def quizGen(script):
     Args:   script - [string] contents of lecture script
     Returns:    quiz - [string] quiz with all relevant information in the json format, but as a single string
     """
-    openai.api_key = "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"
+    # set query
+    query = f"Generate a quiz with 5 questions, each with 5 choices based on the following extract from a lecture: {script}. The quiz must be exported in the json format using the following fields: quiz_name, question_count, questions, prompt, answer, options"
 
-    response = openai.ChatCompletion.create(
-        model = "gpt-3.5-turbo",
-        message = [
-            {"role": "system", "content": f"Generate a quiz with 5 questions, each with 5 choices based on the following extract from a lecture: {script}. The quiz must be exported in the json format using the following fields: quiz_name, question_count, questions, prompt, answer, options"}
-        ]
-    )
-    answer = response["choices"][0]["message"]["content"]
+    # get response to query using selelcted model
+    response = chat_model.getResponse(query)
 
-    return answer
+    return response
 
