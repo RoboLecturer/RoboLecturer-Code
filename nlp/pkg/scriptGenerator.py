@@ -86,7 +86,7 @@ def createScript(Text, slide_num):
     Args: Text - [string] input slide text
     Returns: Script - [string] lecture script
     """
-    inputText = getText(Text, slide_num)
-    script = genScript(inputText) 
+    inputText = getText(Text)
+    script = genScript(inputText, slide_num) 
     return script
 

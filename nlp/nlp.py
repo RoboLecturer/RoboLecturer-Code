@@ -68,7 +68,7 @@ def nlp_main():
 
 			if slide_number > 2:
 				# create question classification content classes and keyword descriptions
-				class_description = descriptionGenerator.createDescription(slide,script)
+				class_description = descriptionGenerator.createDescription(slide,script,class_description)
 				# create quiz for this slide
 				# quiz = quizGeneration.quizGen(script)
 				# list_of_quizes.append(list_of_quizes, quiz)
