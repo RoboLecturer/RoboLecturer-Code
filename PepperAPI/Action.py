@@ -78,7 +78,11 @@ def Request(api_name, api_params={}):
 		val = api_params["cmd"]
 		volume_publisher.publish(val)
 		return True
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 	
 	print("Action.Request(%s) does not exist. Please check name again." % api_name)
 	return
@@ -96,7 +100,11 @@ def Listen():
 	def tts_callback(msg):
 		rospy.loginfo("Pepper ALTextToSpeech: Say %s" % msg.data)
 		tts.say(msg.data)
+<<<<<<< HEAD
 		return IsDone("Set", "ALTextToSpeech")	
+=======
+		return IsDone("Set", "ALTextToSpeech")
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 	# Callback for ALAudioPlayer
 	def audio_player_callback(msg):
@@ -105,7 +113,11 @@ def Listen():
 		audio_file = PEPPER_AUDIO_PATH + filename
 		ap.playFile(audio_file)
 		# time.sleep(5)
+<<<<<<< HEAD
 		return IsDone("Set", "ALAudioPlayer")	
+=======
+		return IsDone("Set", "ALAudioPlayer")
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 	# Callback for pointing at raised hand
 	def point_callback(msg):
@@ -168,6 +180,10 @@ def Listen():
 			vol = 0 if vol < 10 else vol-10
 		ad.setOutputVolume(vol)
 		return IsDone("Set", "ChangeVolume")
+<<<<<<< HEAD
+=======
+	
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 
 	# Initialise proxies
@@ -213,6 +229,10 @@ def Listen():
 	thread_volume = threading.Thread(target=subscribe_listen, args=(
 		lambda: StringSubscriber(VOLUME_TOPIC, volume_callback, listen=0, log=False),
 		))
+<<<<<<< HEAD
+=======
+	
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 	# Run threads
 	thread_tts.start()
@@ -260,7 +280,12 @@ action_status_dict = {
 	"ALTextToSpeech": False,
 	"ALAudioPlayer": False,
 	"Point": False,
+<<<<<<< HEAD
 	"ChangeVolume": False
+=======
+	"ChangeVolume": False,
+	"ChangeSpeed": False,
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 }
 def IsDone(action, name):
 	

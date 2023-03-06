@@ -7,6 +7,7 @@ import cv2
 import threading
 import numpy as np
 import mediapipe as mp
+import time
 
 # PepperAPI imports
 import PepperAPI
@@ -80,7 +81,7 @@ def hand_detector_mp(model, frame):
 def send_to_pepper(hand_data):
     unique_hands = list(set(hand_data))    
     for data in unique_hands:
-        dic_data = {"bounding_box": (data[-1][0], data[-1][1], 100, 100),
+        dic_data = {"bounding_box": (data[0], data[1], 100, 100),
                 "frame_res": (1920, 1080),
                 "confidence_score": -1}
         #Info.Send("NumHands", {"value": 1}) # Now it's one, because mediapipe hand detector only does that for one.
@@ -92,14 +93,20 @@ def main(camera, face_detect_model, mp_hand_model, landmark_predictor):
     hands = []
     # main loop
     while True:
-        frame  = get_camera_input(camera)
+        #frame  = get_camera_input(camera)
         face_3d = []
         face_2d = []
 
         Info.Request("State", {"name": "Start"})
         Info.Request("TriggerHandDetection")
 
-        coordinates = hand_detector_mp(mp_hand_model, frame)
+        start = time.time()
+        while True:
+            frame = get_camera_input(camera)
+            coordinates = hand_detector_mp(mp_hand_model, frame)
+            end = time.time()
+            if end - start > 10:
+                break
         hands.append(coordinates)
         hands = list(filter(lambda x: x is not None, hands))
         
@@ -115,7 +122,7 @@ def main(camera, face_detect_model, mp_hand_model, landmark_predictor):
             while Info.Request("State", {"name": "AnyQuestions", "print": False}) != "NoHandsRaised":
                 pass
 
-        state = Info.Request("State", {"name", "NoiseLevel"})
+        state = Info.Request("State", {"name": "NoiseLevel"})
 
         if state == "High":
             return
@@ -129,10 +136,20 @@ def main(camera, face_detect_model, mp_hand_model, landmark_predictor):
             return
 
         else:
-            Info.Send("State": {"Attentiveness": "Attentive"})
+            Info.Send("State", {"Attentiveness": "Attentive"})
 
         Info.Request("State", {"name": "NoQuestionsLoop"})
         return
+    
+       # k = cv2.waitKey(30)
+       # cv2.imshow("video", frame2)
+
+       # if k == 27:
+       #     break
+
+       # Info.Request("State", {"name": "NoQuestionsLoop"})
+       # return
+
 
 
 if __name__ == "__main__":

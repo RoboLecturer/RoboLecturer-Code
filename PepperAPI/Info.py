@@ -16,7 +16,12 @@ def Request(api_name, api_params={}):
 		Image = None
 		Slides = []
 		NumSlides = 0
+<<<<<<< HEAD
 		LectureScript = ""
+=======
+		NumScripts = 0
+		LectureScript = []
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 		Question = ""
 		Answer = ""
 		Joke = ""
@@ -26,7 +31,10 @@ def Request(api_name, api_params={}):
 		TriggerJokeOrQuiz = ""
 		TriggerJokeOrShutup = ""
 		State = ""
+<<<<<<< HEAD
 		ChangeSlide = ""
+=======
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 
 	# API callbacks
@@ -67,6 +75,7 @@ def Request(api_name, api_params={}):
 		StringSubscriber(TRIGGER_JOKE_OR_QUIZ_TOPIC, callback)
 		return Data.TriggerJokeOrQuiz
 
+<<<<<<< HEAD
 	# if api_name == "ChangeSlide":
 	# 	"""Receive command to change_slide"""
 	# 	def callback(msg):
@@ -75,6 +84,8 @@ def Request(api_name, api_params={}):
 	# 	StringSubscriber(CHANGE_SLIDE_TOPIC, callback)
 	# 	return Data.ChangeSlide
 
+=======
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 	## ========= CV =========
 	if api_name == "TriggerHandDetection":
@@ -93,7 +104,11 @@ def Request(api_name, api_params={}):
 			Data.NumSlides = int(msg.data)
 		StringSubscriber(NUM_SLIDES_TOPIC, callback)
 		def callback(msg):
+<<<<<<< HEAD
 			Data.Slides.append(msg)
+=======
+			Data.Slides.append(msg.data)
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 			rospy.loginfo("Received: Slides=%s" % Data.Slides)
 		StringSubscriber(SLIDES_TOPIC, callback, listen=Data.NumSlides)
 		return Data.Slides
@@ -130,9 +145,18 @@ def Request(api_name, api_params={}):
 		@return	script text : String
 		"""
 		def callback(msg):
+<<<<<<< HEAD
 			Data.LectureScript = msg.data
 			rospy.loginfo("Received: Script=%s" % Data.LectureScript)
 		StringSubscriber(LECTURE_SCRIPT_TOPIC, callback)
+=======
+			Data.NumScripts = int(msg.data)
+		StringSubscriber(NUM_SCRIPTS_TOPIC, callback)
+		def callback(msg):
+			Data.LectureScript.append(msg.data)
+			rospy.loginfo("Received: Script=%s" % Data.LectureScript)
+		StringSubscriber(LECTURE_SCRIPT_TOPIC, callback, listen=Data.NumScripts)
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 		return Data.LectureScript
 	
 	if api_name == "Answer":
@@ -353,6 +377,18 @@ def Send(api_name, api_params={}):
 		shutup_publisher.publish(text)
 		return True
 
+<<<<<<< HEAD
+=======
+	if api_name == "NumScripts":
+		"""Send number of scripts to Speech before sending LectureScript
+		@param	api_params : dict{
+			"value": number of scripts
+		}
+		"""
+		num_scripts = api_params["value"]
+		num_scripts_publisher.publish(num_scripts)
+		return True
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 	## ========= SPEECH =========
 	if api_name == "Question":

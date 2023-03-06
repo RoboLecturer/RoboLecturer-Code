@@ -48,8 +48,11 @@ if __name__ == "__main__":
 #### Receive
 - **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal (*String*) "joke" or "quiz". If signal received is "quiz", trigger quiz
 
+<<<<<<< HEAD
 - **```Info.Request("ChangeSlide")```**: Receive command for changing slide (increment/decrement/goto)
   - **return** (*String*) : Change slide command (increment|0, decrement|0 or goto|n)
+=======
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 ___
 ### CV
@@ -87,6 +90,10 @@ ___
 - **```Action.Request("ChangeVolume", {"cmd": "up"/"down"})```**: Request for volume to be increased/decreased
   - **params** (*Dict*) : Desired action "up"/"down" to be provided as *String* to key ```cmd```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 - **```Info.Send("ChangeSlide", {"cmd": changeSlideCommand})```**: Send command to change slide - ```"increment|0"``` to increment the slide, ```"decrement|0"``` to decrement the slide and ```"goto|<slide_num>"``` to go to a slide num
   - **params** (*Dict*) : Command be provided as *String* to key ```cmd```
   
