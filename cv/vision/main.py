@@ -83,7 +83,7 @@ def send_to_pepper(hand_data):
         dic_data = {"bounding_box": (data[-1][0], data[-1][1], 100, 100),
                 "frame_res": (1920, 1080),
                 "confidence_score": -1}
-        Info.Send("NumHands", {"value": 1}) # Now it's one, because mediapipe hand detector only does that for one.
+        #Info.Send("NumHands", {"value": 1}) # Now it's one, because mediapipe hand detector only does that for one.
         Info.Send("RaisedHandInfo", dic_data)
     return
 
@@ -102,7 +102,8 @@ def main(camera, face_detect_model, mp_hand_model, landmark_predictor):
         coordinates = hand_detector_mp(mp_hand_model, frame)
         hands.append(coordinates)
         hands = list(filter(lambda x: x is not None, hands))
-
+        
+        num_hands = len(hands)
         if num_hands == 0:
             Info.Send("State", {"AnyQuestions": "NoHandsRaised"})
 
