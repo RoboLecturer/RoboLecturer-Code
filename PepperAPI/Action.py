@@ -85,7 +85,7 @@ def Request(api_name, api_params={}):
 		val = api_params["cmd"]
 		volume_publisher.publish(val)
 		return True
-
+	
 	
 	print("Action.Request(%s) does not exist. Please check name again." % api_name)
 	return
@@ -103,7 +103,7 @@ def Listen():
 	def tts_callback(msg):
 		rospy.loginfo("Pepper ALTextToSpeech: Say %s" % msg.data)
 		tts.say(msg.data)
-		return IsDone("Set", "ALTextToSpeech")	
+		return IsDone("Set", "ALTextToSpeech")
 
 	# Callback for ALAudioPlayer
 	def audio_player_callback(msg):
@@ -111,7 +111,8 @@ def Listen():
 		rospy.loginfo("Pepper ALAudioPlayer: Play audio %s" % filename)
 		audio_file = PEPPER_AUDIO_PATH + filename
 		ap.playFile(audio_file)
-		return IsDone("Set", "ALAudioPlayer")	
+		# time.sleep(5)
+		return IsDone("Set", "ALAudioPlayer")
 
 	# Callback for pointing at raised hand
 	def point_callback(msg):
@@ -166,15 +167,15 @@ def Listen():
 
 	# Increase/decrease master volume
 	def volume_callback(msg):
-		# ad = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
+		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		vol = ad.getOutputVolume()
 		if msg.data == "up":
 			vol = 100 if vol > 90 else vol+10
 		elif msg.data == "down":
 			vol = 0 if vol < 10 else vol-10
 		ad.setOutputVolume(vol)
-		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		return IsDone("Set", "ChangeVolume")
+	
 
 
 	# Initialise proxies
@@ -220,6 +221,7 @@ def Listen():
 	thread_volume = threading.Thread(target=subscribe_listen, args=(
 		lambda: StringSubscriber(VOLUME_TOPIC, volume_callback, listen=0, log=False),
 		))
+	
 
 	# Run threads
 	thread_tts.start()
@@ -228,10 +230,10 @@ def Listen():
 	thread_volume.start()
 
 	# Exit when KeyboardInterrupt or when killed
-	global kill_listen
+	global kill_threads
 	try:
 		while True:
-			if not kill_listen:
+			if not kill_threads:
 				continue
 			try:
 				ap.stopAll()
@@ -255,10 +257,10 @@ def Listen():
 	return
 
 # Kill Action.Listen()
-kill_listen = False
-def StopListen():
-	global kill_listen
-	kill_listen = True
+kill_threads = False
+def KillThreads():
+	global kill_threads
+	kill_threads = True
 
 # ==============================================================
 # Get status action. IsDone=False means action is still running.
@@ -267,7 +269,8 @@ action_status_dict = {
 	"ALTextToSpeech": False,
 	"ALAudioPlayer": False,
 	"Point": False,
-	"ChangeVolume": False
+	"ChangeVolume": False,
+	"ChangeSpeed": False,
 }
 def IsDone(action, name):
 	

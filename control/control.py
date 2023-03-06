@@ -102,6 +102,7 @@ def main():
 
 		# Else if trigger_quiz, wait for take_control from Web
 		elif signal == "quiz":
+			Info.Send("TriggerQuiz")
 			Info.Request("TakeControl")	
 		
 		# Restart loop after joke is played or quiz ended
@@ -122,6 +123,7 @@ def main():
 			while not Action.IsDone("Get", "ALAudioPlayer"):
 				pass
 		elif signal == "quiz":
+			Info.Send("TriggerQuiz")
 			Info.Request("TakeControl")	
 		return
 
@@ -150,15 +152,18 @@ if __name__ == "__main__":
 	PepperAPI.init("test")
 	t1 = threading.Thread(target=Action.Listen)
 	t2 = threading.Thread(target=Info.Listen)
+	t3 = threading.Thread(target=Info.Broadcast)
 	t1.start()
 	t2.start()
+	t3.start()
 
 	try:
 		while True:
 			main()
 	except KeyboardInterrupt:
 		print("KeyboardInterrupt")
-		Action.StopListen()
-		Info.StopListen()
+		Action.KillThreads()
+		Info.KillThreads()
 		t1.join()
 		t2.join()
+		t3.join()

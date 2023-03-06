@@ -1,8 +1,11 @@
 import PepperAPI
 from PepperAPI import Action, Info
-import random
+import pkg.text2speech as t2s
+import pkg.speech2text as s2t
+import pkg.noise as nd
 
 def speech_main():
+	path_to_audio = "output/output.wav"
 
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
@@ -11,8 +14,8 @@ def speech_main():
 	# When loop has started, wait for script from NLP
 	# Then convert to MP3 and send to Kinematics
 	script = Info.Request("LectureScript")
+	t2s.runT2S(script, path_to_audio)
 	# TODO: convert lecture script to audio and save somewhere in your machine
-	path_to_audio = "sample.mp3"
 	Action.Request("ALAudioPlayer", {"path": path_to_audio})
 
 
@@ -27,12 +30,13 @@ def speech_main():
 		Info.Request("TriggerListen")
 
 		# TODO: Listen to mic and process question STT,
-		question = "Why is the sky blue?"
+		question = s2t.runS2T(0)
 		# then send STT to NLP
 		Info.Send("Question", {"text": question})
 
 		# Wait for answer from NLP, 
 		answer = Info.Request("Answer")
+		t2s.runT2S(answer, path_to_audio)
 		# TODO: convert answer to audio and save somewhere in your machine
 		Action.Request("ALAudioPlayer", {"path": path_to_audio})
 
@@ -43,8 +47,7 @@ def speech_main():
 
 	# ========= STATE: NoiseLevel =========
 	# TODO: Start detecting noise and classify into high or low noise level
-	HIGH_NOISE_LEVEL = random.choice([True, False])
-
+	HIGH_NOISE_LEVEL = nd.Shush(60, 3)
 	# If high noise level, update state.
 	# Control tells NLP to trigger joke/shutup, you receive text,
 	# convert to audio and send to Kinematics to play
@@ -55,6 +58,8 @@ def speech_main():
 			text = Info.Request("Joke")
 		else:
 			text = Info.Request("Shutup")
+		
+		t2s.runT2S(text, path_to_audio)
 	
 		# TODO: convert joke/shutup text into audio and save
 		Action.Request("ALAudioPlayer", {"path": path_to_audio})
@@ -78,6 +83,7 @@ def speech_main():
 		# If trigger_joke, receive joke from NLP, convert to audio and send to play
 		if signal == "joke":
 			joke = Info.Request("Joke")
+			t2s.runT2S(joke, path_to_audio)
 			# TODO: convert joke/shutup text into audio and save
 			Action.Request("ALAudioPlayer", {"path": path_to_audio})
 		
@@ -96,6 +102,7 @@ def speech_main():
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
 			joke = Info.Request("Joke")
+			t2s.runT2S(joke, path_to_audio)
 			# TODO: convert joke/shutup text into audio and save
 			Action.Request("ALAudioPlayer", {"path": path_to_audio})
 		return

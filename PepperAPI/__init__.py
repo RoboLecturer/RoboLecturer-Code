@@ -37,6 +37,7 @@ TRIGGER_HAND_DETECTION_TOPIC = "trigger_hand_detection"
 TRIGGER_JOKE_OR_SHUTUP_TOPIC = "trigger_joke_or_shutup"
 TRIGGER_JOKE_OR_QUIZ_TOPIC = "trigger_joke_or_quiz"
 TRIGGER_LISTEN_TOPIC = "trigger_listen"
+TRIGGER_QUIZ_TOPIC = "trigger_quiz"
 TTS_TOPIC = "tts"
 VOLUME_TOPIC = "volume"
 

@@ -2,7 +2,7 @@ from PepperAPI import * # import global topic names
 from .Publisher import *
 from .Subscriber import *
 from api.msg import CVInfo
-import random, rospy, threading
+import random, rospy, threading, time
 
 # =========================================================
 # Get information from other subteams
@@ -26,7 +26,6 @@ def Request(api_name, api_params={}):
 		TriggerJokeOrQuiz = ""
 		TriggerJokeOrShutup = ""
 		State = ""
-		ChangeSlide = ""
 
 
 	# API callbacks
@@ -67,14 +66,6 @@ def Request(api_name, api_params={}):
 		StringSubscriber(TRIGGER_JOKE_OR_QUIZ_TOPIC, callback)
 		return Data.TriggerJokeOrQuiz
 
-	if api_name == "ChangeSlide":
-		"""Receive command to change_slide"""
-		def callback(msg):
-			Data.ChangeSlide = msg.data
-			rospy.loginfo("Received: change_slide=%s" % Data.ChangeSlide)
-		StringSubscriber(CHANGE_SLIDE_TOPIC, callback)
-		return Data.ChangeSlide
-
 
 	## ========= CV =========
 	if api_name == "TriggerHandDetection":
@@ -93,7 +84,7 @@ def Request(api_name, api_params={}):
 			Data.NumSlides = int(msg.data)
 		StringSubscriber(NUM_SLIDES_TOPIC, callback)
 		def callback(msg):
-			Data.Slides.append(msg)
+			Data.Slides.append(msg.data)
 			rospy.loginfo("Received: Slides=%s" % Data.Slides)
 		StringSubscriber(SLIDES_TOPIC, callback, listen=Data.NumSlides)
 		return Data.Slides
@@ -401,8 +392,16 @@ def Send(api_name, api_params={}):
 			"cmd": "increment|", "decrement|" or "goto|<slide_num>"
 		}
 		"""
+		global change_slide
 		cmd = api_params["cmd"]
-		change_slide_publisher.publish(cmd)
+		change_slide = cmd
+		time.sleep(1)
+		return True
+
+	if api_name == "TriggerQuiz":
+		"""Send trigger_quiz signal to Web"""
+		global trigger_quiz
+		trigger_quiz = 1
 		return True
 
 
@@ -449,10 +448,10 @@ def Listen():
 	t.start()
 
 	# Exit when KeyboardInterrupt or when killed
-	global kill_listen
+	global kill_threads
 	try:
 		while True:
-			if not kill_listen:
+			if not kill_threads:
 				continue
 			event.clear()
 			t.join()
@@ -464,8 +463,54 @@ def Listen():
 
 	return
 
-# Kill Info.Listen()
-kill_listen = False
-def StopListen():
-	global kill_listen
-	kill_listen = True
+change_slide = "dummy|0"
+trigger_quiz = 0
+# Continuously publish. Used for Control to Web
+def Broadcast():
+
+	def publish_change_slide():
+		global change_slide
+		while event.is_set():
+			change_slide_publisher.publish(change_slide)
+			if "dummy" not in change_slide:
+				change_slide = "dummy|0"
+			time.sleep(1)
+
+	def publish_trigger_quiz():
+		global trigger_quiz
+		while event.is_set():
+			trigger_quiz_publisher.publish(trigger_quiz)
+			if trigger_quiz == 1:
+				trigger_quiz = 0
+			time.sleep(1)
+
+	event = threading.Event()
+	event.set()
+	t1 = threading.Thread(target=publish_change_slide)
+	t2 = threading.Thread(target=publish_trigger_quiz)
+	t1.start()
+	t2.start() 
+
+	# Exit when KeyboardInterrupt or when killed
+	global kill_threads
+	try:
+		while True:
+			if not kill_threads:
+				continue
+			event.clear()
+			t1.join()
+			t2.join()
+			break
+	except KeyboardInterrupt:
+		print("KeyboardInterrupt")
+		event.clear()
+		t1.join()
+		t2.join()
+	
+	return
+
+# Kill processes (Listen & Broadcast)
+kill_threads = False
+def KillThreads():
+	global kill_threads
+	kill_threads = True
