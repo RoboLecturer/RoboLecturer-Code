@@ -109,7 +109,10 @@ lecture_script_publisher = StringPublisher(LECTURE_SCRIPT_TOPIC)
 answer_publisher = StringPublisher(ANSWER_TOPIC)
 joke_publisher = StringPublisher(JOKE_TOPIC)
 shutup_publisher = StringPublisher(SHUTUP_TOPIC)
+<<<<<<< HEAD
+=======
 num_scripts_publisher = StringPublisher(NUM_SCRIPTS_TOPIC)
+>>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 ## SPEECH
 question_publisher = StringPublisher(QUESTION_TOPIC)
