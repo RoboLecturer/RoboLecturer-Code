@@ -1,6 +1,6 @@
 import PepperAPI
 from PepperAPI import Action, Info
-import threading, time
+import threading
 
 # Counter and threshold for number of loops with no questions
 no_questions_counter = 0
@@ -22,7 +22,6 @@ def main():
 	Action.IsDone("Reset", "ALAudioPlayer")
 	while not Action.IsDone("Get", "ALAudioPlayer"):
 		pass
-	time.sleep(2)
 	Action.Request("ALAudioPlayer", {"file": "do_u_have_qns.wav"})
 	
 	# Then tell CV to start detecting for raised hands
@@ -150,7 +149,7 @@ def resetAllStates():
 # =================================================
 
 if __name__ == "__main__":
-	PepperAPI.init("master")
+	PepperAPI.init("test")
 	t1 = threading.Thread(target=Action.Listen)
 	t2 = threading.Thread(target=Info.Listen)
 	t3 = threading.Thread(target=Info.Broadcast)

@@ -4,6 +4,7 @@
 #pip install openai 
 import openai
 import re
+from chat import chat_model
 from pptx import Presentation
 from pptx.util import Inches
 
@@ -17,21 +18,16 @@ pres_title = "Some Science Topics"
 
 topics = ["Astronomy", "Photosynthesis", "Plant cells", "Animal Cells"]
 
-# Setup the OpenAI API key
-openai.api_key = "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"
 
 # generate text 
 def generate_text(topic):
 
     query = f"write a 7 sentence paragraph about {topic} in the style of an excited lecturer and then summarize this paragraph into 5 bullet points with -"
-    completions = openai.ChatCompletion.create(
-		    model="gpt-3.5-turbo",
-		    messages=[
-				    {"role": "system", "content": f"{query}"},
-			    ]
-	    )
-    message = completions['choices'][0]['message']['content']
-    return message
+
+    # get response to query using selelcted model
+    response = chat_model.getResponse(query)
+    
+    return response
 
 
 def prep_text(GPT_output):

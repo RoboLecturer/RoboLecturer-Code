@@ -16,7 +16,8 @@ def Request(api_name, api_params={}):
 		Image = None
 		Slides = []
 		NumSlides = 0
-		LectureScript = ""
+		NumScripts = 0
+		LectureScript = []
 		Question = ""
 		Answer = ""
 		Joke = ""
@@ -121,9 +122,12 @@ def Request(api_name, api_params={}):
 		@return	script text : String
 		"""
 		def callback(msg):
-			Data.LectureScript = msg.data
+			Data.NumScripts = int(msg.data)
+		StringSubscriber(NUM_SCRIPTS_TOPIC, callback)
+		def callback(msg):
+			Data.LectureScript.append(msg.data)
 			rospy.loginfo("Received: Script=%s" % Data.LectureScript)
-		StringSubscriber(LECTURE_SCRIPT_TOPIC, callback)
+		StringSubscriber(LECTURE_SCRIPT_TOPIC, callback, listen=Data.NumScripts)
 		return Data.LectureScript
 	
 	if api_name == "Answer":
@@ -344,6 +348,15 @@ def Send(api_name, api_params={}):
 		shutup_publisher.publish(text)
 		return True
 
+	if api_name == "NumScripts":
+		"""Send number of scripts to Speech before sending LectureScript
+		@param	api_params : dict{
+			"value": number of scripts
+		}
+		"""
+		num_scripts = api_params["value"]
+		num_scripts_publisher.publish(num_scripts)
+		return True
 
 	## ========= SPEECH =========
 	if api_name == "Question":

@@ -17,6 +17,7 @@ The three functions are:
 - [Developer docs](#developer-docs)
   - [Info.Send()](#infosend)
   - [Info.Request()](#inforequest)
+  - [Action.Request()](#actionrequest)
 
 ## Importing & Initialising
 For each script in which you need to call the API, import the **PepperAPI** package and initialise it with the name of your module (e.g. **cv_module**). This name should remain the same for all scripts, or it'll trigger a port error.
@@ -46,8 +47,8 @@ if __name__ == "__main__":
 - **```Info.Send("TakeControl")```**: Send signal ("1") to Control module to take back control after quiz has finished
   
 #### Receive
-- **```Info.Request("TriggerJokeOrQuiz")```**: Receive signal (*String*) "joke" or "quiz". If signal received is "quiz", trigger quiz
-
+- **```Info.Request("ChangeSlide")```**: Receive command for changing slide (increment/decrement/goto)
+  - **return** (*String*) : Change slide command (increment|0, decrement|0 or goto|n)
 
 ___
 ### CV
@@ -73,6 +74,9 @@ ___
 ___
 ### NLP
 #### Send
+- **```Info.Send("NumScripts", {"value": numberOfScripts})```**: Send number of scripts to Speech before publishing script test
+  - **params** (*Dict*) : Number of scripts to be provided as *Int* to key ```value```
+  
 - **```Info.Send("LectureScript", {"text": myText})```**: Send lecture script text to Speech module
   - **params** (*Dict*) : Script text to be provided as *String* to key ```text```
 
@@ -84,7 +88,6 @@ ___
 
 - **```Action.Request("ChangeVolume", {"cmd": "up"/"down"})```**: Request for volume to be increased/decreased
   - **params** (*Dict*) : Desired action "up"/"down" to be provided as *String* to key ```cmd```
-
 
 - **```Info.Send("ChangeSlide", {"cmd": changeSlideCommand})```**: Send command to change slide - ```"increment|0"``` to increment the slide, ```"decrement|0"``` to decrement the slide and ```"goto|<slide_num>"``` to go to a slide num
   - **params** (*Dict*) : Command be provided as *String* to key ```cmd```
@@ -103,8 +106,10 @@ ___
 - **```Info.Send("Question", {"text": myText})```**: Send QnA question text to NLP module
   - **params** (*Dict*) : Question text to be provided as *String* to key ```text```
 
-- **```Action.Request("ALAudioPlayer", {"path": filepath})```**: Request for generated audio to be played by Pepper's speakers
-  - **params** (*Dict*) : Filepath of audio file (e.g. "C:/Users/user/sample.mp3" to be provided as *String* to key ```path```
+- **```Action.Request("ALAudioPlayer", {"path": filepath, "length": filelength})```**: Request for generated audio to be played by Pepper's speakers
+  - **params** (*Dict*) :
+    - key ```path```: *String* filepath of audio file (e.g. "C:/Users/user/sample.mp3")
+    - key ```length```: *Float* duration of audio file in seconds
 
 - **```Info.Send("State", {"NoiseLevel":"High"/"Low"})```**: Update state ```NoiseLevel```
   - **params** (*Dict*) : New state "High" or "Low" to be provided as *String to key ```NoiseLevel```
@@ -191,7 +196,7 @@ if api_name == "MyApi":
 - If you need ```Info.Request()``` to return a value, add an attribute to the ```Data``` class in ```Request()``` and store your data there in your subscriber callback.
 - The list of available subscriber (payload) types are in **Subscriber.py**.
 
-## Action.Request()
+### Action.Request()
 The module will call ```Action.Request()```, which will publish a message to the Kinematics module which is calling ```Action.Listen()``` to perform a callback when the message is received.
 
 1. Determine the NAOqi API needed to perform the desired callback. A list is [here](http://doc.aldebaran.com/2-1/naoqi/index.html). For example, Pepper's TTS is ALTextToSpeech. The desired method is probably ```say()```, which means that the module calling ```Action.Request()``` would need to supplement the message they want to be said as an argument.
