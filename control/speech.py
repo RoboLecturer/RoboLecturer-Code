@@ -2,6 +2,7 @@ import PepperAPI
 from PepperAPI import Action, Info
 import random
 from mutagen.mp3 import MP3
+from mutagen.flac import FLAC
 
 LOOP_COUNT = 0
 def speech_main():
@@ -49,7 +50,13 @@ def speech_main():
 		# Wait for answer from NLP, 
 		answer = Info.Request("Answer")
 		# TODO: convert answer to audio and save somewhere in your machine
-		Action.Request("ALAudioPlayer", {"path": path_to_audio})
+		path_to_audio = "/home/user/sample.flac"
+		audio = FLAC(path_to_audio)
+		audio_file_length = audio.info.length
+		Action.Request("ALAudioPlayer", {
+			"path": path_to_audio,
+			"length": audio_file_length
+			})
 
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
@@ -72,7 +79,13 @@ def speech_main():
 			text = Info.Request("Shutup")
 	
 		# TODO: convert joke/shutup text into audio and save
-		Action.Request("ALAudioPlayer", {"path": path_to_audio})
+		path_to_audio = "/home/user/sample.flac"
+		audio = FLAC(path_to_audio)
+		audio_file_length = audio.info.length
+		Action.Request("ALAudioPlayer", {
+			"path": path_to_audio,
+			"length": audio_file_length
+			})
 
 		# then loop restarts
 		return
@@ -94,7 +107,13 @@ def speech_main():
 		if signal == "joke":
 			joke = Info.Request("Joke")
 			# TODO: convert joke/shutup text into audio and save
-			Action.Request("ALAudioPlayer", {"path": path_to_audio})
+			path_to_audio = "/home/user/sample.flac"
+			audio = FLAC(path_to_audio)
+			audio_file_length = audio.info.length
+			Action.Request("ALAudioPlayer", {
+				"path": path_to_audio,
+				"length": audio_file_length
+				})
 		
 		# Restart loop after joke is played or if trigger_quiz
 		return
@@ -112,7 +131,13 @@ def speech_main():
 		if signal == "joke":
 			joke = Info.Request("Joke")
 			# TODO: convert joke/shutup text into audio and save
-			Action.Request("ALAudioPlayer", {"path": path_to_audio})
+			path_to_audio = "/home/user/sample.flac"
+			audio = FLAC(path_to_audio)
+			audio_file_length = audio.info.length
+			Action.Request("ALAudioPlayer", {
+				"path": path_to_audio,
+				"length": audio_file_length
+				})
 		return
 
 	# Else, restart loop

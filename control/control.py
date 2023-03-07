@@ -22,7 +22,7 @@ def main():
 	Action.IsDone("Reset", "ALAudioPlayer")
 	while not Action.IsDone("Get", "ALAudioPlayer"):
 		pass
-	time.sleep(3)
+	time.sleep(2)
 	Action.Request("ALAudioPlayer", {"file": "do_u_have_qns.wav"})
 	
 	# Then tell CV to start detecting for raised hands
