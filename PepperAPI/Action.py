@@ -2,8 +2,10 @@ from __future__ import print_function
 import sys
 import time
 import threading
+import signal
 import rospy
 import paramiko
+import json
 from .Publisher import *
 from .Subscriber import *
 from PepperAPI import *
@@ -29,6 +31,7 @@ def Request(api_name, api_params={}):
 		@param api_params : dict{
 			"path": (String) path of audio file in your machine
 			"file": (String) name of file that's already in Pepper (skips uploading)
+			"length": (Float) length of audio file in seconds
 		}
 		"""
 		def printProgress(transferred, left):
@@ -55,8 +58,15 @@ def Request(api_name, api_params={}):
 		else:
 			filename = api_params["file"]
 
+		duration = -1.0 if "length" not in api_params else api_params["length"]
+		data = {
+			"file": filename,
+			"length": duration
+		}
+		data_to_string = json.dumps(data)
+
 		# Publish msg to kinematics module to play audio
-		audio_player_publisher.publish(filename)
+		audio_player_publisher.publish(data_to_string)
 		return True
 
 	if api_name == "Point":
@@ -100,11 +110,32 @@ def Listen():
 
 	# Callback for ALAudioPlayer
 	def audio_player_callback(msg):
-		filename = msg.data
-		rospy.loginfo("Pepper ALAudioPlayer: Play audio %s" % filename)
+
+		data = json.loads(msg.data)
+		filename = str(data["file"])
+		length = float(data["length"])
 		audio_file = PEPPER_AUDIO_PATH + filename
-		ap.playFile(audio_file)
-		# time.sleep(5)
+
+		# Play audio in separate thread
+		rospy.loginfo("Pepper ALAudioPlayer: Play audio %s (%.3fs)" % (audio_file, length))
+		taskId = ap.post.playFile(audio_file)
+
+		# For files pre-uploaded in Pepper, length is not given,
+		# and can be directly gotten because they're WAV files
+		if length < 0:
+			length = ap.getFileLength(taskId)
+
+		# Delay while file is being played in thread
+		global interrupt # for interrupting playback by sending SIGUSR1
+		tic = time.time()
+		toc = time.time()
+		while (toc - tic) < length and not interrupt:
+			toc = time.time()
+
+		# Stop playback
+		ap.stopAll()
+		interrupt = False # reset interrupt
+
 		return IsDone("Set", "ALAudioPlayer")
 
 	# Callback for pointing at raised hand
@@ -152,20 +183,22 @@ def Listen():
 			(effector, point_x, point_y, point_z))
 
 		# posture.applyPosture("StandInit", 0.5)
-		tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
-		tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
-		ap.playFile(PEPPER_AUDIO_PATH + "what_is_your_qn.wav")
+		tracker.post.lookAt([point_x,point_y,point_z], frame, max_speed, False)
+		tracker.post.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
+		time.sleep(1) # small delay between pointing and prompting
+		ap.post.playFile(PEPPER_AUDIO_PATH + "what_is_your_qn.wav")
+		time.sleep(1.881542)
 
 		return IsDone("Set", "Point")
 
 	# Increase/decrease master volume
 	def volume_callback(msg):
-		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		vol = ad.getOutputVolume()
 		if msg.data == "up":
 			vol = 100 if vol > 90 else vol+10
 		elif msg.data == "down":
 			vol = 0 if vol < 10 else vol-10
+		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		ad.setOutputVolume(vol)
 		return IsDone("Set", "ChangeVolume")
 	
@@ -278,3 +311,9 @@ def IsDone(action, name):
 		action_status_dict[name] = True
 
 	return
+
+def signal_handler(sig, frame):
+	global interrupt
+	interrupt = True
+signal.signal(signal.SIGUSR1, signal_handler)
+interrupt = False
