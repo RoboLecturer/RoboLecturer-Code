@@ -11,6 +11,7 @@ def getModel(a):
     elif a == 2:
         return "davinci"
 
+
 def chatGPT(query):
     """call the openai chatGPT api
     @params: query [string]

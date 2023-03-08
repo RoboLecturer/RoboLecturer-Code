@@ -2,6 +2,7 @@
 
 import openai
 
+
 def getModel(a):
     """get the current model under use
     @returns: model [string]
@@ -63,3 +64,4 @@ def getResponse(query):
             response = daVinci(query)
 
     return response
+

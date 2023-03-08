@@ -1,22 +1,3 @@
-<<<<<<< HEAD
-# Decription of the code organisation for the CV branch.
-
-## Packages
-
-The list of packages and their versions used for the CV module has been included in the ```requirements.txt``` file.
-
-## Organisation
-
-PepperCV directory contains (at the moment) 3 directories:
-
-1) ```src``` -> directory for scripts for functions, classes etc. specific for the CV module to be used in the ```main.py``` script. It also should contain notebooks for training models.
-
-2) ```tests``` -> directory used to conduct tests of software.
-
-3) ```utils``` -> directory for utility code/files. This includes ```PepperAPI``` and saved models in the ```models``` subdirectory.
-
-Feel free to modify this.
-=======
 # ROS - Python Documentation
 ## Contents
 1. [Overview](#1-overview)
@@ -111,4 +92,3 @@ For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLec
 - **```No module found: api```**
 
   You might not have built the api package (see [Section 2.2](#22-catkin-workspace)). If you have, make sure you've run ```source devel/setup.bash```.
->>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7

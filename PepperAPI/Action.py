@@ -2,8 +2,10 @@ from __future__ import print_function
 import sys
 import time
 import threading
+import signal
 import rospy
 import paramiko
+import json
 from .Publisher import *
 from .Subscriber import *
 from PepperAPI import *
@@ -12,6 +14,14 @@ from PepperAPI import *
 # Request for actuator action by Pepper robot
 
 def Request(api_name, api_params={}):
+
+	class FastTransport(paramiko.Transport):
+		def __init__(self, sock):
+			super(FastTransport, self).__init__(sock)
+			self.window_size = 2147483647
+			self.packetizer.REKEY_BYTES = pow(2, 40)
+			self.packetizer.REKEY_PACKETS = pow(2, 40)
+			self.use_compression()
 
 	# API callbacks
 	if api_name == "ALTextToSpeech":
@@ -29,6 +39,7 @@ def Request(api_name, api_params={}):
 		@param api_params : dict{
 			"path": (String) path of audio file in your machine
 			"file": (String) name of file that's already in Pepper (skips uploading)
+			"length": (Float) length of audio file in seconds
 		}
 		"""
 		def printProgress(transferred, left):
@@ -41,10 +52,8 @@ def Request(api_name, api_params={}):
 			pepper_path = PEPPER_AUDIO_PATH + filename
 
 			# Setup SFTP link
-			transport = paramiko.Transport((ROBOT_IP, 22))
+			transport = FastTransport((ROBOT_IP, 22))
 			transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
-			transport.default_max_packet_size = 1000000000
-			transport.default_window_size = 1000000000
 			sftp = paramiko.SFTPClient.from_transport(transport)
 
 			# Send file
@@ -55,8 +64,15 @@ def Request(api_name, api_params={}):
 		else:
 			filename = api_params["file"]
 
+		duration = -1.0 if "length" not in api_params else api_params["length"]
+		data = {
+			"file": filename,
+			"length": duration
+		}
+		data_to_string = json.dumps(data)
+
 		# Publish msg to kinematics module to play audio
-		audio_player_publisher.publish(filename)
+		audio_player_publisher.publish(data_to_string)
 		return True
 
 	if api_name == "Point":
@@ -78,11 +94,7 @@ def Request(api_name, api_params={}):
 		val = api_params["cmd"]
 		volume_publisher.publish(val)
 		return True
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 	
 	print("Action.Request(%s) does not exist. Please check name again." % api_name)
 	return
@@ -98,26 +110,42 @@ def Listen():
 
 	# Callback for ALTextToSpeech
 	def tts_callback(msg):
+		tts = ALProxy("ALTextToSpeech", ROBOT_IP, ROBOT_PORT)
 		rospy.loginfo("Pepper ALTextToSpeech: Say %s" % msg.data)
 		tts.say(msg.data)
-<<<<<<< HEAD
-		return IsDone("Set", "ALTextToSpeech")	
-=======
 		return IsDone("Set", "ALTextToSpeech")
->>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 	# Callback for ALAudioPlayer
 	def audio_player_callback(msg):
-		filename = msg.data
-		rospy.loginfo("Pepper ALAudioPlayer: Play audio %s" % filename)
+
+		data = json.loads(msg.data)
+		filename = str(data["file"])
+		length = float(data["length"])
 		audio_file = PEPPER_AUDIO_PATH + filename
-		ap.playFile(audio_file)
-		# time.sleep(5)
-<<<<<<< HEAD
-		return IsDone("Set", "ALAudioPlayer")	
-=======
+
+		# Play audio in separate thread
+		rospy.loginfo("Pepper ALAudioPlayer: Play audio %s (%.3fs)" % (audio_file, length))
+		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+		taskId = ap.post.playFile(audio_file)
+
+		# For files pre-uploaded in Pepper, length is not given,
+		# and can be directly gotten because they're WAV files
+		if length < 0:
+			length = ap.getFileLength(taskId)
+
+		# Delay while file is being played in thread
+		global interrupt # for interrupting playback by sending SIGUSR1
+		tic = time.time()
+		toc = time.time()
+		while (toc - tic) < length and not interrupt:
+			toc = time.time()
+
+		# Stop playback
+		time.sleep(1) # slight buffer
+		ap.stopAll()
+		interrupt = False # reset interrupt
+
 		return IsDone("Set", "ALAudioPlayer")
->>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 	# Callback for pointing at raised hand
 	def point_callback(msg):
@@ -164,42 +192,32 @@ def Listen():
 			(effector, point_x, point_y, point_z))
 
 		# posture.applyPosture("StandInit", 0.5)
-		tracker.lookAt([point_x,point_y,point_z], frame, max_speed, False)
-		tracker.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
-		ap.playFile(PEPPER_AUDIO_PATH + "what_is_your_qn.wav")
+		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
+		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+
+		tracker.post.lookAt([point_x,point_y,point_z], frame, max_speed, False)
+		tracker.post.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
+		time.sleep(.7) # small delay between pointing and prompting
+		ap.post.playFile(PEPPER_AUDIO_PATH + "what_is_your_qn.wav")
+		time.sleep(2)
 
 		return IsDone("Set", "Point")
 
 	# Increase/decrease master volume
 	def volume_callback(msg):
-		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
+		ad = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
 		vol = ad.getOutputVolume()
 		if msg.data == "up":
 			vol = 100 if vol > 90 else vol+10
 		elif msg.data == "down":
 			vol = 0 if vol < 10 else vol-10
+		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		ad.setOutputVolume(vol)
 		return IsDone("Set", "ChangeVolume")
-<<<<<<< HEAD
-=======
 	
->>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
-
-	# Initialise proxies
-	try:
-		broker = ALBroker("broker", "0.0.0.0", 54000, ROBOT_IP, ROBOT_PORT)
-		tts = ALProxy("ALTextToSpeech")
-		ap = ALProxy("ALAudioPlayer")
-		tracker = ALProxy("ALTracker")
-		posture = ALProxy("ALRobotPosture")
-		ad = ALProxy("ALAudioDevice")
-	except Exception as e:
-		print(e)
-		sys.exit()
-
-
-	# Define event to terminate thread on command
+	# Define event to terminate subscriber spin on command
 	event = threading.Event()
 	event.set()
 
@@ -229,10 +247,7 @@ def Listen():
 	thread_volume = threading.Thread(target=subscribe_listen, args=(
 		lambda: StringSubscriber(VOLUME_TOPIC, volume_callback, listen=0, log=False),
 		))
-<<<<<<< HEAD
-=======
 	
->>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 
 	# Run threads
 	thread_tts.start()
@@ -247,6 +262,7 @@ def Listen():
 			if not kill_threads:
 				continue
 			try:
+				ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
 				ap.stopAll()
 			except:
 				pass
@@ -255,7 +271,6 @@ def Listen():
 			thread_ap.join()
 			thread_point.join()
 			thread_volume.join()
-			broker.shutdown()
 			break
 	except KeyboardInterrupt:
 		print("KeyboardInterrupt")
@@ -280,12 +295,7 @@ action_status_dict = {
 	"ALTextToSpeech": False,
 	"ALAudioPlayer": False,
 	"Point": False,
-<<<<<<< HEAD
 	"ChangeVolume": False
-=======
-	"ChangeVolume": False,
-	"ChangeSpeed": False,
->>>>>>> 4153c11c353cf1aeebfee808772e2a966f6db8b7
 }
 def IsDone(action, name):
 	
@@ -301,3 +311,9 @@ def IsDone(action, name):
 		action_status_dict[name] = True
 
 	return
+
+def signal_handler(sig, frame):
+	global interrupt
+	interrupt = True
+signal.signal(signal.SIGUSR1, signal_handler)
+interrupt = False

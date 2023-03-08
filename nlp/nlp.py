@@ -104,6 +104,7 @@ def nlp_main():
 
 			# generate answer from received question then send to Speech
 			Q.answer = qa.answerGen(Q.question, scriptContent, title)
+
 			response = f"{Q.answer}.. Does that answer your question?"
 			Info.Send("Answer", {"text": response})
 			# request slide change after sending text to Speech Processing module as text->speech takes time
