@@ -96,15 +96,19 @@ def nlp_main():
 		# Q.main_type = "related" 
 
 		if Q.main_type == "related":
-			# TODO: POST MVP: High/Low order question classification for different speed model answer generation
+			for instance in Slide_instances:
+				if instance.title == Q.sub_type :
+					scriptContent = instance.scriptContent
+					title = instance.title
+					slide = instance.slideNo
+
 			# generate answer from received question then send to Speech
-			Q.answer = qa.answerGen(Q.question)
+			Q.answer = qa.answerGen(Q.question, scriptContent, title)
+
 			response = f"{Q.answer}.. Does that answer your question?"
 			Info.Send("Answer", {"text": response})
 			# request slide change after sending text to Speech Processing module as text->speech takes time
-			for instance in Slide_instances:
-				if instance.title == Q.sub_type :
-					Info.Request("ChangeSlide", {"cmd":f"{instance.slideNo}"})
+			Info.Request("ChangeSlide", {"cmd":f"{slide}"})
 
 		elif Q.main_type == "operational":
 			# if the quesiton is operational, check the command type

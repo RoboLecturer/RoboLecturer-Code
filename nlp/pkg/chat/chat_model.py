@@ -2,13 +2,15 @@
 
 import openai
 
-def getModel():
+
+def getModel(a):
     """get the current model under use
     @returns: model [string]
     """
-    # model = "chatgpt"
-    model = "davinci"
-    return model
+    if a == 1:
+        return "chatgpt"
+    elif a == 2:
+        return "davinci"
 
 def chatGPT(query):
     """call the openai chatGPT api
@@ -48,9 +50,18 @@ def getResponse(query):
     @params: query [string]
     @returns: response [string]
     """
-    model = getModel()
-    if model == "chatgpt":
-        response = chatGPT(query)
-    elif model == "davinci":
-        response = daVinci(query)
+    model = getModel(1)
+    try:
+        if model == "chatgpt":
+            response = chatGPT(query)
+        elif model == "davinci":
+            response = daVinci(query)
+    except:
+        model = getModel(2)
+        if model == "chatgpt":
+            response = chatGPT(query)
+        elif model == "davinci":
+            response = daVinci(query)
+
     return response
+
