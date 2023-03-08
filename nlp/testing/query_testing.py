@@ -17,21 +17,29 @@ query_instances = []
 
 # define the topics
 #topic = "Arsenal Football Club"
-topic = "Astronomy"
+topic = "Modern Art"
 
 # define the context of the queries
-context_query = f"Write a lecture script of 4 paragraphs, covering a small range of points on this topic: {topic}"
+context_query = f"Write a lecture script of 5 paragraphs, covering a small range of points on this topic: {topic}"
 context = chat_model.getResponse(context_query)
-
-querys = []
 
 #define some questions
 prompt = f"give me 5 questions (ending with a ? and seperated by a new line) based on the topic: {topic}"
 query = chat_model.getResponse(prompt)
 querys = [x for x in query.split("\n") if x != '']
+prompt = f"give me 2 questions that require a subjective answer (ending with a ? and seperated by a new line) based on the topic: {topic}"
+subjective_query = chat_model.getResponse(prompt)
+subjective_querys = [x for x in subjective_query.split("\n") if x != '']
+
 print("====================================================\n")
+print(topic)
+print("====================\n")
 print(querys)
+print("====================\n")
+print(subjective_querys)
 print("====================================================\n")
+
+querys.extend(subjective_querys)
 
 for query in querys:
     query_instances.append(QA(query))
@@ -51,12 +59,16 @@ for instance in query_instances:
 # print the results along with the question for judging
 print(f"Query Context:\n{context}")
 print("=========================================================\n")
+count = 1
 for instance in query_instances:
-    print("====================================================\n")
-    print(f"Query: {instance.query}\nAnswer: {instance.response}\nExecution Time: {instance.time}\n")
-    print("====================================================\n")
-
-
+    if count < 6:
+        print("====================================================\n")
+        print(f"Query: {instance.query}\nAnswer: {instance.response}\nExecution Time: {instance.time}\n")
+        print("====================================================\n")
+    elif count > 5:
+        print("====================================================\n")
+        print(f"SUBJECTIVE Query: {instance.query}\nAnswer: {instance.response}\nExectution Time: {instance.time}\n")
+    count=+1
 
 
 
