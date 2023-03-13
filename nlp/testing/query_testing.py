@@ -3,6 +3,7 @@
 # import the packges
 import time 
 from chat import chat_model
+from tqdm import tqdm 
 
 #define output class
 class QA:
@@ -17,7 +18,7 @@ query_instances = []
 
 # define the topics
 #topic = "Arsenal Football Club"
-topic = "Modern Art"
+topic = "Picasso"
 
 # define the context of the queries
 context_query = f"Write a lecture script of 5 paragraphs, covering a small range of points on this topic: {topic}"
@@ -45,7 +46,7 @@ for query in querys:
     query_instances.append(QA(query))
 
 # create completions for each of the queries
-for instance in query_instances:
+for instance in tqdm(query_instances):
     start_time = time.time()
     query = f"give a breif by complete answer to this question - {instance.query} - that relates to this context: {context}"
     # query = f"answer this question: {instance.query} - in this context of this text: {context}, if the answer is not in the context of the text, then provide an answer that relates to the topic contained within the text" 
