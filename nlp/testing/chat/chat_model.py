@@ -1,6 +1,6 @@
 # This script is where the calls to the openai models are
-
 import openai
+
 
 def getModel(a):
     """get the current model under use
@@ -10,7 +10,7 @@ def getModel(a):
         return "chatgpt"
     elif a == 2:
         return "davinci"
-
+    
 
 def chatGPT(query):
     """call the openai chatGPT api
@@ -22,8 +22,9 @@ def chatGPT(query):
     completions = openai.ChatCompletion.create(
 		    model="gpt-3.5-turbo",
 		    messages=[
-				    {"role": "system", "content": f"{query}"},
-			    ]
+                    {'role': 'user',
+                     'content': f"{query}"}
+            ]
 	    )
     response = completions['choices'][0]['message']['content']
     return response
