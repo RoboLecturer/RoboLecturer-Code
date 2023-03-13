@@ -24,7 +24,7 @@ query_instances = []
 topic = "Picasso"
 
 # define the context of the queries
-context_query = f"Write a lecture script of 5 paragraphs, covering a small range of points on this topic: {topic}"
+context_query = f"Write a lecture script of 3 paragraphs, covering a small range of points on this topic: {topic}"
 context = chat_model.getResponse(context_query)
 # add the lecture script to the conversation history
 conversationHistory.append({'role': 'assistant', 'content': context})
@@ -34,6 +34,9 @@ conversationHistory.append({'role': 'assistant', 'content': context})
 print("====================================================\n")
 print(topic)
 print("====================\n")
+print(context)
+print("====================================================\n")
+
 
 while True:
     a = input('\n\nUSER: ')
@@ -53,6 +56,8 @@ while True:
     query = f"give a breif but complete answer to this question - {a} - that relates to this context: {convHistory}"
 
     response = chat_model.getResponse(query)
+    print(response)
+    print("==============\n")
 
     conversationHistory.append({'role': 'user', 'content': a})
     conversationHistory.append({'role': 'assistant', 'content': response})
