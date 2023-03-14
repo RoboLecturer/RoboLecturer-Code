@@ -64,7 +64,8 @@ while True:
 
 
 filepath = "logs/conversation_%s.txt" % round(time(),4)
-for el in conversationHistory:
-    output = output + "\n\n" + el
+
+output = manage.flatten_convo(conversationHistory)
 with open(filepath, 'w', encoding='utf-8') as outfile:
     outfile.write(output)
+

@@ -89,7 +89,10 @@ for question in questions:
     conversation.append({'role': 'assistant', 'content': response})
     
 filepath = "logs/trust_%s.txt" % round(time(),4)
-for el in conversation:
-    output = output + "\n\n" + el
+output = manage.flatten_image(conversation)
 with open(filepath, 'w', encoding='utf-8') as outfile:
     outfile.write(output)
+
+
+
+

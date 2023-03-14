@@ -95,8 +95,7 @@ for instance in query_instances:
     count=+1
 
 filepath = "logs/QandA_%s.txt" % round(time.time(),4)
-for el in conversationHistory:
-    output = output + "\n\n" + el
+output = manage.flatten_convo(conversationHistory)
 with open(filepath, 'w', encoding='utf-8') as outfile:
     outfile.write(output)
 
