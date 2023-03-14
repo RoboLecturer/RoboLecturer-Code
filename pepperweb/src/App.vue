@@ -14,7 +14,6 @@ import M from "materialize-css";
 
 @Options({})
 export default class App extends Vue {
-  api_url = "http://127.0.0.1:3000";
   mounted() {
     M.AutoInit(); //initialise materialise css
   }

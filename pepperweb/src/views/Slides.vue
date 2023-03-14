@@ -26,7 +26,7 @@ export default class Slides extends Vue {
   $router: any;
   ros: any = null;
   $cookies: any;
-  ws_url = "ws://localhost:9000";
+  ws_url:any;
   connected = false;
   text_listener!: ROSLIB.Topic;
   quiz_listener!: ROSLIB.Topic;

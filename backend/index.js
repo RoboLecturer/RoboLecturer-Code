@@ -7,7 +7,7 @@ import {createTablesIfNotExist} from './database/database.js';
 import mysql from 'mysql';
 
 var corsOptions = {
-  origin: "http://localhost:8080"
+  origin: "*"
 };
 
 const app = express();

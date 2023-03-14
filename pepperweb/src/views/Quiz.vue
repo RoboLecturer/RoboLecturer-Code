@@ -61,6 +61,7 @@ Vue.registerHooks(["beforeRouteLeave"]);
 @Options({ components: { ResultBarChar } })
 export default class Quiz extends Vue {
   api_url: any;
+  ws_url: any;
   $cookies: any;
   $http: any;
   questions = [];
@@ -87,16 +88,8 @@ export default class Quiz extends Vue {
     "#1ddee8",
     "#1de83f",
   ];
-  rosInterface: RosInterface = new RosInterface(
-    "ws://localhost:9000",
-    () => {
-      return;
-    },
-    () => {
-      return;
-    }
-  );
-  statusText = "Waiting for users to join...";
+  rosInterface!: RosInterface;
+  statusText = "Go to http://192.168.0.100:8080 to join...";
   users = [];
 
   async getUsersInLobby(): Promise<void> {
@@ -240,6 +233,7 @@ export default class Quiz extends Vue {
   }
 
   mounted(): void {
+    this.rosInterface = new RosInterface(this.ws_url);
     this.rosInterface.connect();
     // console.log(this.$cookies.get("quizCookie"));
     this.resetResults();

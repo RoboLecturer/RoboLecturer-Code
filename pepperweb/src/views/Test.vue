@@ -40,7 +40,7 @@ import RosInterface from "../interface/ros";
 
 @Options({})
 export default class Test extends Vue {
-  rosInterface: RosInterface = new RosInterface("ws://localhost:9000", this.onQuizTriggered, this.onChangeSlide);
+  rosInterface: RosInterface = new RosInterface("ws://localhost:9000");
   ros: any = null;
   connected = false;
   

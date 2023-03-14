@@ -46,10 +46,10 @@ Vue.registerHooks(["beforeRouteLeave"]);
 export default class Home extends Vue {
   $http: any;
   api_url: any;
+  ws_url: any;
   statusText = "Join the lobby";
   ros: any = null;
   connected = false;
-  ws_url = "ws://localhost:9000";
   quiz_listener: any = null;
   question_listener: any = null;
   timer_listener: any = null;
