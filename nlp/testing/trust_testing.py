@@ -1,6 +1,7 @@
 # imput 55 classic engingeering interview questions and evaluate how chat models answer the question
 from chat import chat_model, manage
-from time import time
+from time import time, sleep
+from tqdm import tqdm
 
 # define the conversation 
 conversation = list()
@@ -66,7 +67,7 @@ questions = [
     "Considering that many machine learning algorithms exist, how would you choose an algorithm for a particular dataset?"
 ]
 
-for question in questions:
+for question in tqdm(questions):
 
     flat = manage.flatten_convo(conversation)
     # get the anticipation
@@ -88,6 +89,8 @@ for question in questions:
     conversation.append({'role': 'user', 'content': question})
     conversation.append({'role': 'assistant', 'content': response})
     
+    sleep(2)
+
 filepath = "logs/trust_%s.txt" % round(time(),4)
 output = manage.flatten_image(conversation)
 with open(filepath, 'w', encoding='utf-8') as outfile:

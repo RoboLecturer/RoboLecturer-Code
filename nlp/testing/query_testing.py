@@ -68,7 +68,7 @@ for instance in tqdm(query_instances):
 
     # combine all elements in the list conversationHistory
     convHistory = manage.flatten_convo(conversationHistory)
-    query = f"give a breif but complete answer to this question - {instance.query} - that relates to this context: {convHistory}"
+    query = f"give a breif but complete answer to this question - {instance.query} - that relates to this context: {convHistory} - Do not include the question in your response."
 
     start_time = time.time()
     instance.response = chat_model.getResponse(query)
