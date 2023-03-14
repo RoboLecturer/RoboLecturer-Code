@@ -2,9 +2,20 @@
 from chat import chat_model, manage
 from time import time, sleep
 from tqdm import tqdm
+from collections import deque
+
+class FixedLengthQueue:
+    def __init__(self, max_len):
+        self.queue = deque(maxlen=max_len)
+
+    def append(self, item):
+        self.queue.append(item)
+
+    def __str__(self):
+        return str(list(self.queue))
 
 # define the conversation 
-conversation = list()
+conversation = FixedLengthQueue(25)
 Context = "I am in an interview for a job in machine learning. My goal is to fully express my understanding of computer science and the world of machine learning in a concise and likeable manner."
 conversation.append({'role': 'system', 'content': Context})
 
