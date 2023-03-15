@@ -8,7 +8,7 @@ import time
 p = pyaudio.PyAudio()
 
 # setting the mic being used to a variable Mic
-MIC = 2
+MIC = 6
 # bit_Size of audio (2 bytes - 16 bits)
 WIDTH = 2
 # getting the default sample rate of the mic being used]                  
@@ -28,7 +28,7 @@ def callback(in_data, frame_count, time_info, status):
 # Open A stream of PyAudio to start listening
 stream = p.open(format=p.get_format_from_width(WIDTH),
                 input_device_index=MIC,
-                channels=1,
+                channels=6,
                 rate=RATE,
                 input=True,
                 output=False,

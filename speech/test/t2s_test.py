@@ -8,4 +8,4 @@ with open(INPUT_PATH, 'r') as file:
 # List available 🐸TTS models and choose the first one
 # model_name = TTS.list_models()[0]
 
-runT2S(txt, OUTPUT_PATH="output_test.wav")
+runT2S(txt, OUTPUT_PATH="output_test")
