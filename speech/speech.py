@@ -1,6 +1,9 @@
 import sys
 sys.path.append("..") # Adds higher directory to python modules path.
 
+from mutagen.mp3 import MP3
+from mutagen.wavpack import WavPack
+
 import PepperAPI
 from PepperAPI import Action, Info
 import pkg.text2speech as t2s
@@ -8,34 +11,47 @@ import pkg.speech2text as s2t
 import pkg.noise as nd
 
 
-loop_c = 0 
+loop_c = 0
+# TODO: use os package for OSes
+OUTPUT_DIR = "output/"
 
 
 def speech_main():
 
 	global loop_c
 
+	# Use gTTS (.mp3) or DNN (.wav)
+	ONLINE=False
+
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
 	Info.Request("State", {"name":"Start"})
 
+	# When loop has started, wait for script from NLP
+	# Then convert to MP3 and send to Kinematics
 	if loop_c == 0:
 		total_script = Info.Request("LectureScript")
 
-		for i, slide in enumerate(total_script):
+		# Generate script audio for all slides
+		for i, slide_script in enumerate(total_script):
+			t2s.runT2S(slide_script, online=ONLINE, OUTPUT_PATH=OUTPUT_DIR+f"script_{i}")
 
-			t2s.runT2S(slide, f"output/output{i}")
-
-		path_to_audio = "output/output0"
-		Action.Request("ALAudioPlayer", {"path": path_to_audio})
+		# Play first slide script audio
+		path_to_audio = OUTPUT_DIR+"script_0"
+		if ONLINE:
+			audio = MP3(path_to_audio)
+		else:
+			audio = WavPack(path_to_audio)
+		Action.Request("ALAudioPlayer", {"path": path_to_audio, "length": audio.info.length})
 	else:
-		path_to_audio = f"output/output{loop_c}"
-		Action.Request("ALAudioPlayer", {"path": path_to_audio})
+		path_to_audio = OUTPUT_DIR+f"script_{loop_c}"
+		if ONLINE:
+			audio = MP3(path_to_audio)
+		else:
+			audio = WavPack(path_to_audio)
+		Action.Request("ALAudioPlayer", {"path": path_to_audio, "length": audio.info.length})
 
 	loop_c += 1
-	# When loop has started, wait for script from NLP
-	# Then convert to MP3 and send to Kinematics
-	# TODO: convert lecture script to audio and save somewhere in your machine
 	
 
 
@@ -56,9 +72,15 @@ def speech_main():
 
 		# Wait for answer from NLP, 
 		answer = Info.Request("Answer")
-		t2s.runT2S(answer, path_to_audio)
-		# TODO: convert answer to audio and save somewhere in your machine
-		Action.Request("ALAudioPlayer", {"path": path_to_audio})
+
+		path_to_answer = OUTPUT_DIR+"answer"
+		t2s.runT2S(answer, path_to_answer)
+
+		if ONLINE:
+			audio = MP3(path_to_answer)
+		else:
+			audio = WavPack(path_to_answer)
+		Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
 
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
@@ -79,10 +101,15 @@ def speech_main():
 		else:
 			text = Info.Request("Shutup")
 		
-		t2s.runT2S(text, path_to_audio)
+		path_to_JS = OUTPUT_DIR+"JS"
+		t2s.runT2S(text, path_to_JS)
 	
 		# TODO: convert joke/shutup text into audio and save
-		Action.Request("ALAudioPlayer", {"path": path_to_audio})
+		if ONLINE:
+			audio = MP3(path_to_JS)
+		else:
+			audio = WavPack(path_to_JS)
+		Action.Request("ALAudioPlayer", {"path": path_to_JS, "length": audio.info.length})
 
 		# then loop restarts
 		return
@@ -103,9 +130,15 @@ def speech_main():
 		# If trigger_joke, receive joke from NLP, convert to audio and send to play
 		if signal == "joke":
 			joke = Info.Request("Joke")
-			t2s.runT2S(joke, path_to_audio)
+			path_to_JS = OUTPUT_DIR+"JS"
+			t2s.runT2S(joke, path_to_JS)
+
 			# TODO: convert joke/shutup text into audio and save
-			Action.Request("ALAudioPlayer", {"path": path_to_audio})
+			if ONLINE:
+				audio = MP3(path_to_JS)
+			else:
+				audio = WavPack(path_to_JS)
+			Action.Request("ALAudioPlayer", {"path": path_to_JS, "length": audio.info.length})
 		
 		# Restart loop after joke is played or if trigger_quiz
 		return
@@ -122,9 +155,15 @@ def speech_main():
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
 			joke = Info.Request("Joke")
-			t2s.runT2S(joke, path_to_audio)
+			path_to_JS = OUTPUT_DIR+"JS"
+			t2s.runT2S(joke, path_to_JS)
+
 			# TODO: convert joke/shutup text into audio and save
-			Action.Request("ALAudioPlayer", {"path": path_to_audio})
+			if ONLINE:
+				audio = MP3(path_to_JS)
+			else:
+				audio = WavPack(path_to_JS)
+			Action.Request("ALAudioPlayer", {"path": path_to_JS, "length": audio.info.length})
 		return
 
 	# Else, restart loop

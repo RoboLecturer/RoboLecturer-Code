@@ -16,10 +16,12 @@ def googleTTS(txt, OUTPUT_PATH):
     tts = gTTS(txt)
     tts.save(OUTPUT_PATH)
 
-def runT2S(txt, OUTPUT_PATH="output"):
-    OUTPUT_PATH += '.mp3'
-    googleTTS(txt, OUTPUT_PATH)
-    # OUTPUT_PATH += '.wav'
-    # DNNTTS(txt, OUTPUT_PATH)
+def runT2S(txt, online=False, OUTPUT_PATH="output"):
+    if online:
+        OUTPUT_PATH += '.mp3'
+        googleTTS(txt, OUTPUT_PATH)
+    else:
+        OUTPUT_PATH += '.wav'
+        DNNTTS(txt, OUTPUT_PATH)
 
     return OUTPUT_PATH
