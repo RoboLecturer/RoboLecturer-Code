@@ -4,11 +4,11 @@
 from TTS.api import TTS
 from gtts import gTTS
 
-def DNNTTS(txt, OUTPUT_PATH):
+def DNNTTS(txt, OUTPUT_PATH, GPU=False):
     # Init TTS with the target model name
     # print(TTS.list_models())
     # Curr: Tacotron2-DDC + HiFiGAN
-    tts = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC", progress_bar=True, gpu=False)
+    tts = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC", progress_bar=True, gpu=GPU)
     # Run TTS
     tts.tts_to_file(text=txt, file_path=OUTPUT_PATH)
 
