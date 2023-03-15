@@ -4,6 +4,7 @@
 control/PepperAPI
 *.txt
 .DS_Store
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 *.py[cod]
