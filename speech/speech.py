@@ -21,7 +21,7 @@ def speech_main():
 
 		for i, slide in enumerate(total_script):
 
-			t2s.googleTTS(slide, f"output/output{i}")
+			t2s.runT2S(slide, f"output/output{i}")
 
 		path_to_audio = "output/output0"
 		Action.Request("ALAudioPlayer", {"path": path_to_audio})
