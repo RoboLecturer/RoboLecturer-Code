@@ -57,14 +57,14 @@ def getResponse(query):
             response = chatGPT(query)
         elif model == "davinci":
             response = daVinci(query)
-        print(model)
+            print("chatGPT failed - Using GPT-3")
     except:
         model = getModel(2)
         if model == "chatgpt":
             response = chatGPT(query)
         elif model == "davinci":
             response = daVinci(query)
-        print(model)
+            print("chatGPT failed - Using GPT-3")
 
     return response
 

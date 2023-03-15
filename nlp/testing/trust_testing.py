@@ -2,20 +2,27 @@
 from chat import chat_model, manage
 from time import time, sleep
 from tqdm import tqdm
-from collections import deque
 
-class FixedLengthQueue:
-    def __init__(self, max_len):
-        self.queue = deque(maxlen=max_len)
-
-    def append(self, item):
-        self.queue.append(item)
-
-    def __str__(self):
-        return str(list(self.queue))
+def customAppend(myList, item,  maxLength = 30):
+    """function to append to the list, if its bellow the size limit.
+        If not, then shift elements to the left by one and add new item"""
+    def shift_left(lst):
+        temp = lst[0]
+        for i in range(1, len(lst)):
+            lst[i-1] = lst[i]
+        lst[-1] = temp
+        return lst
+    
+    length = len(myList)
+    if length == maxLength:
+        myList = shift_left(myList)
+        myList[-1] = item
+    else:
+        myList.append(item)
+    return myList    
 
 # define the conversation 
-conversation = FixedLengthQueue(25)
+conversation = list()
 Context = "I am in an interview for a job in machine learning. My goal is to fully express my understanding of computer science and the world of machine learning in a concise and likeable manner."
 conversation.append({'role': 'system', 'content': Context})
 
@@ -96,14 +103,14 @@ for question in tqdm(questions):
     convHistory = manage.flatten_convo(conversation)
     query = f"give a short answer to the following queston: {question} when the context: {convHistory}"
     response = chat_model.getResponse(query)
-
-    conversation.append({'role': 'user', 'content': question})
-    conversation.append({'role': 'assistant', 'content': response})
     
+    conversation = customAppend(conversation, {'role': 'user', 'content': question}, 30)
+    conversation = customAppend(conversation, {'role': 'assistant', 'content': response}, 30)
+
     sleep(2)
 
 filepath = "logs/trust_%s.txt" % round(time(),4)
-output = manage.flatten_image(conversation)
+output = manage.flatten_convo(conversation)
 with open(filepath, 'w', encoding='utf-8') as outfile:
     outfile.write(output)
 

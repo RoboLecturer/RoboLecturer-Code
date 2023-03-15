@@ -21,7 +21,7 @@ query_instances = []
 
 # define the topics
 #topic = "Arsenal Football Club"
-topic = "Picasso"
+topic = "Premier League Football"
 
 # define the context of the queries
 context_query = f"Write a lecture script of 3 paragraphs, covering a small range of points on this topic: {topic}"
