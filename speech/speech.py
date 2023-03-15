@@ -5,7 +5,7 @@ import pkg.speech2text as s2t
 import pkg.noise as nd
 
 def speech_main():
-	path_to_audio = "output/output.wav"
+	path_to_audio = "output.wav"
 
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
