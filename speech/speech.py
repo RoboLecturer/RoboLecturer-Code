@@ -1,3 +1,6 @@
+import sys
+sys.path.append("..") # Adds higher directory to python modules path.
+
 import PepperAPI
 from PepperAPI import Action, Info
 import pkg.text2speech as t2s
