@@ -1,6 +1,6 @@
 # pip install SpeechRecognition pyaudio
 import speech_recognition as sr
-
+import openai
 r = sr.Recognizer()
 
 def Sphinx(audio):
@@ -33,11 +33,25 @@ def whisper(audio):
     except sr.RequestError as e:
         print("Could not request results from Whisper")
 
+def whisperOnline(audio):
+
+    openai.Audio.transcribe("whisper-1",audio)
+
 # Test with mic
 def runS2T(index):
     with sr.Microphone(device_index=index) as source:
-        # print("Say something!")
-        mic_input = r.listen(source)
+        print("Say something!")
+        mic_input = r.listen(source,10, 3)
+        print("done listening")
         # text = Sphinx(mic_input)
-        text = GSR(mic_input)
+        text = Sphinx(mic_input)
     return text
+
+
+# def runS2T(index):
+#     with sr.Microphone(device_index=index) as source:
+#         print("Say something!")
+#         mic_input = r.listen(source,10, 3)
+#         print("done listening")
+#         text = whisperOnline(mic_input)
+#     return text

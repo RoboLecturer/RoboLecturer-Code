@@ -4,19 +4,36 @@ import pkg.text2speech as t2s
 import pkg.speech2text as s2t
 import pkg.noise as nd
 
+
+loop_c = 0 
+
+
 def speech_main():
-	path_to_audio = "output.wav"
+
+	global loop_c
 
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
 	Info.Request("State", {"name":"Start"})
 
+	if loop_c == 0:
+		total_script = Info.Request("LectureScript")
+
+		for i, slide in enumerate(total_script):
+
+			t2s.googleTTS(slide, f"output/output{i}")
+
+		path_to_audio = "output/output0"
+		Action.Request("ALAudioPlayer", {"path": path_to_audio})
+	else:
+		path_to_audio = f"output/output{loop_c}"
+		Action.Request("ALAudioPlayer", {"path": path_to_audio})
+
+	loop_c += 1
 	# When loop has started, wait for script from NLP
 	# Then convert to MP3 and send to Kinematics
-	script = Info.Request("LectureScript")
-	t2s.runT2S(script, path_to_audio)
 	# TODO: convert lecture script to audio and save somewhere in your machine
-	Action.Request("ALAudioPlayer", {"path": path_to_audio})
+	
 
 
 	# ========= STATE: AnyQuestions =========
@@ -115,5 +132,6 @@ def speech_main():
 
 if __name__ == "__main__":
 	PepperAPI.init("test")
+
 	while True:
 		speech_main()
