@@ -41,7 +41,7 @@ class Slide:
 
 def nlp_main():
 
-	global list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes
+	global list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes, list_of_questions
 
 	LOOP_COUNT += 1
 	# ========= STATE: Start =========
@@ -233,6 +233,8 @@ if __name__ == "__main__":
 
 	# when code is terminated, store questions asked for post-evaluation
 	except KeyboardInterrupt:
-		f = open("higher_order_lower_order.txt", "w")
-		f.writelines(list_of_questions)
-		f.close()
+		if len(list_of_questions):
+			f = open("higher_order_lower_order.txt", "w")
+			f.writelines(list_of_questions)
+			f.close()
+			print("Questions stored to file.")
