@@ -65,3 +65,8 @@ def getResponse(query):
 
     return response
 
+def flatternConvo(conversation):
+    convo=""
+    for i in conversation:
+        convo += '%s: %s\m' % (i['role'].upper(), i['content'])
+    return convo.strip()
