@@ -31,6 +31,7 @@ class covnHistory:
 		self.history = list()
 		self.salience = ""
 		self.anticipation = ""
+		self.embedding = list()
 
 		self.history.append({'role': 'system', 'content': self.Context})
 		self.history.append({'role': 'assistant', 'content': ""})
@@ -101,6 +102,11 @@ class covnHistory:
 		self.updateHistoryContext()
 		# update the slide context
 		self.updateSlideContext(script)
+
+	def getEmbedding(self, pc_query):
+		"""get PineCone query embedding"""
+		self.embedding = chat_model.getEmbedding(pc_query)
+		
 
 
 
