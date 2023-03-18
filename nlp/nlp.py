@@ -8,6 +8,7 @@ from pkg import questionClassifier as qc
 from pkg import jokeGenerator as jg
 from pkg import descriptionGenerator as dg
 from pkg import quizGeneration as qg
+from pkg.chat import chat_model 
 
 #############################################################################
 # TODO: How do we extrct the slide number for a specific slide request?
@@ -22,6 +23,86 @@ class_description = {}
 Slide_instances = []
 list_of_quizes = []
 list_of_questions = [] # store questions for post-evaluation (higher-order/lower-order)
+
+class covnHistory:
+	def __init__(self, context, maxLength = 30):
+		self.context = context
+		self.maxLength = maxLength
+		self.history = list()
+		self.salience = ""
+		self.anticipation = ""
+
+		self.hisotry.append({'role': 'system', 'content': self.Context})
+
+	def customAppend(self, myList, item):
+		"""function to append to the list, if its bellow the size limit. If not, then shoft elements to the left by one and add new item"""
+		def shift_left(lst):
+			temp = lst[0]
+			for i in range(1, len(lst)):
+				lst[i-1] = lst[i]
+			lst[-1] = temp
+			return lst
+
+		length = len(myList)
+		if length == self.maxLength:
+			myList = shift_left(myList)
+			myList[-1] = item 
+		else:
+			myList.append(item)
+		return myList
+	
+	def getSalience(self):
+		"""generate the salience of the current conversation"""
+
+		hist = self.flatternConvo(self.history)
+		
+		query_salience = f"Given the following chat log, write a brief summary of only the most salient points of the conversation:\n\n {hist}"
+		
+		self.salience = chat_model.getResponse(query_salience)
+	
+	def getAnticipation(self):
+		"""Generate the anticipation of the users needs"""
+
+		hist = self.flatternConvo(self.history)
+		
+		query_anticipate = f"Given the following chat log, infer the user's actual information needs. Attempt to anticipate what the uder truly needs even if the user does not fully understand it uet themselves, or is asking the wrong questions.\n\n {hist}"
+		
+		self.anticipation = chat_model.getResponse(query_anticipate)
+	
+	
+	def updateHistoryContext(self):
+		"""update Peppers personal and historical context"""
+
+		self.history[0]['content'] = self.Context + "I am in the middle of a conversation: %s. I anticipate the user needs: %s. I will do my best to fulfill my objectives." % (self.salience, self.anticipation)
+
+	def updateSlideContext(self, script):
+		"""update the conversation history with the script from the slide relevant to the query"""
+
+		self.history[1]['content'] = script
+	
+	def flatternConvo(self, conversation):
+		convo=""
+		for i in conversation:
+			convo += '%s: %s\m' % (i['role'].upper(), i['content'])
+		return convo.strip()
+	
+	def updateHistory(self, query, response):
+		self.customAppend(self.history, {'role': 'user', 'content': query})
+		self.customAppend(self.history, {'role': 'assistant', 'content': response})
+
+	def update(self, script):
+		"""update all of the conversation facets ready for query processing"""
+		# update the salience
+		self.getSalience()
+		# update the anticipation
+		self.getAnticipation()
+		# update the history context
+		self.updateHistoryContext()
+		# update the slide context
+		self.updateSlideContext(script)
+
+
+
 class Q:
 	question = ""
 	main_type = ""
@@ -43,6 +124,8 @@ def nlp_main():
 
 	global list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes, list_of_questions
 
+	conversation = covnHistory("I am an AI Teacher and lecturer. I have 5 goals: teach my students the lesson plan I am given, answer their questions to clear up areas of ambiguity, ask them questions to gauge understanding  and quiz them, maintain order in the classroom, and be ultimately helpful.", 30)
+
 	LOOP_COUNT += 1
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
@@ -59,7 +142,7 @@ def nlp_main():
 		# for each slide, generate script and keyword descriptions
 		for slide in tqdm(list_of_slides):
 			script = sg.createScript(slide, slide_number)
-			list_of_scripts.append(script) 
+			list_of_scripts.append(script)
 
 			# SET SLIDE CLASS
 			# get slide title 
@@ -103,8 +186,14 @@ def nlp_main():
 					title = instance.title
 					slide = instance.slideNo
 
+			# prepare the conversation hisotry
+			conversation.update(scriptContent)
+
 			# generate answer from received question then send to Speech
-			Q.answer = qa.answerGen(Q.question, scriptContent, title)
+			Q.answer = qa.answerGen(Q.question, conversation.history, 0)
+
+			# update the conversation
+			conversation.updateHistory(Q.question, Q.answer)
 
 			response = f"{Q.answer}.. Does that answer your question?"
 			Info.Send("Answer", {"text": response})
