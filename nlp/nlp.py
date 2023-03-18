@@ -32,7 +32,8 @@ class covnHistory:
 		self.salience = ""
 		self.anticipation = ""
 
-		self.hisotry.append({'role': 'system', 'content': self.Context})
+		self.history.append({'role': 'system', 'content': self.Context})
+		self.history.append({'role': 'assistant', 'content': ""})
 
 	def customAppend(self, myList, item):
 		"""function to append to the list, if its bellow the size limit. If not, then shoft elements to the left by one and add new item"""
