@@ -151,13 +151,14 @@ def Listen():
 	def point_callback(msg):
 		# parse msg
 		x,y,w,h = msg.x, msg.y, msg.w, msg.h
+		w,h = 0,0
 		frame_width = msg.frame_width
 		frame_height = msg.frame_height
 
 		# constants
-		Z_UP = 1.0
-		Z_DOWN = 0.7
-		Y_LARM_OUT = 5.0
+		Z_UP = 0.3
+		Z_DOWN = -0.3
+		Y_LARM_OUT = 0.7
 		Y_LARM_IN = 0
 		Y_RARM_OUT = -Y_LARM_OUT
 		Y_RARM_IN = -Y_LARM_IN
@@ -191,15 +192,16 @@ def Listen():
 		rospy.loginfo("Pepper ALTracker: Point %s at x=%.2f y=%.2f, z=%.2f" % 
 			(effector, point_x, point_y, point_z))
 
-		# posture.applyPosture("StandInit", 0.5)
 		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
 		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
 		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
 
-		tracker.post.lookAt([point_x,point_y,point_z], frame, max_speed, False)
+		# posture.applyPosture("StandInit", 0.5)
+		# tracker.post.lookAt([point_x,point_y,point_z], frame, max_speed, False)
 		tracker.post.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
 		time.sleep(.7) # small delay between pointing and prompting
 		ap.post.playFile(PEPPER_AUDIO_PATH + "what_is_your_qn.wav")
+		posture.applyPosture("StandInit", 0.2)
 		time.sleep(2)
 
 		return IsDone("Set", "Point")
