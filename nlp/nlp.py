@@ -8,7 +8,8 @@ from pkg import questionClassifier as qc
 from pkg import jokeGenerator as jg
 from pkg import descriptionGenerator as dg
 from pkg import quizGeneration as qg
-from pkg.chat import chat_model 
+from pkg.chat import chat_model, pine
+import pinecone 
 
 #############################################################################
 # TODO: How do we extrct the slide number for a specific slide request?
@@ -131,6 +132,8 @@ def nlp_main():
 
 	global list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes, list_of_questions
 
+	vdb = pine.init_pinecone()
+	
 	conversation = covnHistory("I am an AI Teacher and lecturer. I have 5 goals: teach my students the lesson plan I am given, answer their questions to clear up areas of ambiguity, ask them questions to gauge understanding  and quiz them, maintain order in the classroom, and be ultimately helpful.", 30)
 
 	LOOP_COUNT += 1
