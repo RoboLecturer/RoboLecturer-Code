@@ -79,7 +79,7 @@ for epoch in range(3):
 # Load BERT tokenizer and encode text
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
 # text = "What is the difference between velocity and acceleration?"
-with open(filename) as file:
+with open("../higher_order_lower_order.txt") as file:
     for line in file:
         text = line.rstrip()
    
