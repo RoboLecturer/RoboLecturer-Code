@@ -23,7 +23,9 @@ Once running, we can publish and listen to topics as follows:
 
 * Listen and display receieved messages: `rostopic echo /txt_msg` where /txt_msg is the topic name.
 
-## Sequencce of startup
+## Sequencse of startup
+
+Make sure to start web server last!!
 
 1. Start docker container 
 2. Catkin build

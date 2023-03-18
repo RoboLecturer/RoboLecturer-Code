@@ -62,6 +62,8 @@ Vue.registerHooks(["beforeRouteLeave"]);
 export default class Quiz extends Vue {
   api_url: any;
   ws_url: any;
+  ros_ws_url:any;
+  ip_address:any;
   $cookies: any;
   $http: any;
   questions = [];
@@ -88,8 +90,9 @@ export default class Quiz extends Vue {
     "#1ddee8",
     "#1de83f",
   ];
+  webSocket:any = null;
   rosInterface!: RosInterface;
-  statusText = "Go to http://192.168.0.100:8080 to join...";
+  statusText = "";
   users = [];
 
   async getUsersInLobby(): Promise<void> {
@@ -154,6 +157,7 @@ export default class Quiz extends Vue {
     this.quizStarted = false;
     this.showResults = false;
     this.quizInitiated = true;
+    this.webSocket.send("start quiz")
     this.rosInterface.publishStartQuiz({ data: "1" }); //starts 5 second timer on all clients
     if (this.questionIndex > 0) {
       this.statusText = "Next question in...";
@@ -178,7 +182,8 @@ export default class Quiz extends Vue {
 
   incrementQuestion(): void {
     if (this.questionIndex != this.questions.length - 1) {
-      this.rosInterface.publishNextQuestion({ data: "" });
+      this.rosInterface.publishNextQuestion({ data: "data" });
+      this.webSocket.send("next question")
       this.questionIndex++;
       this.startQuiz();
     } else {
@@ -232,8 +237,17 @@ export default class Quiz extends Vue {
     }
   }
 
+  connect(): void {
+    this.webSocket =  new WebSocket(this.ws_url);
+    this.webSocket.onmessage = (event:any) => {
+      console.log(event);
+    };
+  }
+
   mounted(): void {
-    this.rosInterface = new RosInterface(this.ws_url);
+    this.statusText = `Go to http://${this.ip_address}:8080 to join...`;
+    this.connect()
+    this.rosInterface = new RosInterface(this.ros_ws_url);
     this.rosInterface.connect();
     // console.log(this.$cookies.get("quizCookie"));
     this.resetResults();
@@ -245,6 +259,7 @@ export default class Quiz extends Vue {
         // As the user releases the Ctrl key, the key is no longer active,
         // so event.ctrlKey is false.
         if (keyName === "q") {
+          this.webSocket.send("quiz over");
           this.rosInterface.publishTakeControl({ data: "Quiz over." });
           this.$router.push({
             name: "Slides",
@@ -277,10 +292,6 @@ export default class Quiz extends Vue {
     setInterval(this.getUsersInLobby, 2000);
   }
 
-  // beforeRouteLeave() {
-  //   console.log("Before leave quiz")
-  //   // this.rosInterface.disconnect();
-  // }
 }
 </script>
 

@@ -19,7 +19,7 @@ export class RosInterface {
   next_question_publisher: any = null;
   currentSlide = 0;
 
-  constructor(ws_url = "ws://localhost:9000",) {
+  constructor(ws_url:any,) {
     this.ws_url = ws_url;
   }
 
@@ -63,14 +63,25 @@ export class RosInterface {
 
   publishTakeControl(message: ROSLIB.Message): void {
     this.control_publisher.publish(message);
+    // setTimeout(() => {
+    //   this.control_publisher.publish(message);
+    // }, 1000);
   }
 
   publishStartQuiz(message: ROSLIB.Message): void {
-    this.quiz_starter.publish(message);
+    console.log("Starting")
+    this.quiz_starter.publish({data:"1"});
+    // setTimeout(() => {
+    //   this.quiz_starter.publish(message);
+    // }, 1000);
   }
 
   publishNextQuestion(message: ROSLIB.Message): void {
+    console.log("Nexting...")
     this.next_question_publisher.publish(message);
+    // setTimeout(() => {
+    //   this.next_question_publisher.publish(message);
+    // }, 1000);
   }
 
   onSlide(msg: any) {

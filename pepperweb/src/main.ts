@@ -13,5 +13,8 @@ const app = createApp(App);
 app.use(VueCookies).use(store).use(router).mount("#app");
 app.config.globalProperties.$http = axios;
 let ip_address = "localhost"
-app.config.globalProperties.ws_url = `ws://${ip_address}:9000`
+app.config.globalProperties.ws_url = `ws://${ip_address}:443`
+app.config.globalProperties.ros_ws_url = `ws://${ip_address}:9000`
 app.config.globalProperties.api_url = `http://${ip_address}:3000`;
+app.config.globalProperties.ip_address = ip_address;
+

@@ -47,10 +47,12 @@ export default class Home extends Vue {
   $http: any;
   api_url: any;
   ws_url: any;
+  ros_ws_url:any;
   statusText = "Join the lobby";
   ros: any = null;
   connected = false;
   quiz_listener: any = null;
+  change_slide_listener: any = null;
   question_listener: any = null;
   timer_listener: any = null;
   quiz_over_listener: any = null;
@@ -69,6 +71,7 @@ export default class Home extends Vue {
   startTimerInterval = 0;
   studentId = -1;
   answerIndex = -1;
+  webSocket: any = null;
 
   resetAnimation(): void {
     this.timerWindowOpen = true;
@@ -117,7 +120,12 @@ export default class Home extends Vue {
     }
   }
 
+  onChangeSlide(msg: any): void {
+    console.log("slide change: ", msg);
+  }
+
   onNextQuestion(): void {
+    console.log("Next question");
     // clearInterval(this.startTimerInterval);
     if (this.questionIndex != this.questions.length - 1) {
       this.timerWindowOpen = false;
@@ -126,6 +134,7 @@ export default class Home extends Vue {
   }
 
   onQuizOver(): void {
+    console.log("Quiz over");
     this.statusText = "Join the lobby";
     this.username = "";
     this.joinedLobby = false;
@@ -210,44 +219,73 @@ export default class Home extends Vue {
   }
 
   connect(): void {
-    this.ros = new ROSLIB.Ros({
-      url: this.ws_url,
-    });
+    this.webSocket = new WebSocket(this.ws_url);
+    this.webSocket.onmessage = (event: any) => {
+      switch (event.data) {
+        case "start quiz":
+          this.onQuizTriggered();
+          break;
+        case "next question":
+          this.onNextQuestion();
+          break;
 
-    this.ros.on("connection", () => {
-      this.connected = true;
-      console.log("Connected!");
-    });
+        case "quiz over":
+          this.onQuizOver();
+          break;
 
-    this.ros.on("error", (error: any) => {
-      console.log("Error connecting to websocket server: ", error);
-    });
+        default:
+          break;
+      }
+    };
 
-    this.ros.on("close", () => {
-      this.connected = false;
-      console.log("Connection to websocket server closed.");
-    });
+    // this.ros = new ROSLIB.Ros({
+    //   url: this.ws_url,
+    // });
 
-    this.quiz_listener = new ROSLIB.Topic({
-      ros: this.ros,
-      name: "/start_quiz",
-      messageType: "std_msgs/String",
-    });
-    this.quiz_listener.subscribe(this.onQuizTriggered);
+    // this.ros.on("connection", () => {
+    //   this.connected = true;
+    //   console.log("Home Connected!");
+    // });
 
-    this.question_listener = new ROSLIB.Topic({
-      ros: this.ros,
-      name: "/next_question",
-      messageType: "std_msgs/String",
-    });
-    this.question_listener.subscribe(this.onNextQuestion);
+    // this.ros.on("error", (error: any) => {
+    //   console.log("Error connecting to websocket server: ", error);
+    // });
 
-    this.quiz_over_listener = new ROSLIB.Topic({
-      ros: this.ros,
-      name: "/take_control_forwarder",
-      messageType: "std_msgs/String",
-    });
-    this.quiz_over_listener.subscribe(this.onQuizOver);
+    // this.ros.on("close", () => {
+    //   this.connected = false;
+    //   console.log("Connection to websocket server closed.");
+    // });
+
+    // this.quiz_listener = new ROSLIB.Topic({
+    //   ros: this.ros,
+    //   name: "/start_quiz",
+    //   messageType: "std_msgs/String",
+    // });
+    // this.quiz_listener.subscribe(this.onQuizTriggered);
+    // console.log(this.quiz_listener);
+    // this.quiz_listener.waitForReconnect = true;
+    // this.quiz_listener.latch = true;
+    // this.quiz_listener.queue_length = 10;
+    // this.question_listener = new ROSLIB.Topic({
+    //   ros: this.ros,
+    //   name: "/next_question",
+    //   messageType: "std_msgs/String",
+    // });
+    // this.question_listener.subscribe(this.onNextQuestion);
+
+    // this.quiz_over_listener = new ROSLIB.Topic({
+    //   ros: this.ros,
+    //   name: "/take_control_forwarder",
+    //   messageType: "std_msgs/String",
+    // });
+    // this.quiz_over_listener.subscribe(this.onQuizOver);
+
+    // this.change_slide_listener = new ROSLIB.Topic({
+    //   ros: this.ros,
+    //   name: "/change_slide",
+    //   messageType: "std_msgs/String",
+    // });
+    // this.change_slide_listener.subscribe(this.onChangeSlide);
   }
 
   mounted(): void {
@@ -261,8 +299,8 @@ export default class Home extends Vue {
 
   // beforeRouteLeave() {
   //   console.log("BEFORE RL Home");
-  //   // this.ros.close();
-  //   // this.connected = false;
+  //   this.ros.close();
+  //   this.connected = false;
   // }
 }
 </script>

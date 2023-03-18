@@ -6,9 +6,18 @@ def callback(data):
     pub = rospy.Publisher('take_control', String, queue_size=10)
     pub.publish("Forwarder published a message")
 
+def callback2(data):
+    print("callback2")
+
 def listener():
     rospy.init_node("web_forwarder_node", xmlrpc_port=45100, tcpros_port=45101)
     rospy.Subscriber('take_control_forwarder', String, callback)
+
+    pub = rospy.Publisher('start_quiz', String, queue_size=10)
+    pub.publish("Forwarder published a message")
+    pub = rospy.Publisher('next_question', String, queue_size=10)
+    pub.publish("Forwarder published a message")
+   
     rospy.spin()
 
 def forwarder():
