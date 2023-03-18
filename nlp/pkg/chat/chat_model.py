@@ -65,6 +65,18 @@ def getResponse(query):
 
     return response
 
+def getEmbedding(content):
+    """Get embedding for query from ada for use with PineCone"""
+    content = content.encode(
+        encoding = 'ASCII',
+        errors = 'ignore'
+    ).decode()
+    response = openai.Embedding.create(
+        input = content,
+        engine = 'text-embedding-ada-002'
+    )
+    return response['data'][0]['embedding']
+
 def flatternConvo(conversation):
     convo=""
     for i in conversation:
