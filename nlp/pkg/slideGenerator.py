@@ -4,7 +4,7 @@
 #pip install openai 
 import openai
 import re
-from chat import chat_model
+from pkg.chat import chat_model
 from pptx import Presentation
 from pptx.util import Inches
 

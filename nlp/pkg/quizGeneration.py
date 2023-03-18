@@ -1,7 +1,7 @@
 # this script is for creating a quiz based on a slide, the answers (true and false) and then a short explination of the answer 
 
 # imports
-from chat import chat_model
+from pkg.chat import chat_model
 
 # function for generating the quiz
 def quizGen(script):

@@ -2,7 +2,7 @@
 
 # import packages
 # import openai
-from chat import chat_model
+from pkg.chat import chat_model
 
 # function to create the descriptions
 def genKeywords(content):

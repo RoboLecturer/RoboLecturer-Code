@@ -92,7 +92,7 @@ def nlp_main():
 		Q.question = Info.Request("Question")
 
 		# Classify question into main type and sub types
-		Q.main_type, Q.sub_type = qc(Q.question,class_description)
+		Q.main_type, Q.sub_type = qc.classify_question(Q.question,class_description)
 		# Q.main_type = "related" 
 
 		if Q.main_type == "related":
