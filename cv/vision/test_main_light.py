@@ -24,7 +24,7 @@ open_hands   = []
 
 # functions
 def set_up_camera():
-    camera = cv2.VideoCapture("/dev/video6")
+    camera = cv2.VideoCapture(0)
     camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc("M", "J", "P", "G"))
     camera.set(3, 640)
     camera.set(4, 640)
@@ -62,17 +62,17 @@ def hand_detector(cascade, frame, hands):
 
 
 def hand_detector_mp(model, frame): # Commented out the parts that killed the terminal.
-   # mp_drawing_utils = mp.solutions.drawing_utils
-   # mp_drawing_styles = mp.solutions.drawing_styles
+    mp_drawing_utils = mp.solutions.drawing_utils
+    mp_drawing_styles = mp.solutions.drawing_styles
     result = model.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     if result.multi_hand_landmarks:
         hand_landmark = result.multi_hand_landmarks[-1]
-       # for hand_landmark in result.multi_hand_landmarks:
-           # mp_drawing_utils.draw_landmarks(frame,
-           #                                 hand_landmark,
-           #                                 model.HAND_CONNECTIONS,
-           #                                 mp_drawing_styles.get_default_hand_landmarks_style(),
-           #                                 mp_drawing_styles.get_default_hand_connections_style())
+        for hand_landmark in result.multi_hand_landmarks:
+            mp_drawing_utils.draw_landmarks(frame,
+                                            hand_landmark,
+                                            mp.solutions.hands.HAND_CONNECTIONS,
+                                            mp_drawing_styles.get_default_hand_landmarks_style(),
+                                            mp_drawing_styles.get_default_hand_connections_style())
 
         for idx, landmark in enumerate(hand_landmark.landmark):
              h, w, c = frame.shape
@@ -105,6 +105,7 @@ def main(camera, test_model, mp_hand_model, landmark_predictor):
         face_2d = []
 
         coordinates = hand_detector_mp(mp_hand_model, frame)
+        print(f"Detected hand: {coordinates}")
         hands.append(coordinates)
         hands = list(filter(lambda x: x is not None, hands))
 
@@ -129,7 +130,7 @@ if __name__ == "__main__":
     # Setting up pre-trained models and camera.
     camera = set_up_camera()
     face_model = cv2.CascadeClassifier("./utils/models/face_detection.xml")
-    hand_model = mp.solutions.hands.Hands()
+    hand_model = mp.solutions.hands.Hands(model_complexity=0, max_num_hands=6, min_detection_confidence=0.1)
     landmark_predictor = landmark_model()
     # Running the main detection script.
     main(camera, face_model, hand_model, landmark_predictor)

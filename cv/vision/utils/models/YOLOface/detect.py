@@ -110,6 +110,7 @@ def detect(opt, frame, model, imgsz, stride):
     # Process detections
     faces_coords = []
     for i, det in enumerate(pred):  # detections per image
+        face = []
         #if webcam:  # batch_size >= 1
             #p, s, im0, frame = path[i], '%g: ' % i, im0s[i].copy(), dataset.count
         #else:
@@ -134,9 +135,19 @@ def detect(opt, frame, model, imgsz, stride):
             # Write results
             for det_index, (*xyxy, conf, cls) in enumerate(reversed(det[:,:6])):
                 if save_txt:  # Write to file
-                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).numpy()  # normalized xywh
                     line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
-                    faces_coords.append(xywh)
+                    for j in range(xywh.shape[0]):
+                        face.append(np.array(xywh[i], dtype=np.float32))
+
+            kpts = det[det_index, 6:]
+            step = 3
+            num_kpts = len(kpts) // step
+            for k_id in range(num_kpts):
+                #print(kpts)
+                x_coord, y_coord = kpts[step * k_id].numpy(), kpts[step * k_id + 1].numpy()
+                face.append(x_coord)
+                face.append(y_coord)
                     #print(xywh)
                     #with open(txt_path + '.txt', 'a') as f:
                         #f.write(('%g ' * len(line)).rstrip() % line + '\n')
@@ -149,7 +160,7 @@ def detect(opt, frame, model, imgsz, stride):
                     #cv2.imwrite('runs/detect/exp2/labels/test_01.jpg', im0)
                     #if opt.save_crop:
                         #save_one_box(xyxy, im0s, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
-
+            faces_coords.append(face)
 
             #if save_txt_tidl:  # Write to file in tidl dump format
                 #for *xyxy, conf, cls in det_tidl:

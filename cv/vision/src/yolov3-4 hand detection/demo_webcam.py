@@ -2,6 +2,7 @@ import argparse
 import cv2
 
 from yolo import YOLO
+import torch
 
 ap = argparse.ArgumentParser()
 ap.add_argument('-n', '--network', default="normal", choices=["normal", "tiny", "prn", "v4-tiny"],
@@ -27,6 +28,7 @@ else:
 
 yolo.size = int(args.size)
 yolo.confidence = float(args.confidence)
+print(torch.backends.mps.is_available())
 
 print("starting webcam...")
 cv2.namedWindow("preview")
@@ -34,8 +36,7 @@ vc = cv2.VideoCapture(args.device)
 
 if vc.isOpened():  # try to get the first frame
     rval, frame = vc.read()
-else:
-    rval = False
+
 
 while rval:
     width, height, inference_time, results = yolo.inference(frame)

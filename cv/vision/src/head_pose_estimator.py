@@ -2,9 +2,10 @@ import mediapipe as mp
 import cv2
 import numpy as np
 import time
+import random
 
 def landmark_model():
-    return mp.solutions.face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+    return mp.solutions.face_mesh.FaceMesh(max_num_faces=3, min_detection_confidence=0.2, min_tracking_confidence=0.5)
 
 
 def project_landmarks(landmarks, frame, face_2d, face_3d):
@@ -20,6 +21,8 @@ def project_landmarks(landmarks, frame, face_2d, face_3d):
                         nose_3d = (lm.x * img_w, lm.y * img_h, lm.z * 3000)
 
                     x, y = int(lm.x * img_w), int(lm.y * img_h)
+                    #print(f"Mediapipe x: {x}")
+                    #print(f"Mediapipe y: {y}")
 
                     face_2d.append([x, y])
                     face_3d.append([x, y, lm.z])
@@ -34,9 +37,11 @@ def project_landmarks(landmarks, frame, face_2d, face_3d):
 
             dist_matrix = np.zeros((4, 1), dtype=np.float64)
             ret, rot_vec, trans_vec = cv2.solvePnP(face_3d, face_2d, cam_matrix, dist_matrix)
+            #print(f"Mediapipe rotation vector: {rot_vec}")
             rmat, jac = cv2.Rodrigues(rot_vec)
             angles, mtxR, mtxQ, Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
 
+            #print(f"Mediapipe angles {angles}")
             x = angles[0] * 360
             y = angles[1] * 360
             z = angles[2] * 360
@@ -46,11 +51,71 @@ def project_landmarks(landmarks, frame, face_2d, face_3d):
     return 0, 0, 0
 
 
+def project_detected_landmarks(landmarks, frame, x_face, y_face):
+    img_h, img_w, img_c = frame.shape
+    #nose_idx = 6
+
+    if landmarks.any():
+        for landmark in landmarks:
+            face_x = []
+            face_y = []
+            z = random.uniform(-1, 1)
+            for i in range(0, landmarks.shape[1] -1, 2):
+                if i == 6:
+                    nose_2d = (landmark[i] * img_w, landmark[i + 1] * img_h)
+                    nose_3d = (landmark[i] * img_w, landmark[i + 1] * img_h, z)
+
+                x = int(landmark[i])
+                y = int(landmark[i + 1])
+                #print(f"YOLO x: {x}")
+                #print(f"YOLO y: {y}")
+
+                face_x.append([x, y])
+                face_y.append([x, y, z])
+            
+            x_centroid = np.mean(np.array(face_x))
+            y_centroid = np.mean(np.array(face_y))
+
+            p_centroid = np.array((x_centroid, y_centroid))
+            p_face = np.array((x_face, y_face))
+
+            dist = np.linalg.norm(p_centroid - p_face)
+            similarity = 1.0/np.cosh(0.1 * dist)
+            #similarity = np.dot(p_centroid, p_face) / (np.linalg.norm(p_centroid) * np.linalg.norm(p_face))
+
+
+            #face_2d = np.array(face_2d, dtype=np.float64)
+            #face_3d = np.array(face_3d, dtype=np.float64)
+
+            #focal_length = 1 * img_w
+            #camera_matrix = np.array([[focal_length, 0, img_h/2],
+            #                        [0, focal_length, img_w/2],
+            #                        [0, 0, 1]])
+            
+            #dist_matrix = np.zeros((4, 1), dtype=np.float64)
+            #ret, rot_vec, trans_vec = cv2.solvePnP(face_3d, face_2d, camera_matrix, dist_matrix)
+            #print(f"YOLO rotation vector: {rot_vec}")
+            #rmat, jac = cv2.Rodrigues(rot_vec)
+
+            #example = np.array([face_2d[-1][0], face_2d[-1][1]])
+            #landmark_3D = cv2.projectPoints(example.reshape(1, 1, 2), rot_vec, trans_vec, camera_matrix, dist_matrix)
+            #print(landmark_3D)
+            #angles, mtxR, mtxQ, Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
+            
+            #print(f"Yolo angles {angles}")
+            #x = angles[0] * 360
+            #y = angles[1] * 360
+            #z = angles[2] * 360
+
+            return similarity
+
+    return 0
+
 
 def compute_engagement_score(x, y, z):
     if x == 0 and y == 0 and z == 0:
         return 0.0
-    return 1.0/(np.cosh(0.12*x)) * 1.0/(np.cosh(0.12*y)) * 1.0/(np.cosh(0.12*z))
+    return 1.0/(np.cosh(0.12*x)) * 1.0/(np.cosh(0.12*y))# * 1.0/(np.cosh(0.12*z))
 
 if __name__ == "__main__":
     mp_face_mesh = mp.solutions.face_mesh

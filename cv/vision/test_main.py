@@ -16,7 +16,7 @@ import time
 #from PepperAPI import Info
 
 # Importing our scripts
-from src.head_pose_estimator import landmark_model, compute_engagement_score, project_landmarks
+from src.head_pose_estimator import landmark_model, compute_engagement_score, project_landmarks, project_detected_landmarks
 from utils.models.YOLOface.detect import detect, config_net
 from utils.models.YOLOface.utils.general import check_requirements
 
@@ -56,10 +56,10 @@ open_hands   = []
 
 # functions
 def set_up_camera():
-    camera = cv2.VideoCapture("/dev/video6")
+    camera = cv2.VideoCapture(1)
     camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc("M", "J", "P", "G"))
-    camera.set(3, 640)
-    camera.set(4, 640)
+    camera.set(3, 1080)
+    camera.set(4, 720)
     return camera
 
 def get_camera_input(camera):
@@ -71,30 +71,32 @@ def face_engagement_detection(face_model, landmark_predictor, face_2d, face_3d, 
     #faces = face_model.detectMultiScale(frame, scaleFactor=1.2, minNeighbors=5, minSize=(64, 64))
     faces = detect(opt, frame, face_model, imgsz, stride)
     faces = np.array(faces)
-    faces *= 640
+    faces[:, 0] *= 1080
+    faces[:, 1] *= 720
+    faces[:, 2] *= 1080
+    faces[:, 3] *= 720
 
     # display boxes around faces
-    for (x_face, y_face, h_face, w_face) in faces:
+    for (x_face, y_face, w_face, h_face) in faces[:, 0:4]:
         x_face = int(x_face)
         y_face = int(y_face)
         w_face = int(w_face)
         h_face = int(h_face)
-
-        #print(faces)
-        #print(int(x_face - w_face/2))
-        #print(int(y_face - h_face/2))
-        #print(int(x_face + w_face/2))
-        #print(int(y_face + h_face/2))
-
-        cv2.rectangle(frame, (int(x_face + w_face/2), int(y_face - h_face/2)), (int(x_face + w_face), int(y_face + h_face/2)), (255, 0, 0), 2)
+        #print(f"Coords: {(x_face, y_face, w_face, h_face)}")
+        cv2.rectangle(frame, (x_face, y_face), (int(x_face + w_face/2), int(y_face + h_face/2)), (255, 0, 0), 2)
         #roi_color_face = frame[y_face:y_face+h_face, x_face:x_face+w_face]
         
         # Computing landmarks of a detected face and computing an engagement score
         landmark_results = landmark_predictor.process(frame)
+        landmark_results_detected = faces[:, 4:]
+        dist = project_detected_landmarks(landmark_results_detected, frame, x_face, y_face)
         x, y, z = project_landmarks(landmark_results, frame, face_2d, face_3d)
         engagement = compute_engagement_score(x, y, z)
+        #print(f"Yolo coordinates: {(x_detected, y_detected, z_detected)}")
+        #print(f"Mediapipe coordinates: {(x, y, z)}")
+        #engagement_detected = compute_engagement_score(x_detected, y_detected, z_detected)
         engagement_record.append(engagement)
-        cv2.putText(frame, f"Engagement:  {engagement:.3f}", org=(int(x_face), int(y_face - w_face/2) - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
+        cv2.putText(frame, f"Engagement:  {dist:.3f}", org=(x_face, y_face - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
     
     return frame, engagement_record
 
