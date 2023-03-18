@@ -21,6 +21,7 @@ LOOP_COUNT = 0
 class_description = {}
 Slide_instances = []
 list_of_quizes = []
+list_of_questions = [] # store questions for post-evaluation (higher-order/lower-order)
 class Q:
 	question = ""
 	main_type = ""
@@ -109,6 +110,10 @@ def nlp_main():
 			Info.Send("Answer", {"text": response})
 			# request slide change after sending text to Speech Processing module as text->speech takes time
 			Info.Request("ChangeSlide", {"cmd":f"{slide}"})
+
+			# append question to list for post-evaluation
+			list_of_questions.append(Q.question + "\n")
+
 
 		elif Q.main_type == "operational":
 			# if the quesiton is operational, check the command type
@@ -221,6 +226,13 @@ def nlp_main():
 # =================================================
 
 if __name__ == "__main__":
-	PepperAPI.init("test")
-	while True:
-		nlp_main()
+	PepperAPI.init("nlp")
+	try:
+		while True:
+			nlp_main()
+
+	# when code is terminated, store questions asked for post-evaluation
+	except KeyboardInterrupt:
+		f = open("higher_order_lower_order.txt", "w")
+		f.writelines(list_of_questions)
+		f.close()
