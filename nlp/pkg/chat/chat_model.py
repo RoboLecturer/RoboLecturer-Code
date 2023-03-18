@@ -1,6 +1,7 @@
 # This script is where the calls to the openai models are
 
 import openai
+import time
 
 
 def getModel(a):
@@ -66,16 +67,38 @@ def getResponse(query):
     return response
 
 def getEmbedding(content):
-    """Get embedding for query from ada for use with PineCone"""
+    """Get embedding for query from ada for use with PineCone
+    @params:
+        content: {dict}|"text"|"ids"|"title"|"slideNo" - text and its id
+    @returns:
+        embeds: list|float - list of embedding vectors
+    """
     content = content.encode(
         encoding = 'ASCII',
         errors = 'ignore'
     ).decode()
-    response = openai.Embedding.create(
-        input = content,
-        engine = 'text-embedding-ada-002'
-    )
-    return response['data'][0]['embedding']
+
+    model = 'text-embedding-ada-002'
+    text  = [x['text'] for x in content]
+
+    try:
+        response = openai.Embedding.create(
+            input = text,
+            engine = model
+        )
+    except: 
+        done = False
+        while not done:
+            time.sleep(1)
+            try:
+                response = openai.Embedding.create(input=text, engine=model)
+                done = True
+            except:
+                pass
+    # create array of rembeddings
+    embeds = [record['embedding'] for record in response['data']]
+
+    return embeds
 
 def flatternConvo(conversation):
     convo=""
