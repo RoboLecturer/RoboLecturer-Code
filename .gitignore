@@ -2,6 +2,7 @@
 **/__pycache__/**
 *.pyc
 control/PepperAPI
+scripts/PepperAPI
 *.txt
 .DS_Store
 
