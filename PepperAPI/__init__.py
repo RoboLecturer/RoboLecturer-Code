@@ -2,7 +2,7 @@ import rospy
 import rosnode
 
 # Globals
-ROBOT_IP = "192.168.0.103"
+ROBOT_IP = "192.168.0.104"
 ROBOT_PORT = 9559
 PEPPER_USER = "nao"
 PEPPER_PASSWORD = "BioARTLab123"
