@@ -10,7 +10,7 @@ def hand_raise_detection():
 
     mp_drawing_styles = mp.solutions.drawing_styles
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
 
     prev_time = 0
 
@@ -41,6 +41,8 @@ def hand_raise_detection():
                 #print(id, landmark)
                 h, w, c = img.shape
                 cx, cy = int(landmark.x*w), int(landmark.y*h)
+                print(f"Landmark id: {id}")
+                cv2.putText(img, f"{id}",  org=(int(cx), int(cy) - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
                 #print(cx, cy)
 
         #Only if you want to know the FPS score

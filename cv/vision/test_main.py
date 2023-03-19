@@ -1,15 +1,11 @@
 ### MAIN CV SCRIPT ###
 
 # general imports
-import sys
-import random
 import cv2
-import threading
 import numpy as np
 import mediapipe as mp
 import argparse
 import time
-
 
 # PepperAPI imports
 #import PepperAPI
@@ -54,7 +50,7 @@ check_requirements(exclude=("tensorboard", "pycocotools", "thop"))
 
 # functions
 def set_up_camera():
-    camera = cv2.VideoCapture(1)
+    camera = cv2.VideoCapture(0)
     camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc("M", "J", "P", "G"))
     camera.set(3, 1080)
     camera.set(4, 720)
@@ -96,26 +92,48 @@ def hand_detector(cascade, frame, hands):
 
 
 def hand_detector(model, frame): # Commented out the parts that killed the terminal.
-   # mp_drawing_utils = mp.solutions.drawing_utils
-   # mp_drawing_styles = mp.solutions.drawing_styles
+    knuckle_idx = [1, 5, 9, 13, 17]
+    fingertip_idx = [4, 8, 12, 16, 20]
+    dist_fingers = np.array([])
     result = model.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     if result.multi_hand_landmarks:
         n_hands = np.array(result.multi_hand_landmarks)
         hand_landmarks = np.array([0, 0])
         for i in range(n_hands.shape[0]):
             hand_landmark = n_hands[i]
-        # for hand_landmark in result.multi_hand_landmarks:
-            # mp_drawing_utils.draw_landmarks(frame,
-            #                                 hand_landmark,
-            #                                 model.HAND_CONNECTIONS,
-            #                                 mp_drawing_styles.get_default_hand_landmarks_style(),
-            #                                 mp_drawing_styles.get_default_hand_connections_style())
 
             for idx, landmark in enumerate(hand_landmark.landmark):
                 h, w, c = frame.shape
-                cx, cy = int(landmark.x * w), int(landmark.y * h)
-                hand_landmarks = np.vstack([hand_landmarks, np.array([cx, cy])])
-                break # iterating only once to save a coordinate of only one landmark. More are not necessary.
+                if idx == 0:
+                    x_base = int(landmark.x * w)
+                    y_base = int(landmark.y * h)
+
+                    cx, cy = int(landmark.x * w), int(landmark.y * h)
+                    hand_landmarks = np.vstack([hand_landmarks, np.array([cx, cy])])
+
+                elif idx in knuckle_idx:
+                    x_knuckle = int(landmark.x * w)
+                    y_knuckle = int(landmark.y * h)
+
+                elif idx in fingertip_idx:
+                    x_tip = int(landmark.x * w)
+                    y_tip = int(landmark.y * h)
+
+                    dist_to_knuckle = np.linalg.norm(np.array([x_tip, y_tip]) - np.array([x_knuckle, y_knuckle]))
+                    dist_to_base = np.linalg.norm(np.array([x_tip, y_tip]) - np.array([x_base, y_base]))
+                    dist_proportion = dist_to_knuckle / dist_to_base
+                    dist_fingers = np.append(dist_fingers, dist_proportion)
+
+
+                #cx, cy = int(landmark.x * w), int(landmark.y * h)
+                #hand_landmarks = np.vstack([hand_landmarks, np.array([cx, cy])])
+                # iterating only once to save a coordinate of only one landmark. More are not necessary.
+
+            metric = np.mean(dist_fingers)
+            print(f"Metric: {metric}")
+            if metric < 0.52:
+                cv2.putText(frame, f"Question!", org=(int(30), int(30)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
+
         
         return hand_landmarks[1:]
 
