@@ -9,7 +9,6 @@ from pkg import jokeGenerator as jg
 from pkg import descriptionGenerator as dg
 from pkg import quizGeneration as qg
 from pkg.chat import chat_model, pine
-import pinecone 
 
 #############################################################################
 # TODO: How do we extrct the slide number for a specific slide request?
@@ -28,41 +27,19 @@ list_of_questions = [] # store questions for post-evaluation (higher-order/lower
 class covnHistory:
 	def __init__(self, context):
 		self.context = context
-		# self.maxLength = maxLength
 		self.history = list()
 		self.salience = ""
 		self.anticipation = ""
 
-		self.convoContext = ""
-		self.contentContext = ""
-		# self.embedding = list()
-
 		self.history.append({'role': 'system', 'content': self.Context})
 		self.history.append({'role': 'assistant', 'content': ""})
-
-	# def customAppend(self, myList, item):
-	# 	"""function to append to the list, if its bellow the size limit. If not, then shoft elements to the left by one and add new item"""
-	# 	def shift_left(lst):
-	# 		temp = lst[0]
-	# 		for i in range(1, len(lst)):
-	# 			lst[i-1] = lst[i]
-	# 		lst[-1] = temp
-	# 		return lst
-
-	# 	length = len(myList)
-	# 	if length == self.maxLength:
-	# 		myList = shift_left(myList)
-	# 		myList[-1] = item 
-	# 	else:
-	# 		myList.append(item)
-	# 	return myList
 	
 	def getSalience(self, convoContext):
-		"""generate the salience of the current conversation"""
+		"""generate the salience of the current conversation
+		@params: convoContext: list|string - list of the conversations 
+		"""
 
-		# hist = self.flatternConvo(self.history)
 		hist = self.flatternConvo(convoContext)
-		
 		query_salience = f"Given the following chat log, write a brief summary of only the most salient points of the conversation:\n\n {hist}"
 		
 		self.salience = chat_model.getResponse(query_salience)
@@ -83,35 +60,26 @@ class covnHistory:
 		self.history[0]['content'] = self.Context + "I am in the middle of a conversation: %s. I anticipate the user needs: %s. I will do my best to fulfill my objectives." % (self.salience, self.anticipation)
 
 	def updateSlideContext(self, script):
-		"""update the conversation history with the script from the slide relevant to the query"""
+		"""update the conversation history with the script from the slide relevant to the query
+		@params: [string] - lecture script
+		"""
 		# flatten the incoming list - script
 		script = self.flatternConvo(script)
 		self.history[1]['content'] = script
 	
 	def flatternConvo(self, conversation):
+		"""create a single list of conversations out of a list of conversations"""
 		convo=""
 		for i in conversation:
 			convo += '%s: %s\m' % (i['role'].upper(), i['content'])
 		return convo.strip()
-	
-	# def updateHistory(self, query, response):
-	# 	self.customAppend(self.history, {'role': 'user', 'content': query})
-	# 	self.customAppend(self.history, {'role': 'assistant', 'content': response})
 
 	def update(self, script):
 		"""update all of the conversation facets ready for query processing"""
-		# update the salience
-		# self.getSalience()
-		# update the anticipation
-		# self.getAnticipation()
 		# update the history context
 		self.updateHistoryContext()
 		# update the slide context
 		self.updateSlideContext(script)
-
-	# def getEmbedding(self, pc_query):
-	# 	"""get PineCone query embedding"""
-	# 	self.embedding = chat_model.getEmbedding(pc_query)
 		
 
 class Q:
@@ -157,7 +125,6 @@ def nlp_main():
 			script = sg.createScript(slide, slide_number)
 			list_of_scripts.append(script)
 
-			# SET SLIDE CLASS
 			# get slide title 
 			title = dg.getTitle(slide)
 			# set class
@@ -203,9 +170,6 @@ def nlp_main():
 					title = instance.title
 					slide = instance.slideNo
 
-			# prepare the conversation hisotry
-			# conversation.update(scriptContent)
-
 			# get conversations relvant to the query
 			convoContext = pine.queryPinecone(Q.question, vdb, "conversation") 
 			# generate the salience and anticipation
@@ -218,15 +182,9 @@ def nlp_main():
 			# generate answer from received question then send to Speech
 			Q.answer = qa.answerGen(Q.question, conversation.history, 0)
 
-			# update the conversation
-			# conversation.updateHistory(Q.question, Q.answer)
-
 			# create QnA metadata for storage in Pinecone
 			metadata = pine.createConvoMetadata(title, f"{Q.question}", f"{Q.answer}") 
 			pine.populatePinecone(f"{Q.question}, {Q.answer}", "conversation", metadata, vdb)
-
-			# metadata = pine.createConvoMetadata(f"{Q.answer}", title, "assistant")
-			# pine.populatePinecone(Q.answer, "conversation", metadata, vdb)
 
 			response = f"{Q.answer}.. Does that answer your question?"
 			Info.Send("Answer", {"text": response})

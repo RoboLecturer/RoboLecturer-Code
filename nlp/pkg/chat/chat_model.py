@@ -69,7 +69,7 @@ def getResponse(query):
 def getEmbedding(content):
     """Get embedding for query from ada for use with PineCone
     @params:
-        content: {dict}|"text"|"ids"|"title"|"slideNo" - text and its id
+        content: [string] - text and its id
     @returns:
         embeds: list|float - list of embedding vectors
     """
@@ -95,12 +95,16 @@ def getEmbedding(content):
                 done = True
             except:
                 pass
-    # create array of rembeddings
+    # create list of embeddings
     embeds = [record['embedding'] for record in response['data']]
 
     return embeds
 
 def flatternConvo(conversation):
+    """flattern a list of conversation elements
+    @params: conversation: list|string - list of the conversation strings
+    @returns: convo [string] - single string of the conversation
+    """
     convo=""
     for i in conversation:
         convo += '%s: %s\m' % (i['role'].upper(), i['content'])

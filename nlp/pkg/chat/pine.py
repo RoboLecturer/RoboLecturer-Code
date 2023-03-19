@@ -29,17 +29,11 @@ def populatePinecone(contents, nameSpace, metadata, vdb):
         content: [string] - payload to embed 
         vdb: object - the pinecone database
         nameSpace: "string" - namespace of the database
-        metadata: contents metadata for storage in pinecone for filtering
+        metadata: contents metadata for storage in pinecone for filtering (content depends on the namepsace)
     """
+    # set ids
     ids_batch = [x['id'] for x in metadata]
     embeds = chat_model.getEmbedding(contents) # returns a list of embeddings
-    # # clean up metadata
-    # contents = [{
-    #     "text": x["text"],
-    #     "ids": x["ids"],
-    #     "title": x["title"],
-    #     "slideNo": x["title"]
-    # } for x in contents]
 
     to_upsert = list(zip(ids_batch, embeds, metadata))
     # upsert to pinecone
@@ -47,15 +41,21 @@ def populatePinecone(contents, nameSpace, metadata, vdb):
 
 
 def queryPinecone(query, vdb, namespace):
-    """search for relevant strings in pinecone database"""
+    """search for relevant strings in pinecone database
+    @params: 
+        query: [string] - query asked by the user
+        vdb: database object
+        namespace: [string] - namespace for the query
+    @returns:
+        contexts: list|string - list of the response strings"""
     # we need make sure that the respones are not too long
     xq = chat_model.getEmbedding(query)
     
     if namespace == "script":
         response = vdb.query(
             xq,
-            top_k = 5,
-            include_metadata=True, 
+            top_k = 5, # take the 5 top matches (if 5 exist)
+            include_metadata=True, # return the metadata, as this is where the payload will be
             namespace=namespace
         )
         contexts = [
@@ -91,7 +91,14 @@ def queryPinecone(query, vdb, namespace):
         return context
 
 def createSlideMetadata(slideNo, script, title):
-    """create the pinecone metadata for lecture scripts"""
+    """create the pinecone metadata for lecture scripts
+    @params:
+        slideNo: int - number of the slide
+        script: string - lecture script content
+        title: string - title of the slide
+    @returns:
+        metadata: {dict} - the slide metadata with unique id
+    """
 
     metadata = {
         "slideNo": slideNo, 
@@ -103,7 +110,14 @@ def createSlideMetadata(slideNo, script, title):
     return metadata
 
 def createConvoMetadata(title, question, answer):
-    """create the pinecone metadata for conversations"""
+    """create the pinecone metadata for conversations
+    @params:
+        title: string - title of the slide
+        question: string - question posed by used
+        answer: string - response given by assistant
+    @returns:
+        metadata: {dict} - the conversation metadata with unique id and timestamp
+    """
 
     metadata = {
         "title": title, 
