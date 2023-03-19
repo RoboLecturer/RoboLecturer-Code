@@ -137,8 +137,9 @@ def detect(opt, frame, model, imgsz, stride):
                 if save_txt:  # Write to file
                     xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).numpy()  # normalized xywh
                     line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
-                    for j in range(xywh.shape[0]):
-                        face.append(np.array(xywh[i], dtype=np.float32))
+                    #print(xywh)
+                    for j in range(np.array(xyxy).shape[0]):
+                        face.append(np.array(xyxy[j], dtype=np.float32))
 
             kpts = det[det_index, 6:]
             step = 3

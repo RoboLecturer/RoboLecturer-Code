@@ -16,7 +16,7 @@ import time
 #from PepperAPI import Info
 
 # Importing our scripts
-from src.head_pose_estimator import landmark_model, compute_engagement_score, project_landmarks, project_detected_landmarks
+from src.head_pose_estimator import landmark_model, engagement_from_landmarks
 from utils.models.YOLOface.detect import detect, config_net
 from utils.models.YOLOface.utils.general import check_requirements
 
@@ -68,35 +68,20 @@ def get_camera_input(camera):
 
 def face_engagement_detection(face_model, landmark_predictor, face_2d, face_3d,  frame, opt, imgsz, stride, engagement_record=[0]):
     # get faces
-    #faces = face_model.detectMultiScale(frame, scaleFactor=1.2, minNeighbors=5, minSize=(64, 64))
-    faces = detect(opt, frame, face_model, imgsz, stride)
+    faces = detect(opt, frame, face_model, imgsz, stride) # YoloV7
     faces = np.array(faces)
-    faces[:, 0] *= 1080
-    faces[:, 1] *= 720
-    faces[:, 2] *= 1080
-    faces[:, 3] *= 720
 
     # display boxes around faces
-    for (x_face, y_face, w_face, h_face) in faces[:, 0:4]:
-        x_face = int(x_face)
-        y_face = int(y_face)
-        w_face = int(w_face)
-        h_face = int(h_face)
-        #print(f"Coords: {(x_face, y_face, w_face, h_face)}")
-        cv2.rectangle(frame, (x_face, y_face), (int(x_face + w_face/2), int(y_face + h_face/2)), (255, 0, 0), 2)
-        #roi_color_face = frame[y_face:y_face+h_face, x_face:x_face+w_face]
+    for (x1, y1, x2, y2) in faces[:, 0:4]:
+        x_centre = (x1 + x2) / 2
+        y_centre = (y1 + y2) / 2
+        cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
         
         # Computing landmarks of a detected face and computing an engagement score
-        landmark_results = landmark_predictor.process(frame)
         landmark_results_detected = faces[:, 4:]
-        dist = project_detected_landmarks(landmark_results_detected, frame, x_face, y_face)
-        x, y, z = project_landmarks(landmark_results, frame, face_2d, face_3d)
-        engagement = compute_engagement_score(x, y, z)
-        #print(f"Yolo coordinates: {(x_detected, y_detected, z_detected)}")
-        #print(f"Mediapipe coordinates: {(x, y, z)}")
-        #engagement_detected = compute_engagement_score(x_detected, y_detected, z_detected)
+        engagement = engagement_from_landmarks(landmark_results_detected, frame, x_centre, y_centre)
         engagement_record.append(engagement)
-        cv2.putText(frame, f"Engagement:  {dist:.3f}", org=(x_face, y_face - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
+        cv2.putText(frame, f"Engagement:  {engagement:.3f}", org=(int(x1), int(y1) - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
     
     return frame, engagement_record
 
@@ -114,19 +99,24 @@ def hand_detector_mp(model, frame): # Commented out the parts that killed the te
    # mp_drawing_styles = mp.solutions.drawing_styles
     result = model.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     if result.multi_hand_landmarks:
-        hand_landmark = result.multi_hand_landmarks[-1]
-       # for hand_landmark in result.multi_hand_landmarks:
-           # mp_drawing_utils.draw_landmarks(frame,
-           #                                 hand_landmark,
-           #                                 model.HAND_CONNECTIONS,
-           #                                 mp_drawing_styles.get_default_hand_landmarks_style(),
-           #                                 mp_drawing_styles.get_default_hand_connections_style())
+        n_hands = np.array(result.multi_hand_landmarks)
+        hand_landmarks = np.array([0, 0])
+        for i in range(n_hands.shape[0]):
+            hand_landmark = n_hands[i]
+        # for hand_landmark in result.multi_hand_landmarks:
+            # mp_drawing_utils.draw_landmarks(frame,
+            #                                 hand_landmark,
+            #                                 model.HAND_CONNECTIONS,
+            #                                 mp_drawing_styles.get_default_hand_landmarks_style(),
+            #                                 mp_drawing_styles.get_default_hand_connections_style())
 
-        for idx, landmark in enumerate(hand_landmark.landmark):
-             h, w, c = frame.shape
-             cx, cy = int(landmark.x * w), int(landmark.y * h)
-
-        return cx, cy
+            for idx, landmark in enumerate(hand_landmark.landmark):
+                h, w, c = frame.shape
+                cx, cy = int(landmark.x * w), int(landmark.y * h)
+                hand_landmarks = np.vstack([hand_landmarks, np.array([cx, cy])])
+                break # iterating only once to save a coordinate of only one landmark. More are not necessary.
+        
+        return hand_landmarks[1:]
 
     return None
 
@@ -136,15 +126,14 @@ def send_to_pepper(hand_data):
     
     for data in unique_hands:
         dic_data = {"bounding_box": (data[-1][0], data[-1][1], 100, 100),
-                "frame_res": (640, 640),
+                "frame_res": (1080, 720),
                 "confidence_score": -1}
         Info.Send("NumHands", {"value": 1})
         Info.Send("RaisedHandInfo", dic_data)
     return
 
+
 def main(camera, test_model, mp_hand_model, landmark_predictor, opt, imgsz, stride):
-   # closed_hand_raise_model = cv2.CascadeClassifier("./utils/models/closed_hand.xml")
-   # open_hand_raise_model   = cv2.CascadeClassifier("./utils/models/open_hand.xml")
     hands = []
     # main loop
     while True:
@@ -155,6 +144,8 @@ def main(camera, test_model, mp_hand_model, landmark_predictor, opt, imgsz, stri
         coordinates = hand_detector_mp(mp_hand_model, frame)
         hands.append(coordinates)
         hands = list(filter(lambda x: x is not None, hands))
+        #print(hands)
+        print(hands)
         
        # start = time.time()
        # test_coords = detect(opt, frame, test_model, imgsz, stride)
@@ -174,6 +165,7 @@ def main(camera, test_model, mp_hand_model, landmark_predictor, opt, imgsz, stri
     print("Sent")
 
     print("FINISHED")
+        
 
 if __name__ == "__main__":
    # PepperAPI.init("cv_node")
@@ -182,7 +174,7 @@ if __name__ == "__main__":
     camera = set_up_camera()
     #face_model = cv2.CascadeClassifier("./utils/models/face_detection.xml")
     yolo_face_model, imgsz, stride = config_net(opt=opt)
-    hand_model = mp.solutions.hands.Hands()
+    hand_model = mp.solutions.hands.Hands(model_complexity=0, max_num_hands=6, min_detection_confidence=0.1)
     landmark_predictor = landmark_model()
     # Running the main detection script.
     main(camera, yolo_face_model, hand_model, landmark_predictor, opt, imgsz, stride)
