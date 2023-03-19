@@ -16,7 +16,8 @@ import time
 #from PepperAPI import Info
 
 # Importing our scripts
-from src.head_pose_estimator import landmark_model, engagement_from_landmarks
+from src.head_pose_estimator import engagement_from_landmarks
+from src.reject_points import reject_points
 from utils.models.YOLOface.detect import detect, config_net
 from utils.models.YOLOface.utils.general import check_requirements
 
@@ -51,9 +52,6 @@ print(opt)
 
 check_requirements(exclude=("tensorboard", "pycocotools", "thop"))
 
-closed_hands = []
-open_hands   = []
-
 # functions
 def set_up_camera():
     camera = cv2.VideoCapture(1)
@@ -62,27 +60,30 @@ def set_up_camera():
     camera.set(4, 720)
     return camera
 
+
 def get_camera_input(camera):
     ret, frame = camera.read()
     return frame
 
-def face_engagement_detection(face_model, landmark_predictor, face_2d, face_3d,  frame, opt, imgsz, stride, engagement_record=[0]):
+
+def face_engagement_detection(face_model, frame, opt, imgsz, stride, engagement_record=[0]):
     # get faces
     faces = detect(opt, frame, face_model, imgsz, stride) # YoloV7
     faces = np.array(faces)
 
     # display boxes around faces
-    for (x1, y1, x2, y2) in faces[:, 0:4]:
-        x_centre = (x1 + x2) / 2
-        y_centre = (y1 + y2) / 2
-        cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
+    if len(faces) != 0: # if a face was detected.
+        for (x1, y1, x2, y2) in faces[:, 0:4]:
+            x_centre = (x1 + x2) / 2
+            y_centre = (y1 + y2) / 2
+            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
+            
+            # Computing landmarks of a detected face and computing an engagement score
+            landmark_results_detected = faces[:, 4:]
+            engagement = engagement_from_landmarks(landmark_results_detected, frame, x_centre, y_centre)
+            engagement_record.append(engagement)
+            cv2.putText(frame, f"Engagement:  {engagement:.3f}", org=(int(x1), int(y1) - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
         
-        # Computing landmarks of a detected face and computing an engagement score
-        landmark_results_detected = faces[:, 4:]
-        engagement = engagement_from_landmarks(landmark_results_detected, frame, x_centre, y_centre)
-        engagement_record.append(engagement)
-        cv2.putText(frame, f"Engagement:  {engagement:.3f}", org=(int(x1), int(y1) - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
-    
     return frame, engagement_record
 
 
@@ -94,7 +95,7 @@ def hand_detector(cascade, frame, hands):
         hands.append((x, y, w, h))
 
 
-def hand_detector_mp(model, frame): # Commented out the parts that killed the terminal.
+def hand_detector(model, frame): # Commented out the parts that killed the terminal.
    # mp_drawing_utils = mp.solutions.drawing_utils
    # mp_drawing_styles = mp.solutions.drawing_styles
     result = model.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
@@ -118,7 +119,7 @@ def hand_detector_mp(model, frame): # Commented out the parts that killed the te
         
         return hand_landmarks[1:]
 
-    return None
+    return np.array([0, 0])
 
 
 def send_to_pepper(hand_data):
@@ -133,27 +134,18 @@ def send_to_pepper(hand_data):
     return
 
 
-def main(camera, test_model, mp_hand_model, landmark_predictor, opt, imgsz, stride):
-    hands = []
+def main(camera, test_model, mp_hand_model, opt, imgsz, stride):
+    hands = np.array([0, 0])
     # main loop
     while True:
         frame  = get_camera_input(camera)
-        face_3d = []
-        face_2d = []
-
-        coordinates = hand_detector_mp(mp_hand_model, frame)
-        hands.append(coordinates)
-        hands = list(filter(lambda x: x is not None, hands))
-        #print(hands)
-        print(hands)
+        coordinates = hand_detector(mp_hand_model, frame)
+        hands = np.vstack([hands, coordinates])
+        hands = reject_points(hands, threshold=20)
+        hands = np.unique(hands, axis=0)
         
-       # start = time.time()
-       # test_coords = detect(opt, frame, test_model, imgsz, stride)
-       # print(f"YoloV7 time executed: {time.time() - start}")
-
-        frame2, engagement_list = face_engagement_detection(test_model, landmark_predictor, face_2d, face_3d, frame, opt, imgsz, stride)
+        frame2, engagement_list = face_engagement_detection(test_model, frame, opt, imgsz, stride)
         mean_engagement = np.mean(np.array(engagement_list))
-
 
         k = cv2.waitKey(30) 
         if k == 27: # press 'ESC' to quit
@@ -172,9 +164,8 @@ if __name__ == "__main__":
     print("API Initialised...")
     # Setting up pre-trained models and camera.
     camera = set_up_camera()
-    #face_model = cv2.CascadeClassifier("./utils/models/face_detection.xml")
     yolo_face_model, imgsz, stride = config_net(opt=opt)
     hand_model = mp.solutions.hands.Hands(model_complexity=0, max_num_hands=6, min_detection_confidence=0.1)
-    landmark_predictor = landmark_model()
     # Running the main detection script.
-    main(camera, yolo_face_model, hand_model, landmark_predictor, opt, imgsz, stride)
+    main(camera, yolo_face_model, hand_model, opt, imgsz, stride)
+
