@@ -8,7 +8,7 @@ from pkg.chat import chat_model
 
 def init_pinecone():
     pinecone.init(
-		api_key = "",
+		api_key = "8973578e-4fed-4fff-8a8d-5eaf1d2d4032",
 		environment = "us-central1-gcp"
 	)
     indexName = "pepper-memory"
