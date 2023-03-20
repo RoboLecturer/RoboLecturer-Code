@@ -48,16 +48,19 @@ def speech_main():
 		# then send STT to NLP
 		Info.Send("Question", {"text": question})
 
-		# Wait for answer from NLP, 
-		answer = Info.Request("Answer")
-		# TODO: convert answer to audio and save somewhere in your machine
-		path_to_audio = "/home/user/Downloads/sample.flac"
-		audio = FLAC(path_to_audio)
-		audio_file_length = audio.info.length
-		Action.Request("ALAudioPlayer", {
-			"path": path_to_audio,
-			"length": audio_file_length
-			})
+		student_done = Info.Request("StudentDone")
+		if not student_done:
+
+			# Wait for answer from NLP, 
+			answer = Info.Request("Answer")
+			# TODO: convert answer to audio and save somewhere in your machine
+			path_to_audio = "/home/user/Downloads/sample.flac"
+			audio = FLAC(path_to_audio)
+			audio_file_length = audio.info.length
+			Action.Request("ALAudioPlayer", {
+				"path": path_to_audio,
+				"length": audio_file_length
+				})
 
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
