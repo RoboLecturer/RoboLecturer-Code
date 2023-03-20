@@ -29,9 +29,12 @@
             @click="captureAnswer(option)"
           >
             <div class="card-content">{{ option }}</div>
-          </div>
+          </div> 
         </div>
       </div>
+    </div>
+    <div class="usercount" v-if="quizStarted">
+      <h5><i class="material-icons left">quiz</i>{{questionCountText}}</h5>
     </div>
   </div>
 </template>
@@ -72,6 +75,10 @@ export default class Home extends Vue {
   studentId = -1;
   answerIndex = -1;
   webSocket: any = null;
+
+  get questionCountText(){
+    return this.questionIndex+1 + " of " + this.questions.length;
+  }
 
   resetAnimation(): void {
     this.timerWindowOpen = true;
@@ -306,6 +313,14 @@ export default class Home extends Vue {
 </script>
 
 <style scoped>
+
+.usercount {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  top: 50px;
+  left: 30px;
+}
 .noHover {
   pointer-events: none;
 }

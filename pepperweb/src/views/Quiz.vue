@@ -22,8 +22,10 @@
           </h1>
           <h1 v-if="quizInitiated">{{ startTimer }}</h1>
         </div>
-        <div v-if="!quizInitiated" class="row s9 m9 l9">
-          <p v-for="(user, index) in users" :key="index">{{ user["Username"] }}</p>
+        <div v-if="!quizInitiated" class="container">
+          <div class="usernameWrapper">
+          <p class="username" v-for="(user, index) in users" :key="index">{{ user["Username"] }}</p>
+        </div>
         </div>
       </div>
     </div>
@@ -296,6 +298,18 @@ export default class Quiz extends Vue {
 </script>
 
 <style scoped>
+
+.usernameWrapper{
+  display:flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  width:100%;
+}
+.username {
+  width:30%;
+  font-size: 20px;
+  font-weight: 600;
+}
 .statusText {
   padding: 0px 100px 0px 100px;
 }

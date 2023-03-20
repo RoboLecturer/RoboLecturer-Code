@@ -1,14 +1,14 @@
 // @ts-ignore
 import fs from "fs";
 import { fromPath } from "pdf2pic";
-import { imageOCR,connectROS,publishPdfParseTopic,getDirectories } from '../services/pdfService.js';
+import { imageOCR,connectROS,publishPdfParseTopic,getDirectories,publishNumSlides } from '../services/pdfService.js';
 import path from "path";
 import axios from 'axios';
-
+// import {RosInterface} from "../../pepperweb/interface/ros.ts"
 export function parsePDF(req, res) {
   
-  const filepath = req.body.filepath
-  
+  // const filepath = req.body.filepath
+  const filepath = "uploadedPDFs/test1.pdf"
   console.log("Parsing PDF file: " + filepath)
 
   // check if file exists
@@ -41,7 +41,7 @@ export function parsePDF(req, res) {
     
     try {
       const ros = connectROS()
-      
+  
       publishNumSlides(pdfName,content.length,ros)
       for (let i = 1; i <content.length+1; i++) {
         // iterate by filename

@@ -6,7 +6,8 @@ import { createWorker } from "tesseract.js";
 
 export function connectROS(){
 var ros = new ROSLIB.Ros({
-url : 'ws://localhost:9000'
+// url : 'ws://localhost:9000'
+url : 'ws://192.168.0.107:9000'
 });
 
 ros.on('connection', function() {
@@ -26,36 +27,38 @@ return ros
 export function publishPdfParseTopic(filename,pageNumber,text,ros ){
 var publishTopic = new ROSLIB.Topic({
 ros : ros,
-name : '/slides',
+name : '/slides_forwarder',
 messageType : 'std_msgs/String'
 });
 
-var msg = new ROSLIB.Message({
-metadata : {
-fileName : filename,
-pageNumber : pageNumber
-},
-data : {
-text
-}
-});
-publishTopic.publish(msg);
+// var msg = new ROSLIB.Message({
+// metadata : {
+// fileName : filename,
+// pageNumber : pageNumber
+// },
+// data : {
+// text
+// }
+// });
+var data = new ROSLIB.Message({data:String(text)});
+publishTopic.publish(data);
 }
 
 export function publishNumSlides(filename,pagecount,ros ){
     var publishTopic = new ROSLIB.Topic({
     ros : ros,
-    name : '/num_slides',
+    name : '/num_slides_forwarder',
     messageType : 'std_msgs/String'
     });
-    
-    var msg = new ROSLIB.Message({
-    FormDataEvent : {
-    fileName : filename,
-    pageCount : pagecount
-    }
-    });
-    publishTopic.publish(msg);
+    var data = new ROSLIB.Message({data:String(pagecount)});
+    // var msg = new ROSLIB.Message({
+    // FormDataEvent : {
+    // fileName : filename,
+    // pageCount : pagecount
+    // }
+    // });
+    publishTopic.publish(data);
+    // console.log("")
     }
 
 export async function imageOCR (imagePath) {
