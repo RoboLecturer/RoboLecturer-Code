@@ -3,7 +3,7 @@ const router = Router();
 import { parsePDF, uploadPDF } from "../controller/pdfController.js";
 import multer from "multer";
 import path from "path";
-import { getQuiz } from "../controller/quizController.js";
+import { getQuiz,saveQuiz } from "../controller/quizController.js";
 import {
   addResult,
   resetResults,
@@ -42,8 +42,11 @@ router.post("/upload_pdf", uploadParams, uploadPDF);
 
 // process the pdf (should be called after upload pdf)
 router.post("/pdf", parsePDF);
+
 // use filename to get quiz JSON info
 router.get("/quiz", getQuiz);
+// save quiz from NLP locally
+router.post("/saveQuiz",saveQuiz)
 
 // list the file names of uploaded pdfs
 router.get("/uploadedFileNames", uploadedFileNames);
