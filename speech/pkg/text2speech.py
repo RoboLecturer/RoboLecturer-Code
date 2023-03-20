@@ -19,7 +19,7 @@ def googleTTS(txt, OUTPUT_PATH):
     tts = gTTS(txt)
     tts.save(OUTPUT_PATH)
 
-def runT2S(txt, online=False, speedup=True, OUTPUT_PATH="output"):
+def runT2S(txt, online=False, speedup=1.2, OUTPUT_PATH="output"):
     if online:
         filetype = 'mp3'
         OUTPUT_PATH += '.'+filetype
@@ -29,9 +29,9 @@ def runT2S(txt, online=False, speedup=True, OUTPUT_PATH="output"):
         OUTPUT_PATH += '.'+filetype
         DNNTTS(txt, OUTPUT_PATH)
     
-    if speedup:
+    if speedup > 1.0:
         slow_mp3 = AudioSegment.from_file(OUTPUT_PATH, format=filetype)
-        speed_update = slow_mp3.speedup(1.2)
+        speed_update = slow_mp3.speedup(speedup)
         speed_update.export(OUTPUT_PATH, format=filetype)
 
     return OUTPUT_PATH
