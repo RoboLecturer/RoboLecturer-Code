@@ -6,7 +6,11 @@ import threading, time
 no_questions_counter = 0
 no_questions_threshold = 3
 
+loop_count = 0
 def main():
+
+	global loop_count
+	loop_count += 1
 
 	global no_questions_counter, no_questions_threshold
 
@@ -14,6 +18,9 @@ def main():
 
 	# ========= STATE: Start =========
 	Info.Send("State", {"Start":"1"})
+
+	if loop_count == 1:
+		time.sleep(10) # wait for web to reload before sending change_slide
 
 	# Send signal to Web to increment slide
 	Info.Send("ChangeSlide", {"cmd":"increment|0"})
@@ -34,6 +41,7 @@ def main():
 	# raw_input()
 
 	# Wait for state update from CV
+	print("listening...")
 	state = Info.Request("State", {"name":"AnyQuestions"})
 	
 	# If no raised hands detected, increment no_questions_counter
@@ -47,7 +55,8 @@ def main():
 		hands_info_list = Info.Request("RaisedHandInfo")
 		
 		# Start QnA loop
-		for i in range(len(hands_info_list)):
+		num_students_answered = 0
+		while True:
 			# Point, then send trigger_listen to Speech
 			hand_info = hands_info_list[i]
 			Action.IsDone("Reset", "Point")
@@ -56,19 +65,25 @@ def main():
 				pass
 			Info.Send("TriggerListen")
 
-			# Wait for answer to be finished playing
-			Action.IsDone("Reset", "ALAudioPlayer")
-			while not Action.IsDone("Get", "ALAudioPlayer"):
-				pass
+			student_done = Info.Request("StudentDone")
+			if not student_done:
 
-			# When it's the last hand, update the state 
-			if i == (len(hands_info_list) - 1):
-				Info.Send("State", {"AnyQuestions":"NoHandsRaised", "print":False})
+				# Wait for answer to be finished playing
+				Action.IsDone("Reset", "ALAudioPlayer")
+				while not Action.IsDone("Get", "ALAudioPlayer"):
+					pass
+
 			else:
+				num_students_answered += 1
+
+			if num_students_answered == len(hands_info_list):
 				Info.Send("State", {"AnyQuestions":"HandsRaised", "print":False})
+				break
+			else:
+				Info.Send("State", {"AnyQuestions":"NoHandsRaised", "print":False})
 
 
-	# If no hands detected, or When QnA loop ends, proceed
+		# If no hands detected, or When QnA loop ends, proceed
 
 
 	# ========= STATE: NoiseLevel =========

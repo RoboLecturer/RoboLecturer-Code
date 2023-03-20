@@ -17,6 +17,7 @@ def Request(api_name, api_params={}):
 		Slides = []
 		NumSlides = 0
 		NumScripts = 0
+		StudentDone = False
 		LectureScript = []
 		Question = ""
 		Answer = ""
@@ -166,6 +167,13 @@ def Request(api_name, api_params={}):
 		StringSubscriber(TRIGGER_LISTEN_TOPIC, callback)
 		return True
 
+	if api_name == "StudentDone":
+		"""Receive signal for if QnA loop for that student is done"""
+		def callback(msg):
+			Data.StudentDone = True if msg.data == "1" else False
+			rospy.loginfo("Received: StudentDone=%s" % str(Data.StudentDone)
+		StringSubscriber(STUDENT_DONE_TOPIC, callback)
+		return True
 
 	## ========= KINEMATICS =========
 	if api_name == "RaisedHandInfo":
@@ -358,6 +366,16 @@ def Send(api_name, api_params={}):
 		num_scripts_publisher.publish(num_scripts)
 		return True
 
+	if api_name == "StudentDone":
+		"""Send flag for whether QnA loop for the student is finished
+		@param	api_params : dict{
+			"value": 1/0 for if a "finished" response is received
+		}
+		"""
+		value = api_params["value"]
+		student_done_publisher.publish(value)
+		return True
+
 	## ========= SPEECH =========
 	if api_name == "Question":
 		"""Send QnA question to NLP
@@ -408,6 +426,7 @@ def Send(api_name, api_params={}):
 		global change_slide
 		cmd = api_params["cmd"]
 		change_slide = cmd
+		rospy.loginfo("Change slide: %s" % cmd)
 		time.sleep(1)
 		return True
 
