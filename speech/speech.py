@@ -117,7 +117,7 @@ def speech_main():
 			text = Info.Request("Shutup")
 		
 		path_to_JS = OUTPUT_DIR+"JS"
-		t2s.runT2S(text, path_to_JS)
+		t2s.runT2S(text, online=ONLINE, OUTPUT_PATH=path_to_JS)
 	
 		# TODO: convert joke/shutup text into audio and save
 		if ONLINE:
@@ -148,7 +148,8 @@ def speech_main():
 		if signal == "joke":
 			joke = Info.Request("Joke")
 			path_to_JS = OUTPUT_DIR+"JS"
-			t2s.runT2S(joke, path_to_JS)
+			t2s.runT2S(joke, online=ONLINE, OUTPUT_PATH=path_to_JS)
+	
 
 			# TODO: convert joke/shutup text into audio and save
 			if ONLINE:
@@ -175,8 +176,8 @@ def speech_main():
 		if signal == "joke":
 			joke = Info.Request("Joke")
 			path_to_JS = OUTPUT_DIR+"JS"
-			t2s.runT2S(joke, path_to_JS)
-
+			t2s.runT2S(joke, online=ONLINE, OUTPUT_PATH=path_to_JS)
+	
 			# TODO: convert joke/shutup text into audio and save
 			if ONLINE:
 				path_to_JS = path_to_JS + '.mp3'
@@ -194,7 +195,7 @@ def speech_main():
 # =================================================
 
 if __name__ == "__main__":
-	PepperAPI.init("test")
+	PepperAPI.init("speech")
 
 	while True:
 		speech_main()
