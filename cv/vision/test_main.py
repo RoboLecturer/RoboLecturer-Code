@@ -62,10 +62,9 @@ def get_camera_input(camera):
     return frame
 
 
-def face_engagement_detection(face_model, frame, opt, imgsz, stride, engagement_record=[0]):
+def face_engagement_detection(face_model, frame, opt, imgsz, stride, engagement_record=[0], engagement_nose_record=[0]):
     # get faces
     faces = detect(opt, frame, face_model, imgsz, stride) # YoloV7
-    faces = np.array(faces)
 
     # display boxes around faces
     if len(faces) != 0: # if a face was detected.
@@ -76,10 +75,11 @@ def face_engagement_detection(face_model, frame, opt, imgsz, stride, engagement_
             
             # Computing landmarks of a detected face and computing an engagement score
             landmark_results_detected = faces[:, 4:]
-            engagement = engagement_from_landmarks(landmark_results_detected, frame, x_centre, y_centre)
-            engagement_record.append(engagement)
-            cv2.putText(frame, f"Engagement:  {engagement:.3f}", org=(int(x1), int(y1) - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
-        
+            engagement_centroid, engagement_nose = engagement_from_landmarks(landmark_results_detected, frame, x_centre, y_centre)
+            engagement_record.append(engagement_centroid)
+            engagement_nose_record.append(engagement_nose)
+            cv2.putText(frame, f"Engagement Centroid:  {engagement_centroid:.3f}", org=(int(x1), int(y1) - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
+            cv2.putText(frame, f"Engagement Nose:  {engagement_nose:.3f}", org=(int(x1), int(y1) - 30), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 0, 0), thickness=2, lineType=2)        
     return frame, engagement_record
 
 
@@ -114,8 +114,8 @@ def hand_detector(model, frame): # Commented out the parts that killed the termi
                     dist_fingers = np.append(dist_fingers, dist_proportion)
 
             metric = np.mean(dist_fingers)
-            #print(f"Metric: {metric}")
-            if metric < 0.535:
+            print(f"Metric: {metric}")
+            if metric < 0.61:
                 hand_landmarks = np.vstack([hand_landmarks, np.array([x_base, y_base])])
                 cv2.putText(frame, f"Question!", org=(int(30), int(30)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
 
@@ -169,7 +169,7 @@ if __name__ == "__main__":
     # Setting up pre-trained models and camera.
     camera = set_up_camera()
     yolo_face_model, imgsz, stride = config_net(opt=opt)
-    hand_model = mp.solutions.hands.Hands(model_complexity=0, max_num_hands=15, min_detection_confidence=0.1)
+    hand_model = mp.solutions.hands.Hands(model_complexity=0, max_num_hands=15, min_detection_confidence=0.1, min_tracking_confidence=0.1)
     # Running the main detection script.
     main(camera, yolo_face_model, hand_model, opt, imgsz, stride)
 

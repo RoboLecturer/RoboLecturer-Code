@@ -108,9 +108,9 @@ def detect(opt, frame, model, imgsz, stride):
         #pred = apply_classifier(pred, modelc, img, im0s)
 
     # Process detections
-    faces_coords = []
+    face = []
+    faces_coords = np.array([])
     for i, det in enumerate(pred):  # detections per image
-        face = []
         #if webcam:  # batch_size >= 1
             #p, s, im0, frame = path[i], '%g: ' % i, im0s[i].copy(), dataset.count
         #else:
@@ -132,36 +132,42 @@ def detect(opt, frame, model, imgsz, stride):
                 n = (det[:, 5] == c).sum()  # detections per class
                 s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
 
+            xyxy = reversed(det[:, :4])
             # Write results
-            for det_index, (*xyxy, conf, cls) in enumerate(reversed(det[:,:6])):
-                if save_txt:  # Write to file
-                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).numpy()  # normalized xywh
-                    line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
-                    #print(xywh)
-                    for j in range(np.array(xyxy).shape[0]):
-                        face.append(np.array(xyxy[j], dtype=np.float32))
+            #for det_index, (*xyxy, conf, cls) in enumerate(reversed(det[:,:6])):
+            #    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).numpy()  # normalized xywh
 
-            kpts = det[det_index, 6:]
-            step = 3
-            num_kpts = len(kpts) // step
-            for k_id in range(num_kpts):
-                #print(kpts)
-                x_coord, y_coord = kpts[step * k_id].numpy(), kpts[step * k_id + 1].numpy()
-                face.append(x_coord)
-                face.append(y_coord)
-                    #print(xywh)
-                    #with open(txt_path + '.txt', 'a') as f:
-                        #f.write(('%g ' * len(line)).rstrip() % line + '\n')
+            face.append(np.array(xyxy, dtype=np.float32))
+            face = face[0]
+            for det_index, face_detected in enumerate(face):
+                kpts = det[det_index, 6:]
+                step = 3
+                num_kpts = len(kpts) // step
+                coords = []
+                for k_id in range(num_kpts):
+                    #print(kpts)
+                    x_coord, y_coord = kpts[step * k_id].numpy(), kpts[step * k_id + 1].numpy()
+                    coords.append(np.array([x_coord, y_coord]))
+                    #face = np.insert(face, det_index, np.array([x_coord, y_coord])).reshape(-1, 14)
+                    #print(face)
+                    #print(temp)
+                face = np.append(face_detected, coords)
+                faces_coords = np.append(faces_coords, face).reshape(-1, 14)
+                #print(actual_faces)
+                #face.insert(det_index, x_coord)
+                #face.insert(det_index, y_coord)
+                #print(xywh)
+                #with open(txt_path + '.txt', 'a') as f:
+                #f.write(('%g ' * len(line)).rstrip() % line + '\n')
 
-                if save_img or opt.save_crop or view_img:  # Add bbox to image
-                    c = int(cls)  # integer class
-                    label = None if opt.hide_labels else (names[c] if opt.hide_conf else f'{names[c]} {conf:.2f}')
-                    kpts = det[det_index, 6:]
-                    plot_one_box(xyxy, im0, label=label, color=colors(c, True), line_thickness=opt.line_thickness, kpt_label=kpt_label, kpts=kpts, steps=3, orig_shape=im0.shape[:2])
+            if save_img or opt.save_crop or view_img:  # Add bbox to image
+                c = int(cls)  # integer class
+                label = None if opt.hide_labels else (names[c] if opt.hide_conf else f'{names[c]} {conf:.2f}')
+                kpts = det[det_index, 6:]
+                plot_one_box(xyxy, im0, label=label, color=colors(c, True), line_thickness=opt.line_thickness, kpt_label=kpt_label, kpts=kpts, steps=3, orig_shape=im0.shape[:2])
                     #cv2.imwrite('runs/detect/exp2/labels/test_01.jpg', im0)
                     #if opt.save_crop:
                         #save_one_box(xyxy, im0s, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
-            faces_coords.append(face)
 
             #if save_txt_tidl:  # Write to file in tidl dump format
                 #for *xyxy, conf, cls in det_tidl:
@@ -203,7 +209,6 @@ def detect(opt, frame, model, imgsz, stride):
         #print(f"Results saved to {save_dir}{s}")
 
     #print(f'Done. ({time.time() - t0:.3f}s)')
-
     return faces_coords
 
 

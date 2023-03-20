@@ -56,25 +56,33 @@ def engagement_from_landmarks(landmarks, frame, x_face, y_face):
             z = random.uniform(-1, 1)
             for i in range(0, landmarks.shape[1] -1, 2):
                 if i == 6:
-                    nose_2d = (landmark[i] * img_w, landmark[i + 1] * img_h)
-                    nose_3d = (landmark[i] * img_w, landmark[i + 1] * img_h, z)
+                    x_nose = int(landmark[i])
+                    y_nose = int(landmark[i + 1])
 
                 x = int(landmark[i])
                 y = int(landmark[i + 1])
+                cv2.circle(frame, (x, y), radius=2, color=(255, 0, 0), thickness=2)
 
-                face_x.append([x, y])
-                face_y.append([x, y, z])
+                face_x.append(x)
+                face_y.append(y)
             
             x_centroid = np.mean(np.array(face_x))
             y_centroid = np.mean(np.array(face_y))
 
+            cv2.circle(frame, (int(x_centroid), int(y_centroid)), radius=2, color=(0, 255, 0), thickness=2)
+            cv2.circle(frame, (int(x_face), int(y_face)), radius=2, color=(0, 0, 255), thickness=2)
+
+            p_nose = np.array([x_nose, y_nose])
             p_centroid = np.array((x_centroid, y_centroid))
             p_face = np.array((x_face, y_face))
 
-            dist = np.linalg.norm(p_centroid - p_face)
-            similarity = 1.0/np.cosh(0.01 * dist)
+            dist_centroid = np.linalg.norm(p_face - p_centroid)
+            similarity_centroid = 1.0/np.cosh(0.01 * dist_centroid)
 
-            return similarity
+            dist_nose = np.linalg.norm(p_face - p_nose)
+            similarity_nose = 1.0/np.cosh(0.03 * dist_nose)
+
+            return similarity_centroid, similarity_nose
 
     return 0
 
