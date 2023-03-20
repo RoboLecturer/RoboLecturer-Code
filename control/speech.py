@@ -21,8 +21,9 @@ def speech_main():
 		script = Info.Request("LectureScript")
 
 	# TODO: convert lecture script to audio and save somewhere in your machine
-	path_to_audio = "/home/user/Downloads/statquest.mp3"
-	audio = MP3(path_to_audio)
+	# path_to_audio = "/home/user/Downloads/statquest.mp3"
+	path_to_audio = "/home/user/Downloads/sample.flac"
+	audio = FLAC(path_to_audio)
 	audio_file_length = audio.info.length
 
 	# Action.Request("ALAudioPlayer", {"file": "output0.wav"})
@@ -50,7 +51,7 @@ def speech_main():
 		# Wait for answer from NLP, 
 		answer = Info.Request("Answer")
 		# TODO: convert answer to audio and save somewhere in your machine
-		path_to_audio = "/home/user/sample.flac"
+		path_to_audio = "/home/user/Downloads/sample.flac"
 		audio = FLAC(path_to_audio)
 		audio_file_length = audio.info.length
 		Action.Request("ALAudioPlayer", {
@@ -79,7 +80,7 @@ def speech_main():
 			text = Info.Request("Shutup")
 	
 		# TODO: convert joke/shutup text into audio and save
-		path_to_audio = "/home/user/sample.flac"
+		path_to_audio = "/home/user/Downloads/sample.flac"
 		audio = FLAC(path_to_audio)
 		audio_file_length = audio.info.length
 		Action.Request("ALAudioPlayer", {
@@ -107,7 +108,7 @@ def speech_main():
 		if signal == "joke":
 			joke = Info.Request("Joke")
 			# TODO: convert joke/shutup text into audio and save
-			path_to_audio = "/home/user/sample.flac"
+			path_to_audio = "/home/user/Downloads/sample.flac"
 			audio = FLAC(path_to_audio)
 			audio_file_length = audio.info.length
 			Action.Request("ALAudioPlayer", {
@@ -131,7 +132,7 @@ def speech_main():
 		if signal == "joke":
 			joke = Info.Request("Joke")
 			# TODO: convert joke/shutup text into audio and save
-			path_to_audio = "/home/user/sample.flac"
+			path_to_audio = "/home/user/Downloads/sample.flac"
 			audio = FLAC(path_to_audio)
 			audio_file_length = audio.info.length
 			Action.Request("ALAudioPlayer", {
