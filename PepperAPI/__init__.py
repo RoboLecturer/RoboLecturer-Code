@@ -2,7 +2,7 @@ import rospy
 import rosnode
 
 # Globals
-ROBOT_IP = "192.168.0.104"
+ROBOT_IP = "192.168.0.110"
 ROBOT_PORT = 9559
 PEPPER_USER = "nao"
 PEPPER_PASSWORD = "BioARTLab123"
@@ -33,6 +33,7 @@ STATE_TOPIC = {
 	"NoQuestionsLoop": "state_no_questions"
 }
 STATE_UPDATE_TOPIC = "state_update"
+STUDENT_DONE_TOPIC = "student_done"
 TAKE_CONTROL_TOPIC = "take_control"
 TRIGGER_HAND_DETECTION_TOPIC = "trigger_hand_detection"
 TRIGGER_JOKE_OR_SHUTUP_TOPIC = "trigger_joke_or_shutup"
