@@ -4,11 +4,10 @@ import numpy as np
 import vision_definitions
 import Image
 
-vid = ALProxy("ALVideoDevice", "192.168.0.104", 9559)
-tts = ALProxy("ALTextToSpeech", "192.168.0.104", 9559)
-resolution = vision_definitions.kVGA
+vid = ALProxy("ALVideoDevice", "192.168.0.110", 9559)
+resolution = vision_definitions.kQQVGA
 colorSpace = vision_definitions.kRGBColorSpace
-fps = 5
+fps = 10
 subscriberID = vid.subscribe("subscriberID", resolution, colorSpace, fps)
 while True:
 	img = vid.getImageRemote(subscriberID)

@@ -2,22 +2,17 @@
 import PepperAPI
 from PepperAPI import Action, Info
 from api.msg import CVInfo
-from mutagen.flac import FLAC
 
 PepperAPI.init("master")
-# msg = Info.Request("LectureScript")
-# print(msg)
+lst = ["a","b"]
+Info.Send("NumScripts", {"value":len(lst)})
+for i in lst:
+	Info.Send("LectureScript", {"text":i})
 # slides_text = Info.Request("Slides")
 # print(slides_text)
 
 # Info.Send("SimpleMsg", {"value":"hello world"})
-path = "/home/user/Downloads/sample.flac"
-audio = FLAC(path)
-length = audio.info.length
-Action.Request("ALAudioPlayer", {
-	"path": path, 
-	"length":length
-	})
+# Action.Request("ALAudioPlayer", {"path":"/home/user/sample.flac"})
 
 # msg = CVInfo()
 # msg.x, msg.y, msg.w, msg.h = 560, 360, 0, 0

@@ -3,8 +3,6 @@ from PepperAPI import Action, Info
 import threading
 
 PepperAPI.init("master")
-# msg = Info.Request("SimpleMsg")
-# print(msg)
 t1 = threading.Thread(target=Action.Listen)
 t2 = threading.Thread(target=Info.Listen)
 t1.start()
