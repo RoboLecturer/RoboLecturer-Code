@@ -28,7 +28,7 @@ def callback(in_data, frame_count, time_info, status):
 # Open A stream of PyAudio to start listening
 stream = p.open(format=p.get_format_from_width(WIDTH),
                 input_device_index=MIC,
-                channels=6,
+                channels=1,
                 rate=RATE,
                 input=True,
                 output=False,

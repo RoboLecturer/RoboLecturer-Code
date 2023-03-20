@@ -21,7 +21,7 @@ def speech_main():
 	global loop_c
 
 	# Use gTTS (.mp3) or DNN (.wav)
-	ONLINE=False
+	ONLINE=True
 
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
@@ -39,15 +39,20 @@ def speech_main():
 		# Play first slide script audio
 		path_to_audio = OUTPUT_DIR+"script_0"
 		if ONLINE:
+			path_to_audio = path_to_audio+'.mp3'
 			audio = MP3(path_to_audio)
 		else:
+			path_to_audio = path_to_audio+'.wav'
 			audio = WavPack(path_to_audio)
+		print(audio.info.length)
 		Action.Request("ALAudioPlayer", {"path": path_to_audio, "length": audio.info.length})
 	else:
 		path_to_audio = OUTPUT_DIR+f"script_{loop_c}"
 		if ONLINE:
+			path_to_audio = path_to_audio+'.mp3'
 			audio = MP3(path_to_audio)
 		else:
+			path_to_audio = path_to_audio+'.wav'
 			audio = WavPack(path_to_audio)
 		Action.Request("ALAudioPlayer", {"path": path_to_audio, "length": audio.info.length})
 
@@ -71,10 +76,11 @@ def speech_main():
 		Info.Send("Question", {"text": question})
 
 		# Wait for answer from NLP, 
+		path_to_answer = OUTPUT_DIR+"answer"
 		answer = Info.Request("Answer")
 
 		if ONLINE:
-			t2s.runT2S(answer, online=ONLINE, OUTPUT_PATH=path_to_answer)
+			path_to_answer = t2s.runT2S(answer, online=ONLINE, OUTPUT_PATH=path_to_answer)
 			audio = MP3(path_to_answer)
 			
 			Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
@@ -82,6 +88,7 @@ def speech_main():
 			sentences = [x for x in answer.split('.') if x]
 			for i in range(len(sentences)):
 				path_to_answer = OUTPUT_DIR+f"answer_{i}"
+				path_to_answer = path_to_answer+'.wav'
 				t2s.runT2S(sentences[i], online=ONLINE, OUTPUT_PATH=path_to_answer)
 				audio = WavPack(path_to_answer)
 
@@ -111,8 +118,10 @@ def speech_main():
 	
 		# TODO: convert joke/shutup text into audio and save
 		if ONLINE:
+			path_to_JS = path_to_JS + '.mp3'
 			audio = MP3(path_to_JS)
 		else:
+			path_to_JS = path_to_JS + '.wav'
 			audio = WavPack(path_to_JS)
 		Action.Request("ALAudioPlayer", {"path": path_to_JS, "length": audio.info.length})
 
@@ -140,8 +149,10 @@ def speech_main():
 
 			# TODO: convert joke/shutup text into audio and save
 			if ONLINE:
+				path_to_JS = path_to_JS + '.mp3'
 				audio = MP3(path_to_JS)
 			else:
+				path_to_JS = path_to_JS + '.wav'
 				audio = WavPack(path_to_JS)
 			Action.Request("ALAudioPlayer", {"path": path_to_JS, "length": audio.info.length})
 		
@@ -165,8 +176,10 @@ def speech_main():
 
 			# TODO: convert joke/shutup text into audio and save
 			if ONLINE:
+				path_to_JS = path_to_JS + '.mp3'
 				audio = MP3(path_to_JS)
 			else:
+				path_to_JS = path_to_JS + '.wav'
 				audio = WavPack(path_to_JS)
 			Action.Request("ALAudioPlayer", {"path": path_to_JS, "length": audio.info.length})
 		return
