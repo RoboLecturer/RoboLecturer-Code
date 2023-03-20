@@ -8,6 +8,7 @@ from pkg import questionClassifier as qc
 from pkg import jokeGenerator as jg
 from pkg import descriptionGenerator as dg
 from pkg import quizGeneration as qg
+import requests
 
 #############################################################################
 # TODO: How do we extrct the slide number for a specific slide request?
@@ -70,7 +71,9 @@ def nlp_main():
 				# create question classification content classes and keyword descriptions
 				class_description = dg.createDescription(slide,script,class_description)
 				# create quiz for this slide
-				# quiz = quizGeneration.quizGen(script)
+				quiz = qg.quizGen(script)
+				url = "localhost:3000/saveQuiz"
+				requests.post(url, json = quiz)
 				# list_of_quizes.append(list_of_quizes, quiz)
 			slide_number += 1
 
