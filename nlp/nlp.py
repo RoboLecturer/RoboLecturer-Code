@@ -54,7 +54,7 @@ def nlp_main():
 		list_of_slides = Info.Request("Slides")
 		# initialise the class_descriptions dictionary with operational keys
 		class_description = dg.initDict()
-		slide_number = 1
+		slide_number = 0
 
 		# for each slide, generate script and keyword descriptions
 		for slide in tqdm(list_of_slides):
@@ -67,19 +67,20 @@ def nlp_main():
 			# set class
 			Slide_instances.append(Slide(slide_number, title, slide, script))
 
-			if slide_number > 2:
+			if slide_number > 1:
 				# create question classification content classes and keyword descriptions
 				class_description = dg.createDescription(slide,script,class_description)
 				# create quiz for this slide
-				quiz = qg.quizGen(script)
-				url = "localhost:3000/saveQuiz"
-				requests.post(url, json = quiz)
+				# quiz = qg.quizGen(script)
+				# url = "localhost:3000/saveQuiz"
+				# requests.post(url, json = quiz)
 				# list_of_quizes.append(list_of_quizes, quiz)
 			slide_number += 1
 
 		# Send entrie lecture content to the Speech Processing module for pre-processing
 		Info.Send("NumScripts", {"value": slide_number})
-		Info.Send("LectureScript", {"text": list_of_scripts})
+		for script in list_of_scripts:
+			Info.Send("LectureScript", {"text": script})
 		# Send entire quiz list to web
 		# Info.Send("Quiz", {"text": list_of_quizes})
 
@@ -94,8 +95,11 @@ def nlp_main():
 		# Wait for student's question from Speech
 		Q.question = Info.Request("Question")
 
-		# Classify question into main type and sub types
-		Q.main_type, Q.sub_type = qc.classify_question(Q.question,class_description)
+		if Q.question == None:
+			Q.main_type = "no question"
+		else:
+			# Classify question into main type and sub types
+			Q.main_type, Q.sub_type = qc.classify_question(Q.question,class_description)
 		# Q.main_type = "related" 
 
 		if Q.main_type == "related":
@@ -152,6 +156,9 @@ def nlp_main():
 				response = "Got it, I'll go to that slide"
 				Info.Send("Answer", {"text": response})
 
+		elif Q.main_type == "no question":
+			# don't do anything
+			continue
 		else:
 			# if question is non-relevant then respond as such
 			response = "Your question doesn't relate to the lecture content, lets get back on track"
