@@ -83,14 +83,6 @@ def face_engagement_detection(face_model, frame, opt, imgsz, stride, engagement_
     return frame, engagement_record
 
 
-# Function for hand detection. If the model changes, make updates here. To use this, use threading.Thread method as well.
-def hand_detector(cascade, frame, hands):
-    detected_hands = cascade.detectMultiScale(frame, scaleFactor=1.2, minNeighbors=5, minSize=(64, 64))
-    for (x, y, w, h) in detected_hands:
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-        hands.append((x, y, w, h))
-
-
 def hand_detector(model, frame): # Commented out the parts that killed the terminal.
     knuckle_idx = [1, 5, 9, 13, 17]
     fingertip_idx = [4, 8, 12, 16, 20]
@@ -108,9 +100,6 @@ def hand_detector(model, frame): # Commented out the parts that killed the termi
                     x_base = int(landmark.x * w)
                     y_base = int(landmark.y * h)
 
-                    cx, cy = int(landmark.x * w), int(landmark.y * h)
-                    hand_landmarks = np.vstack([hand_landmarks, np.array([cx, cy])])
-
                 elif idx in knuckle_idx:
                     x_knuckle = int(landmark.x * w)
                     y_knuckle = int(landmark.y * h)
@@ -124,14 +113,10 @@ def hand_detector(model, frame): # Commented out the parts that killed the termi
                     dist_proportion = dist_to_knuckle / dist_to_base
                     dist_fingers = np.append(dist_fingers, dist_proportion)
 
-
-                #cx, cy = int(landmark.x * w), int(landmark.y * h)
-                #hand_landmarks = np.vstack([hand_landmarks, np.array([cx, cy])])
-                # iterating only once to save a coordinate of only one landmark. More are not necessary.
-
             metric = np.mean(dist_fingers)
-            print(f"Metric: {metric}")
-            if metric < 0.52:
+            #print(f"Metric: {metric}")
+            if metric < 0.535:
+                hand_landmarks = np.vstack([hand_landmarks, np.array([x_base, y_base])])
                 cv2.putText(frame, f"Question!", org=(int(30), int(30)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
 
         
@@ -141,10 +126,8 @@ def hand_detector(model, frame): # Commented out the parts that killed the termi
 
 
 def send_to_pepper(hand_data):
-    unique_hands = list(set(hand_data))
-    
-    for data in unique_hands:
-        dic_data = {"bounding_box": (data[-1][0], data[-1][1], 100, 100),
+    for data in hand_data:
+        dic_data = {"bounding_box": (data[0], data[1], 100, 100),
                 "frame_res": (1080, 720),
                 "confidence_score": -1}
         Info.Send("NumHands", {"value": 1})
@@ -158,7 +141,10 @@ def main(camera, test_model, mp_hand_model, opt, imgsz, stride):
     while True:
         frame  = get_camera_input(camera)
         coordinates = hand_detector(mp_hand_model, frame)
-        hands = np.vstack([hands, coordinates])
+
+        if coordinates.shape[0] == 2:
+            hands = np.vstack([hands, coordinates])
+
         hands = reject_points(hands, threshold=20)
         hands = np.unique(hands, axis=0)
         
@@ -183,7 +169,7 @@ if __name__ == "__main__":
     # Setting up pre-trained models and camera.
     camera = set_up_camera()
     yolo_face_model, imgsz, stride = config_net(opt=opt)
-    hand_model = mp.solutions.hands.Hands(model_complexity=0, max_num_hands=6, min_detection_confidence=0.1)
+    hand_model = mp.solutions.hands.Hands(model_complexity=0, max_num_hands=15, min_detection_confidence=0.1)
     # Running the main detection script.
     main(camera, yolo_face_model, hand_model, opt, imgsz, stride)
 
