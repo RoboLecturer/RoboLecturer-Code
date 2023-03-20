@@ -75,24 +75,27 @@ def speech_main():
 		# then send STT to NLP
 		Info.Send("Question", {"text": question})
 
-		# Wait for answer from NLP, 
-		path_to_answer = OUTPUT_DIR+"answer"
-		answer = Info.Request("Answer")
+		student_done = Info.Request("StudentDone")
+		if not student_done:
 
-		if ONLINE:
-			path_to_answer = t2s.runT2S(answer, online=ONLINE, OUTPUT_PATH=path_to_answer)
-			audio = MP3(path_to_answer)
-			
-			Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
-		else:
-			sentences = [x for x in answer.split('.') if x]
-			for i in range(len(sentences)):
-				path_to_answer = OUTPUT_DIR+f"answer_{i}"
-				path_to_answer = path_to_answer+'.wav'
-				t2s.runT2S(sentences[i], online=ONLINE, OUTPUT_PATH=path_to_answer)
-				audio = WavPack(path_to_answer)
+			# Wait for answer from NLP
+			path_to_answer = OUTPUT_DIR+"answer"
+			answer = Info.Request("Answer")
+
+			if ONLINE:
+				path_to_answer = t2s.runT2S(answer, online=ONLINE, OUTPUT_PATH=path_to_answer)
+				audio = MP3(path_to_answer)
 
 				Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
+			else:
+				sentences = [x for x in answer.split('.') if x]
+				for i in range(len(sentences)):
+					path_to_answer = OUTPUT_DIR+f"answer_{i}"
+					path_to_answer = path_to_answer+'.wav'
+					t2s.runT2S(sentences[i], online=ONLINE, OUTPUT_PATH=path_to_answer)
+					audio = WavPack(path_to_answer)
+
+					Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
 
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
