@@ -1,8 +1,11 @@
 # pip install gTTS
 # pip install TTS
-# brew install espeak
+# pip install pydub
+# brew install espeak, ffmpeg
 from TTS.api import TTS
 from gtts import gTTS
+
+from pydub import AudioSegment
 
 def DNNTTS(txt, OUTPUT_PATH, GPU=False):
     # Init TTS with the target model name
@@ -16,12 +19,19 @@ def googleTTS(txt, OUTPUT_PATH):
     tts = gTTS(txt)
     tts.save(OUTPUT_PATH)
 
-def runT2S(txt, online=False, OUTPUT_PATH="output"):
+def runT2S(txt, online=False, speedup=True, OUTPUT_PATH="output"):
     if online:
-        OUTPUT_PATH += '.mp3'
+        filetype = 'mp3'
+        OUTPUT_PATH += '.'+filetype
         googleTTS(txt, OUTPUT_PATH)
     else:
-        OUTPUT_PATH += '.wav'
+        filetype = 'wav'
+        OUTPUT_PATH += '.'+filetype
         DNNTTS(txt, OUTPUT_PATH)
+    
+    if speedup:
+        slow_mp3 = AudioSegment.from_file(OUTPUT_PATH, format=filetype)
+        speed_update = slow_mp3.speedup(1.2)
+        speed_update.export(OUTPUT_PATH, format=filetype)
 
     return OUTPUT_PATH
