@@ -72,17 +72,20 @@ def speech_main():
 
 		# Wait for answer from NLP, 
 		answer = Info.Request("Answer")
-		sentences = [x for x in answer.split('.') if x]
 
-		for i in range(len(sentences)):
-			path_to_answer = OUTPUT_DIR+f"answer_{i}"
-			t2s.runT2S(sentences[i], online=ONLINE, OUTPUT_PATH=path_to_answer)
-
-			if ONLINE:
-				audio = MP3(path_to_answer)
-			else:
-				audio = WavPack(path_to_answer)
+		if ONLINE:
+			t2s.runT2S(answer, online=ONLINE, OUTPUT_PATH=path_to_answer)
+			audio = MP3(path_to_answer)
+			
 			Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
+		else:
+			sentences = [x for x in answer.split('.') if x]
+			for i in range(len(sentences)):
+				path_to_answer = OUTPUT_DIR+f"answer_{i}"
+				t2s.runT2S(sentences[i], online=ONLINE, OUTPUT_PATH=path_to_answer)
+				audio = WavPack(path_to_answer)
+
+				Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
 
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
