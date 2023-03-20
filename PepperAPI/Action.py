@@ -141,8 +141,11 @@ def Listen():
 			toc = time.time()
 
 		# Stop playback
-		time.sleep(1) # slight buffer
-		ap.stopAll()
+		try:
+			ap.stopAll()
+		except:
+			pass
+		# time.sleep(3) # slight buffer
 		interrupt = False # reset interrupt
 
 		return IsDone("Set", "ALAudioPlayer")
@@ -151,16 +154,18 @@ def Listen():
 	def point_callback(msg):
 		# parse msg
 		x,y,w,h = msg.x, msg.y, msg.w, msg.h
+		w,h = 0,0
 		frame_width = msg.frame_width
 		frame_height = msg.frame_height
 
 		# constants
-		Z_UP = 1.0
-		Z_DOWN = 0.7
-		Y_LARM_OUT = 5.0
+		Z_UP = 0.3
+		Z_DOWN = -0.3
+		Y_LARM_OUT = 0.7
 		Y_LARM_IN = 0
 		Y_RARM_OUT = -Y_LARM_OUT
 		Y_RARM_IN = -Y_LARM_IN
+		OFFSET = 0 # positive for right
 
 		# parameters
 		center_x = x + w//2
@@ -182,7 +187,7 @@ def Listen():
 			point_y = Y_LARM_OUT - (Y_LARM_OUT - Y_LARM_IN) * center_x / mid_width
 		else:
 			effector = "RArm"
-			point_y = Y_RARM_OUT + (Y_RARM_IN - Y_RARM_OUT) * (center_x - mid_width) / mid_width
+			point_y = Y_RARM_IN - (Y_RARM_IN - Y_RARM_OUT) * (center_x - mid_width) / mid_width
 
 		# point up/down
 		point_z = Z_UP - Z_DOWN * center_y / frame_height
@@ -191,28 +196,29 @@ def Listen():
 		rospy.loginfo("Pepper ALTracker: Point %s at x=%.2f y=%.2f, z=%.2f" % 
 			(effector, point_x, point_y, point_z))
 
-		# posture.applyPosture("StandInit", 0.5)
 		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
 		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
 		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
 
+		posture.applyPosture("StandInit", 0.7)
 		tracker.post.lookAt([point_x,point_y,point_z], frame, max_speed, False)
 		tracker.post.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
 		time.sleep(.7) # small delay between pointing and prompting
 		ap.post.playFile(PEPPER_AUDIO_PATH + "what_is_your_qn.wav")
-		time.sleep(2)
+		posture.post.applyPosture("StandInit", 0.7)
+		# time.sleep(2)
 
 		return IsDone("Set", "Point")
 
 	# Increase/decrease master volume
 	def volume_callback(msg):
+		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		ad = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
 		vol = ad.getOutputVolume()
 		if msg.data == "up":
 			vol = 100 if vol > 90 else vol+10
 		elif msg.data == "down":
 			vol = 0 if vol < 10 else vol-10
-		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
 		ad.setOutputVolume(vol)
 		return IsDone("Set", "ChangeVolume")
 	

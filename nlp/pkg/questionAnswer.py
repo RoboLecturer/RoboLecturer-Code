@@ -2,7 +2,7 @@
 # use simple GPT method for MVP 
 
 # import packages
-from chat import chat_model
+from pkg.chat import chat_model
 
 # function for generation the answer to questions based on the question
 def answerGen(question, context, title):

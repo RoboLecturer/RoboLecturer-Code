@@ -53,10 +53,15 @@ def classify_question(question, class_descriptions):
             sub_class = class_name
             if sub_class in operationalKeys:
                 main_class = "operational"
+            elif sub_class == "finished":
+                main_class = "finished"
             else:
                 main_class = "related"
 
     # Classify the question based on the maximum similarity
+    if main_class == "finished":
+        return main_class, sub_class 
+
     if max_sim < threshold:
         main_class = "non-related"
         sub_class = ""

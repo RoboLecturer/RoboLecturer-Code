@@ -1,7 +1,7 @@
 # script for the generation of a lecture script based on recieved lecture slides
 
 # import packages
-from chat import chat_model
+from pkg.chat import chat_model
 from tqdm import tqdm
 ############################################################ 
 

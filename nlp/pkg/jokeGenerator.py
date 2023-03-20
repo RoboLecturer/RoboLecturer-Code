@@ -1,7 +1,7 @@
 # This scirpt generates a joke based on different requirements #
 
 #  import packages
-from chat import chat_model
+from pkg.chat import chat_model
 
 # function the generate a joke
 def genJoke(jokeType):
