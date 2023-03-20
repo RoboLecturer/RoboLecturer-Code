@@ -102,67 +102,74 @@ def nlp_main():
 			Q.main_type, Q.sub_type = qc.classify_question(Q.question,class_description)
 		# Q.main_type = "related" 
 
-		if Q.main_type == "related":
-			for instance in Slide_instances:
-				if instance.title == Q.sub_type :
-					scriptContent = instance.scriptContent
-					title = instance.title
-					slide = instance.slideNo
+		# TODO: if main type is finished, then send done 
+		if Q.main_type == "finished":
+			Info.Send("StudentDone", {"value":1})
+		else: 
+			Info.Send("StudentDone", {"value":0})
+		
 
-			# generate answer from received question then send to Speech
-			Q.answer = qa.answerGen(Q.question, scriptContent, title)
+			if Q.main_type == "related":
+				for instance in Slide_instances:
+					if instance.title == Q.sub_type :
+						scriptContent = instance.scriptContent
+						title = instance.title
+						slide = instance.slideNo
 
-			response = f"{Q.answer}.. Does that answer your question?"
-			Info.Send("Answer", {"text": response})
-			# request slide change after sending text to Speech Processing module as text->speech takes time
-			Info.Request("ChangeSlide", {"cmd":f"{slide}"})
+				# generate answer from received question then send to Speech
+				Q.answer = qa.answerGen(Q.question, scriptContent, title)
 
-		elif Q.main_type == "operational":
-			# if the quesiton is operational, check the command type
-			if Q.subtype == "increase speech volume":
-				Action.Request("ChangeVolume", {"cmd":"up"})
-				response = "Got it, I'll speak louder"
+				response = f"{Q.answer}.. Does that answer your question?"
 				Info.Send("Answer", {"text": response})
+				# request slide change after sending text to Speech Processing module as text->speech takes time
+				Info.Request("ChangeSlide", {"cmd":f"{slide}"})
 
-			elif Q.subtype == "decrease speech volume":
-				Action.Request("ChangeVolume", {"cmd":"down"})
-				response = "Got it, I'll speak quieter"
+			elif Q.main_type == "operational":
+				# if the quesiton is operational, check the command type
+				if Q.subtype == "increase speech volume":
+					Action.Request("ChangeVolume", {"cmd":"up"})
+					response = "Got it, I'll speak louder"
+					Info.Send("Answer", {"text": response})
+
+				elif Q.subtype == "decrease speech volume":
+					Action.Request("ChangeVolume", {"cmd":"down"})
+					response = "Got it, I'll speak quieter"
+					Info.Send("Answer", {"text": response})
+				# TODO: ADD the rest of the operational call when they are implemented
+
+				elif Q.subtype == "increase speech speed":
+					response = "Got it, I'll speed up"
+					Info.Send("Answer", {"test": response})
+
+				elif Q.subtype == "decrease speech speed":
+					response = "Got it, I'll slow down"
+					Info.Send("Answer", {"test": response})
+
+				elif Q.sub_type == "go to next slide":
+					Info.Request("ChangeSlide", {"cmd": "increment|0"})
+					response = "Got it, I'll go to the next slide"
+					Info.Send("Answer", {"text": response})
+
+				elif Q.sub_type == "go to previous slide":
+					Info.Request("ChangeSlide", {"cmd": "decrement|0"})
+					response = "Got it, I'll go to the previous slide"
+					Info.Send("Anwer", {"text": response})
+
+				elif Q.sub_type == "go to specific slide number":
+					# how do we extract the slide number that they want?
+					# TODO: how to get the specific slide
+					slide_no = 5
+					Info.Request("ChangeSlide", {"cmd": f"goto|{slide_no}"})
+					response = "Got it, I'll go to that slide"
+					Info.Send("Answer", {"text": response})
+
+			elif Q.main_type == "no question":
+				# don't do anything
+				Info.Send("Answer", {"text": " "})
+			else:
+				# if question is non-relevant then respond as such
+				response = "Your question doesn't relate to the lecture content, lets get back on track"
 				Info.Send("Answer", {"text": response})
-			# TODO: ADD the rest of the operational call when they are implemented
-
-			elif Q.subtype == "increase speech speed":
-				response = "Got it, I'll speed up"
-				Info.Send("Answer", {"test": response})
-
-			elif Q.subtype == "decrease speech speed":
-				response = "Got it, I'll slow down"
-				Info.Send("Answer", {"test": response})
-
-			elif Q.sub_type == "go to next slide":
-				Info.Request("ChangeSlide", {"cmd": "increment|0"})
-				response = "Got it, I'll go to the next slide"
-				Info.Send("Answer", {"text": response})
-
-			elif Q.sub_type == "go to previous slide":
-				Info.Request("ChangeSlide", {"cmd": "decrement|0"})
-				response = "Got it, I'll go to the previous slide"
-				Info.Send("Anwer", {"text": response})
-
-			elif Q.sub_type == "go to specific slide number":
-				# how do we extract the slide number that they want?
-				# TODO: how to get the specific slide
-				slide_no = 5
-				Info.Request("ChangeSlide", {"cmd": f"goto|{slide_no}"})
-				response = "Got it, I'll go to that slide"
-				Info.Send("Answer", {"text": response})
-
-		elif Q.main_type == "no question":
-			# don't do anything
-			continue
-		else:
-			# if question is non-relevant then respond as such
-			response = "Your question doesn't relate to the lecture content, lets get back on track"
-			Info.Send("Answer", {"text": response})
 
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
