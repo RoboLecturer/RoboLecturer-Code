@@ -102,7 +102,7 @@ def getEmbedding(content):
 
 def flatternConvo(conversation):
     """flattern a list of conversation elements
-    @params: conversation: list|string - list of the conversation strings
+    @params: conversation: list|dict{}|string - list of the conversation strings
     @returns: convo [string] - single string of the conversation
     """
     convo=""

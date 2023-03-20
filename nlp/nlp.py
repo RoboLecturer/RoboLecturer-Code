@@ -31,16 +31,17 @@ class covnHistory:
 		self.salience = ""
 		self.anticipation = ""
 
-		self.history.append({'role': 'system', 'content': self.Context})
-		self.history.append({'role': 'assistant', 'content': ""})
+		self.history.append({'role': 'system', 'content': self.Context}) # element of list for personal context and salience
+		self.history.append({'role': 'assistant', 'content': ""}) # element of list for relevant lecture script
+		self.history.append({'role': 'assistant', 'content': ""}) # element of list for additional relevant textbook extracts
 	
 	def getSalience(self, convoContext):
 		"""generate the salience of the current conversation
 		@params: convoContext: list|string - list of the conversations 
 		"""
 
-		hist = self.flatternConvo(convoContext)
-		query_salience = f"Given the following chat log, write a brief summary of only the most salient points of the conversation:\n\n {hist}"
+		# hist = self.flatternConvo(convoContext) NO NEED FOR THIS ANYMORE BECAUSE THE INPUT IS A SINGLE STRING IN CORRECT FORMAT
+		query_salience = f"Given the following chat log, write a brief summary of only the most salient points of the conversation:\n\n {convoContext}"
 		
 		self.salience = chat_model.getResponse(query_salience)
 	
@@ -59,27 +60,34 @@ class covnHistory:
 
 		self.history[0]['content'] = self.Context + "I am in the middle of a conversation: %s. I anticipate the user needs: %s. I will do my best to fulfill my objectives." % (self.salience, self.anticipation)
 
-	def updateSlideContext(self, script):
+	def updateSlideContext(self, script, context):
 		"""update the conversation history with the script from the slide relevant to the query
-		@params: [string] - lecture script
+		@params: 
+			script: list|[string] - lecture script
+			context: list|[string] - extra lecture material
 		"""
 		# flatten the incoming list - script
-		script = self.flatternConvo(script)
+		script = " ".join(script)
+		script = "\n".join(context)
 		self.history[1]['content'] = script
+		self.history[2]['content'] = "This is extra relevant context to the question, according to the textbooks: %s" % context
 	
-	def flatternConvo(self, conversation):
-		"""create a single list of conversations out of a list of conversations"""
+	def flatternConvo(self, history):
+		"""create a single string out of a list of conversations
+		@params: 
+			history: dict{}|string - dictionary of conversations, context and scripts
+		"""
 		convo=""
-		for i in conversation:
+		for i in history:
 			convo += '%s: %s\m' % (i['role'].upper(), i['content'])
 		return convo.strip()
 
-	def update(self, script):
+	def update(self, script, context):
 		"""update all of the conversation facets ready for query processing"""
 		# update the history context
 		self.updateHistoryContext()
 		# update the slide context
-		self.updateSlideContext(script)
+		self.updateSlideContext(script, context)
 		
 
 class Q:
@@ -176,8 +184,9 @@ def nlp_main():
 			conversation.getSalience(convoContext)
 			conversation.getAnticipation()
 			# generate the content context
-			contentContext = pine.queryPinecone(Q.question, vdb, "script") # script namesapce includes lecture slides and textbook contents
-			conversation.update(contentContext) # update the convo history with the salience, anticipation and content  
+			contentContext = pine.queryPinecone(Q.question, vdb, "textbook", title) # script namesapce includes lecture slides and textbook contents
+			lectureScript = pine.queryPinecone(Q.Question, vdb, "script", title)
+			conversation.update(contentContext, lectureScript) # update the convo history with the salience, anticipation and content  
 
 			# generate answer from received question then send to Speech
 			Q.answer = qa.answerGen(Q.question, conversation.history, 0)
