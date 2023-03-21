@@ -100,6 +100,7 @@ def nlp_main():
 		else:
 			# Classify question into main type and sub types
 			Q.main_type, Q.sub_type = qc.classify_question(Q.question,class_description)
+			print(f"question main type: {Q.main_type} - question sub type: {Q.sub_type}")
 		# Q.main_type = "related" 
 
 		# TODO: if main type is finished, then send done 
