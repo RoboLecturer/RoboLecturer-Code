@@ -95,7 +95,7 @@ def nlp_main():
 		# Wait for student's question from Speech
 		Q.question = Info.Request("Question")
 
-		if Q.question == None or Q.question == "None":
+		if Q.question == None or Q.question == "" or Q.question == "None":
 			Q.main_type = "no question"
 		else:
 			# Classify question into main type and sub types
@@ -166,7 +166,7 @@ def nlp_main():
 
 			elif Q.main_type == "no question":
 				# don't do anything
-				Info.Send("Answer", {"text": " "})
+				Info.Send("Answer", {"text": "I didn't get that. Can you please repeat the question?"})
 			else:
 				# if question is non-relevant then respond as such
 				response = "Your question doesn't relate to the lecture content, lets get back on track"
