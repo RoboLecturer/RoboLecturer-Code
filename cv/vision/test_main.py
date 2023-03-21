@@ -62,30 +62,29 @@ def get_camera_input(camera):
     return frame
 
 
-def face_engagement_detection(face_model, frame, opt, imgsz, stride, engagement_record=[0], engagement_nose_record=[0]):
+def face_engagement_detection(face_model, frame, opt, imgsz, stride, engagement_record=[0]):
     # get faces
     faces = detect(opt, frame, face_model, imgsz, stride) # YoloV7
 
     # display boxes around faces
     if len(faces) != 0: # if a face was detected.
         for (x1, y1, x2, y2) in faces[:, 0:4]:
-            x_centre = (x1 + x2) / 2
-            y_centre = (y1 + y2) / 2
+            w = (x2 - x1)
+            h = (y2 - y1)
             cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
             
             # Computing landmarks of a detected face and computing an engagement score
             landmark_results_detected = faces[:, 4:]
-            engagement_centroid, engagement_nose = engagement_from_landmarks(landmark_results_detected, frame, x_centre, y_centre)
-            engagement_record.append(engagement_centroid)
-            engagement_nose_record.append(engagement_nose)
-            cv2.putText(frame, f"Engagement Centroid:  {engagement_centroid:.3f}", org=(int(x1), int(y1) - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
-            cv2.putText(frame, f"Engagement Nose:  {engagement_nose:.3f}", org=(int(x1), int(y1) - 30), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 0, 0), thickness=2, lineType=2)        
+            engagement = engagement_from_landmarks(landmark_results_detected, frame, w, h)
+            engagement_record.append(engagement)
+            cv2.putText(frame, f"Engagement:  {engagement:.3f}", org=(int(x1), int(y1) - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2, lineType=2)
+
     return frame, engagement_record
 
 
 def hand_detector(model, frame): # Commented out the parts that killed the terminal.
-    knuckle_idx = [1, 5, 9, 13, 17]
-    fingertip_idx = [4, 8, 12, 16, 20]
+    knuckle_idx = [5, 9, 13, 17]
+    fingertip_idx = [8, 12, 16, 20]
     dist_fingers = np.array([])
     result = model.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     if result.multi_hand_landmarks:
@@ -114,8 +113,8 @@ def hand_detector(model, frame): # Commented out the parts that killed the termi
                     dist_fingers = np.append(dist_fingers, dist_proportion)
 
             metric = np.mean(dist_fingers)
-            print(f"Metric: {metric}")
-            if metric < 0.61:
+            #print(f"Metric: {metric}")
+            if metric < 0.54:
                 hand_landmarks = np.vstack([hand_landmarks, np.array([x_base, y_base])])
                 cv2.putText(frame, f"Question!", org=(int(30), int(30)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
 
@@ -137,7 +136,10 @@ def send_to_pepper(hand_data):
 
 def main(camera, test_model, mp_hand_model, opt, imgsz, stride):
     hands = np.array([0, 0])
+    hand_dict = {}
     # main loop
+    #while True:
+    #    start = time.time()
     while True:
         frame  = get_camera_input(camera)
         coordinates = hand_detector(mp_hand_model, frame)
@@ -147,10 +149,29 @@ def main(camera, test_model, mp_hand_model, opt, imgsz, stride):
 
         hands = reject_points(hands, threshold=20)
         hands = np.unique(hands, axis=0)
-        
+
+            #for hand in hands:
+            #    hand_str = hand.tostring()
+            #    if hand_str not in hand_dict:
+            #        hand_dict[hand_str] = 1
+            #    else:
+            #        for hand_key in hand_dict.keys():
+            #            hand_key_int = np.frombuffer(hand_key, dtype=int)
+            #            difference = abs(hand_key_int - hand)
+            #            if (np.less_equal(difference, 20)).sum() == 2:
+            #                hand_dict[hand_key] += 1
+                        
+            #            else:
+            #                hand_dict[hand_str] += 1
+
+            #end = time.time()
+            #if end - start > 10:
+            #    break
+
+
         frame2, engagement_list = face_engagement_detection(test_model, frame, opt, imgsz, stride)
         mean_engagement = np.mean(np.array(engagement_list))
-
+        hands = np.array([0, 0])
         k = cv2.waitKey(30) 
         if k == 27: # press 'ESC' to quit
             break
