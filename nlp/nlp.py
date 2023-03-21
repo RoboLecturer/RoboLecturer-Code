@@ -126,22 +126,22 @@ def nlp_main():
 
 			elif Q.main_type == "operational":
 				# if the quesiton is operational, check the command type
-				if Q.subtype == "increase speech volume":
+				if Q.sub_type == "increase speech volume":
 					Action.Request("ChangeVolume", {"cmd":"up"})
 					response = "Got it, I'll speak louder"
 					Info.Send("Answer", {"text": response})
 
-				elif Q.subtype == "decrease speech volume":
+				elif Q.sub_type == "decrease speech volume":
 					Action.Request("ChangeVolume", {"cmd":"down"})
 					response = "Got it, I'll speak quieter"
 					Info.Send("Answer", {"text": response})
 				# TODO: ADD the rest of the operational call when they are implemented
 
-				elif Q.subtype == "increase speech speed":
+				elif Q.sub_type == "increase speech speed":
 					response = "Got it, I'll speed up"
 					Info.Send("Answer", {"test": response})
 
-				elif Q.subtype == "decrease speech speed":
+				elif Q.sub_type == "decrease speech speed":
 					response = "Got it, I'll slow down"
 					Info.Send("Answer", {"test": response})
 
