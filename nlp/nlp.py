@@ -9,6 +9,7 @@ from pkg import jokeGenerator as jg
 from pkg import descriptionGenerator as dg
 from pkg import quizGeneration as qg
 import requests
+import sys
 
 #############################################################################
 # TODO: How do we extrct the slide number for a specific slide request?
@@ -72,7 +73,7 @@ def nlp_main():
 				class_description = dg.createDescription(slide,script,class_description)
 				# create quiz for this slide
 				quiz = qg.quizGen(script)
-				url = "http://192.168.0.101:3000/saveQuiz"
+				url = "http://192.168.0.104:3000/saveQuiz"
 				requests.post(url, json = quiz)
 				# list_of_quizes.append(list_of_quizes, quiz)
 			slide_number += 1
@@ -84,11 +85,14 @@ def nlp_main():
 		# Send entire quiz list to web
 		# Info.Send("Quiz", {"text": list_of_quizes})
 
+	if LOOP_COUNT == len(list_of_scripts) + 1:
+		sys.exit()
 
 	# ========= STATE: AnyQuestions =========
 	# Wait for state update
 	state = Info.Request("State", {"name":"AnyQuestions"})
 
+	c = 1
 	# If hands raised, start QnA loop
 	while state == "HandsRaised":
 
@@ -154,7 +158,7 @@ def nlp_main():
 				elif Q.sub_type == "go to previous slide":
 					Info.Request("ChangeSlide", {"cmd": "decrement|0"})
 					response = "Got it, I'll go to the previous slide"
-					Info.Send("Anwer", {"text": response})
+					Info.Send("Answer", {"text": response})
 
 				elif Q.sub_type == "go to specific slide number":
 					# how do we extract the slide number that they want?
@@ -172,6 +176,8 @@ def nlp_main():
 				response = "Your question doesn't relate to the lecture content, lets get back on track"
 				Info.Send("Answer", {"text": response})
 
+		print("Loop no. " + str(c))
+		c += 1
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
 	# When QnA loop ends, proceed

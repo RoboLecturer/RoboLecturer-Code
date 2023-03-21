@@ -23,7 +23,7 @@ def genScript(inputText, slideNum):
     if slideNum == 0:
         # join title slide lines together, seperated by a commar 
         inputText = ", ".join(inputText)
-        query = f"introudce the following presentation title page in the style of an interesting lecturer: {inputText}"
+        query = f"very shortly introudce the following presentation title page in the style of a lecturer: {inputText}"
         # get response to query using selelcted model
         response = chat_model.getResponse(query)
         
@@ -35,7 +35,7 @@ def genScript(inputText, slideNum):
         # create a single string input with contents seperated by a new line
         inputText = "\n".join(inputText)
 
-        query = f"very shortly introduce each of the following points, that are seperated by a new line, which are to be the topics covered in today's lecture, in the style of a lecturer: {inputText}"
+        query = f"very shortly introduce each of the following points, that are seperated by a new line, which are to be the topics covered in today's lecture: {inputText}"
 
         # get response to query using selelcted model
         response = chat_model.getResponse(query)
@@ -45,7 +45,7 @@ def genScript(inputText, slideNum):
     else:
         for line in tqdm(inputText):
             # summarise the bullet point in a few sentences
-            query = f"explain the following point in a single paragraph in the style of an interesting lecturer: {line}"
+            query = f"explain the following point in a couple short sentences in the style of a lecturer: {line}"
 
             # get response to query using selelcted model
             response = chat_model.getResponse(query)        
