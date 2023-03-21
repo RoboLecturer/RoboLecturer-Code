@@ -188,7 +188,7 @@ def nlp_main():
 		# Generate joke text or shutup text
 		if signal == "joke":
 			joke = jg.genJoke("noiseHigh")
-			Info.Send("Joke", {"text": joke})
+			Info.Send("Joke", {"text": f"Hey everyone. I've got a joke for you... {joke}"})
 		elif signal == "shutup":
 			response = "Come on guys. Please try and concentrate, this is some interesting shit i'm teaching here"
 			Info.Send("Shutup", {"text": response})
