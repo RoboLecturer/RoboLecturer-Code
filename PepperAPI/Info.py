@@ -171,9 +171,9 @@ def Request(api_name, api_params={}):
 		"""Receive signal for if QnA loop for that student is done"""
 		def callback(msg):
 			Data.StudentDone = True if msg.data == "1" else False
-			rospy.loginfo("Received: StudentDone=%s" % str(Data.StudentDone)
+			rospy.loginfo("Received: StudentDone=%s" % str(Data.StudentDone))
 		StringSubscriber(STUDENT_DONE_TOPIC, callback)
-		return True
+		return Data.StudentDone
 
 	## ========= KINEMATICS =========
 	if api_name == "RaisedHandInfo":

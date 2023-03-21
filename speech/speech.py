@@ -21,7 +21,7 @@ def speech_main():
 	global loop_c
 
 	# Use gTTS (.mp3) or DNN (.wav)
-	ONLINE=False
+	ONLINE=True
 
 	# ========= STATE: Start =========
 	# Wait for signal that loop has started
@@ -39,15 +39,20 @@ def speech_main():
 		# Play first slide script audio
 		path_to_audio = OUTPUT_DIR+"script_0"
 		if ONLINE:
+			path_to_audio = path_to_audio+'.mp3'
 			audio = MP3(path_to_audio)
 		else:
+			path_to_audio = path_to_audio+'.wav'
 			audio = WavPack(path_to_audio)
+		print(audio.info.length)
 		Action.Request("ALAudioPlayer", {"path": path_to_audio, "length": audio.info.length})
 	else:
 		path_to_audio = OUTPUT_DIR+f"script_{loop_c}"
 		if ONLINE:
+			path_to_audio = path_to_audio+'.mp3'
 			audio = MP3(path_to_audio)
 		else:
+			path_to_audio = path_to_audio+'.wav'
 			audio = WavPack(path_to_audio)
 		Action.Request("ALAudioPlayer", {"path": path_to_audio, "length": audio.info.length})
 
@@ -70,17 +75,27 @@ def speech_main():
 		# then send STT to NLP
 		Info.Send("Question", {"text": question})
 
-		# Wait for answer from NLP, 
-		answer = Info.Request("Answer")
+		student_done = Info.Request("StudentDone")
+		if not student_done:
 
-		path_to_answer = OUTPUT_DIR+"answer"
-		t2s.runT2S(answer, path_to_answer)
+			# Wait for answer from NLP
+			path_to_answer = OUTPUT_DIR+"answer"
+			answer = Info.Request("Answer")
 
-		if ONLINE:
-			audio = MP3(path_to_answer)
-		else:
-			audio = WavPack(path_to_answer)
-		Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
+			if ONLINE:
+				path_to_answer = t2s.runT2S(answer, online=ONLINE, OUTPUT_PATH=path_to_answer)
+				audio = MP3(path_to_answer)
+
+				Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
+			else:
+				sentences = [x for x in answer.split('.') if x]
+				for i in range(len(sentences)):
+					path_to_answer = OUTPUT_DIR+f"answer_{i}"
+					path_to_answer = path_to_answer+'.wav'
+					t2s.runT2S(sentences[i], online=ONLINE, OUTPUT_PATH=path_to_answer)
+					audio = WavPack(path_to_answer)
+
+					Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
 
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
@@ -102,12 +117,14 @@ def speech_main():
 			text = Info.Request("Shutup")
 		
 		path_to_JS = OUTPUT_DIR+"JS"
-		t2s.runT2S(text, path_to_JS)
+		t2s.runT2S(text, online=ONLINE, OUTPUT_PATH=path_to_JS)
 	
 		# TODO: convert joke/shutup text into audio and save
 		if ONLINE:
+			path_to_JS = path_to_JS + '.mp3'
 			audio = MP3(path_to_JS)
 		else:
+			path_to_JS = path_to_JS + '.wav'
 			audio = WavPack(path_to_JS)
 		Action.Request("ALAudioPlayer", {"path": path_to_JS, "length": audio.info.length})
 
@@ -131,12 +148,15 @@ def speech_main():
 		if signal == "joke":
 			joke = Info.Request("Joke")
 			path_to_JS = OUTPUT_DIR+"JS"
-			t2s.runT2S(joke, path_to_JS)
+			t2s.runT2S(joke, online=ONLINE, OUTPUT_PATH=path_to_JS)
+	
 
 			# TODO: convert joke/shutup text into audio and save
 			if ONLINE:
+				path_to_JS = path_to_JS + '.mp3'
 				audio = MP3(path_to_JS)
 			else:
+				path_to_JS = path_to_JS + '.wav'
 				audio = WavPack(path_to_JS)
 			Action.Request("ALAudioPlayer", {"path": path_to_JS, "length": audio.info.length})
 		
@@ -156,12 +176,14 @@ def speech_main():
 		if signal == "joke":
 			joke = Info.Request("Joke")
 			path_to_JS = OUTPUT_DIR+"JS"
-			t2s.runT2S(joke, path_to_JS)
-
+			t2s.runT2S(joke, online=ONLINE, OUTPUT_PATH=path_to_JS)
+	
 			# TODO: convert joke/shutup text into audio and save
 			if ONLINE:
+				path_to_JS = path_to_JS + '.mp3'
 				audio = MP3(path_to_JS)
 			else:
+				path_to_JS = path_to_JS + '.wav'
 				audio = WavPack(path_to_JS)
 			Action.Request("ALAudioPlayer", {"path": path_to_JS, "length": audio.info.length})
 		return
@@ -173,7 +195,7 @@ def speech_main():
 # =================================================
 
 if __name__ == "__main__":
-	PepperAPI.init("test")
+	PepperAPI.init("speech")
 
 	while True:
 		speech_main()
