@@ -71,9 +71,9 @@ def nlp_main():
 				# create question classification content classes and keyword descriptions
 				class_description = dg.createDescription(slide,script,class_description)
 				# create quiz for this slide
-				# quiz = qg.quizGen(script)
-				# url = "localhost:3000/saveQuiz"
-				# requests.post(url, json = quiz)
+				quiz = qg.quizGen(script)
+				url = "localhost:3000/saveQuiz"
+				requests.post(url, json = quiz)
 				# list_of_quizes.append(list_of_quizes, quiz)
 			slide_number += 1
 
