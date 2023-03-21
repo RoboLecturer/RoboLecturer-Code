@@ -95,7 +95,7 @@ def nlp_main():
 		# Wait for student's question from Speech
 		Q.question = Info.Request("Question")
 
-		if Q.question == None:
+		if Q.question == None or Q.question == "None":
 			Q.main_type = "no question"
 		else:
 			# Classify question into main type and sub types
