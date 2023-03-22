@@ -19,18 +19,19 @@ def main():
 	# ========= STATE: Start =========
 	Info.Send("State", {"Start":"1"})
 
-	if loop_count == 1:
-		time.sleep(10) # wait for web to reload before sending change_slide
-
-	# Send signal to Web to increment slide
-	Info.Send("ChangeSlide", {"cmd":"increment|0"})
+	if loop_count != 1:
+		# Send signal to Web to increment slide
+		Info.Send("ChangeSlide", {"cmd":"increment|0"})
 
 	# Wait for Pepper to finish delivering slides
 	Action.IsDone("Reset", "ALAudioPlayer")
 	while not Action.IsDone("Get", "ALAudioPlayer"):
 		pass
 	time.sleep(2)
-	Action.Request("ALAudioPlayer", {"file": "do_u_have_qns.wav"})
+	Action.Request("ALAudioPlayer", {
+		"file": "do_u_have_qns.mp3",
+		"length": 1.992
+		})
 	
 	# Then tell CV to start detecting for raised hands
 	Info.Send("TriggerHandDetection")
@@ -38,10 +39,8 @@ def main():
 
 	# ========= STATE: AnyQuestions =========
 	resetState("Start")
-	# raw_input()
 
 	# Wait for state update from CV
-	print("listening...")
 	state = Info.Request("State", {"name":"AnyQuestions"})
 	
 	# If no raised hands detected, increment no_questions_counter
@@ -112,7 +111,7 @@ def main():
 
 	# If inattentive, trigger joke (NLP) or trigger quiz (Web)
 	if state == "NotAttentive":
-		signal = Info.Send("TriggerJokeOrQuiz")
+		signal = Info.Send("TriggerJokeOrQuiz", {"force":"quiz"})
 
 		# If trigger_joke, play audio from Speech
 		if signal == "joke":
@@ -137,7 +136,8 @@ def main():
 	if no_questions_counter >= no_questions_threshold:
 		no_questions_counter = 0
 		Info.Send("State", {"NoQuestionsLoop": "CounterReached"})
-		signal = Info.Send("TriggerJokeOrQuiz")
+		signal = Info.Send("TriggerJokeOrQuiz", {"force":"quiz"})
+		# signal = Info.Send("TriggerJokeOrQuiz")
 		if signal == "joke":
 			Action.IsDone("Reset", "ALAudioPlayer")
 			while not Action.IsDone("Get", "ALAudioPlayer"):
