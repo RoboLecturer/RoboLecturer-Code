@@ -9,9 +9,13 @@ from PepperAPI import Action, Info
 import pkg.text2speech as t2s
 import pkg.speech2text as s2t
 import pkg.noise as nd
+import os
+import time
+from tqdm import tqdm
 
 
 loop_c = 0
+counter = 0
 # TODO: use os package for OSes
 OUTPUT_DIR = "output/"
 
@@ -19,6 +23,7 @@ OUTPUT_DIR = "output/"
 def speech_main():
 
 	global loop_c
+	global counter
 
 	# Use gTTS (.mp3) or DNN (.wav)
 	ONLINE=True
@@ -33,8 +38,25 @@ def speech_main():
 		total_script = Info.Request("LectureScript")
 
 		# Generate script audio for all slides
-		for i, slide_script in enumerate(total_script):
-			t2s.runT2S(slide_script, online=ONLINE, OUTPUT_PATH=OUTPUT_DIR+f"script_{i}")
+		start = time.time()
+		for i, slide_script in enumerate(tqdm(total_script)):
+			start_i = time.time()
+			# print("Processing %d/%d scripts..." % (i+1, len(total_script)))
+			path_to_audio = OUTPUT_DIR+f"script_{i}"
+			t2s.runT2S(slide_script, online=ONLINE, OUTPUT_PATH=path_to_audio)
+			if ONLINE:
+				path_to_audio = path_to_audio+'.mp3'
+				audio = MP3(path_to_audio)
+			else:
+				path_to_audio = path_to_audio+'.wav'
+				audio = WavPack(path_to_audio)
+			print(audio.info.length)
+			end = time.time()
+			print(f'Script {i} processing time: {end-start_i}')
+		print(f'Total processing time: {end-start}')
+
+		while input("Continue (y): ") != "y":
+			time.sleep(1)
 
 		# Play first slide script audio
 		path_to_audio = OUTPUT_DIR+"script_0"
@@ -47,13 +69,22 @@ def speech_main():
 		print(audio.info.length)
 		Action.Request("ALAudioPlayer", {"path": path_to_audio, "length": audio.info.length})
 	else:
+
 		path_to_audio = OUTPUT_DIR+f"script_{loop_c}"
+
 		if ONLINE:
 			path_to_audio = path_to_audio+'.mp3'
+			if not os.path.exists(path_to_audio):
+				print("Finished.")
+				sys.exit()	
 			audio = MP3(path_to_audio)
 		else:
 			path_to_audio = path_to_audio+'.wav'
+			if not os.path.exists(path_to_audio):
+				print("Finished.")
+				sys.exit()	
 			audio = WavPack(path_to_audio)
+
 		Action.Request("ALAudioPlayer", {"path": path_to_audio, "length": audio.info.length})
 
 	loop_c += 1
@@ -64,6 +95,7 @@ def speech_main():
 	# Wait for state on hands raised or not
 	state = Info.Request("State", {"name":"AnyQuestions"})
 
+	c = 1
 	# If hands raised, start QnA loop
 	while state == "HandsRaised":
 
@@ -97,6 +129,8 @@ def speech_main():
 
 					Action.Request("ALAudioPlayer", {"path": path_to_answer, "length": audio.info.length})
 
+		print("Loop no." + str(c))
+		c += 1
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
 	# When QnA loop ends, proceed
@@ -104,11 +138,13 @@ def speech_main():
 
 	# ========= STATE: NoiseLevel =========
 	# TODO: Start detecting noise and classify into high or low noise level
-	HIGH_NOISE_LEVEL = nd.Shush(60, 3)
+	HIGH_NOISE_LEVEL = nd.Shush(58, 3)
 	# If high noise level, update state.
 	# Control tells NLP to trigger joke/shutup, you receive text,
 	# convert to audio and send to Kinematics to play
 	if HIGH_NOISE_LEVEL:
+		counter+=1
+		print(counter)
 		Info.Send("State", {"NoiseLevel": "High"})
 		signal = Info.Request("TriggerJokeOrShutup")
 		if signal == "joke":
