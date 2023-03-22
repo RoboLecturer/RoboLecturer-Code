@@ -53,16 +53,18 @@ def main():
 
 		# Store hands info in list
 		hands_info_list = Info.Request("RaisedHandInfo")
+		pointed = False
 		
 		# Start QnA loop
-		num_students_answered = 0
 		while True:
 			# Point, then send trigger_listen to Speech
-			hand_info = hands_info_list[i]
-			Action.IsDone("Reset", "Point")
-			Action.Request("Point", {"info": hand_info})
-			while not Action.IsDone("Get", "Point"):
-				pass
+			if not pointed:
+				pointed = True
+				hand_info = hands_info_list[0]
+				Action.IsDone("Reset", "Point")
+				Action.Request("Point", {"info": hand_info})
+				while not Action.IsDone("Get", "Point"):
+					pass
 			Info.Send("TriggerListen")
 
 			student_done = Info.Request("StudentDone")
@@ -74,14 +76,16 @@ def main():
 					pass
 
 			else:
-				num_students_answered += 1
+				hands_info_list.pop(0)
+				pointed = False
+				print("Moving onto next student. %d students left." % len(hands_info_list))
 
-			if num_students_answered == len(hands_info_list):
-				Info.Send("State", {"AnyQuestions":"HandsRaised", "print":False})
+			if not len(hands_info_list):
+				Info.Send("State", {"AnyQuestions":"NoHandsRaised", "print":False})
+				time.sleep(1)
 				break
 			else:
-				Info.Send("State", {"AnyQuestions":"NoHandsRaised", "print":False})
-
+				Info.Send("State", {"AnyQuestions":"HandsRaised", "print":False})
 
 		# If no hands detected, or When QnA loop ends, proceed
 
