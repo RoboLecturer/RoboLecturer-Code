@@ -35,7 +35,7 @@ def genScript(inputText, slideNum):
         # create a single string input with contents seperated by a new line
         inputText = "\n".join(inputText)
 
-        query = f"very shortly introduce each of the following points, that are seperated by a new line, which are to be the topics covered in today's lecture: {inputText}"
+        query = f"very shortly introduce this table of contents for todays lecture entitled: {inputText}. You don't need to go into detail on each topic, just introduce the titles"
 
         # get response to query using selelcted model
         response = chat_model.getResponse(query)
