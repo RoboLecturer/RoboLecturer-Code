@@ -124,7 +124,7 @@ def nlp_main():
 				# generate answer from received question then send to Speech
 				Q.answer = qa.answerGen(Q.question, scriptContent, title)
 
-				response = f"{Q.answer}.. Does that answer your question?"
+				response = f"{Q.answer}. Does that answer your question?"
 				Info.Send("Answer", {"text": response})
 				# request slide change after sending text to Speech Processing module as text->speech takes time
 				Info.Request("ChangeSlide", {"cmd":f"{slide}"})
@@ -173,7 +173,7 @@ def nlp_main():
 				Info.Send("Answer", {"text": "I didn't get that. Can you please repeat the question?"})
 			else:
 				# if question is non-relevant then respond as such
-				response = "Your question doesn't relate to the lecture content, lets get back on track"
+				response = "I don't think your question relates to the content. Should we move on, or do you have a relevant question?"
 				Info.Send("Answer", {"text": response})
 
 		print("Loop no. " + str(c))
