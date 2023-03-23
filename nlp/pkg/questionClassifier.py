@@ -32,7 +32,7 @@ def classify_question(question, class_descriptions):
     question_embedding = model.encode(question)
 
     # Define the classification threshold
-    threshold = 0.4
+    threshold = 0.6
 
     # define operational keys for later main_class checking
     operationalKeys = ["increase speech speed",

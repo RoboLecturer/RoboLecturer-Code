@@ -9,6 +9,7 @@ from pkg import jokeGenerator as jg
 from pkg import descriptionGenerator as dg
 from pkg import quizGeneration as qg
 import requests
+import sys
 
 #############################################################################
 # TODO: How do we extrct the slide number for a specific slide request?
@@ -71,9 +72,9 @@ def nlp_main():
 				# create question classification content classes and keyword descriptions
 				class_description = dg.createDescription(slide,script,class_description)
 				# create quiz for this slide
-				# quiz = qg.quizGen(script)
-				# url = "localhost:3000/saveQuiz"
-				# requests.post(url, json = quiz)
+				quiz = qg.quizGen(script)
+				url = "http://192.168.0.104:3000/saveQuiz"
+				requests.post(url, json = quiz)
 				# list_of_quizes.append(list_of_quizes, quiz)
 			slide_number += 1
 
@@ -84,18 +85,21 @@ def nlp_main():
 		# Send entire quiz list to web
 		# Info.Send("Quiz", {"text": list_of_quizes})
 
+	if LOOP_COUNT == len(list_of_scripts) + 1:
+		sys.exit()
 
 	# ========= STATE: AnyQuestions =========
 	# Wait for state update
 	state = Info.Request("State", {"name":"AnyQuestions"})
 
+	c = 1
 	# If hands raised, start QnA loop
 	while state == "HandsRaised":
 
 		# Wait for student's question from Speech
 		Q.question = Info.Request("Question")
 
-		if Q.question == None:
+		if Q.question == None or Q.question == "" or Q.question == "None":
 			Q.main_type = "no question"
 		else:
 			# Classify question into main type and sub types
@@ -120,7 +124,7 @@ def nlp_main():
 				# generate answer from received question then send to Speech
 				Q.answer = qa.answerGen(Q.question, scriptContent, title)
 
-				response = f"{Q.answer}.. Does that answer your question?"
+				response = f"{Q.answer}. Does that answer your question?"
 				Info.Send("Answer", {"text": response})
 				# request slide change after sending text to Speech Processing module as text->speech takes time
 				Info.Request("ChangeSlide", {"cmd":f"{slide}"})
@@ -154,7 +158,7 @@ def nlp_main():
 				elif Q.sub_type == "go to previous slide":
 					Info.Request("ChangeSlide", {"cmd": "decrement|0"})
 					response = "Got it, I'll go to the previous slide"
-					Info.Send("Anwer", {"text": response})
+					Info.Send("Answer", {"text": response})
 
 				elif Q.sub_type == "go to specific slide number":
 					# how do we extract the slide number that they want?
@@ -166,12 +170,14 @@ def nlp_main():
 
 			elif Q.main_type == "no question":
 				# don't do anything
-				Info.Send("Answer", {"text": " "})
+				Info.Send("Answer", {"text": "I didn't get that. Can you please repeat the question?"})
 			else:
 				# if question is non-relevant then respond as such
-				response = "Your question doesn't relate to the lecture content, lets get back on track"
+				response = "I don't think your question relates to the content. Should we move on, or do you have a relevant question?"
 				Info.Send("Answer", {"text": response})
 
+		print("Loop no. " + str(c))
+		c += 1
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
 	# When QnA loop ends, proceed
@@ -188,7 +194,7 @@ def nlp_main():
 		# Generate joke text or shutup text
 		if signal == "joke":
 			joke = jg.genJoke("noiseHigh")
-			Info.Send("Joke", {"text": joke})
+			Info.Send("Joke", {"text": f"Hey everyone. I've got a joke for you... {joke}"})
 		elif signal == "shutup":
 			response = "Come on guys. Please try and concentrate, this is some interesting shit i'm teaching here"
 			Info.Send("Shutup", {"text": response})
