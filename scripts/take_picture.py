@@ -5,7 +5,7 @@ import sys
 import time
 from naoqi import ALProxy
 
-IP = "192.168.0.104"
+IP = os.environ["NAO_IP"]
 PORT = 9559
 
 try:

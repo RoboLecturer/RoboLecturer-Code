@@ -3,6 +3,7 @@ import PepperAPI
 from PepperAPI import Action, Info
 from api.msg import CVInfo
 from mutagen.flac import FLAC
+from mutagen.mp3 import MP3
 
 PepperAPI.init("master")
 # msg = Info.Request("LectureScript")
@@ -11,8 +12,8 @@ PepperAPI.init("master")
 # print(slides_text)
 
 # Info.Send("SimpleMsg", {"value":"hello world"})
-path = "/home/user/Downloads/sample.flac"
-audio = FLAC(path)
+path = "/home/user/Downloads/statquest.mp3"
+audio = MP3(path)
 length = audio.info.length
 Action.Request("ALAudioPlayer", {
 	"path": path, 

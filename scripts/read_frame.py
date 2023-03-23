@@ -1,10 +1,11 @@
+import os
 from naoqi import ALProxy
 import cv2
 import numpy as np
 import vision_definitions
 import Image
 
-vid = ALProxy("ALVideoDevice", "192.168.0.110", 9559)
+vid = ALProxy("ALVideoDevice", os.environ["NAO_IP"], 9559)
 resolution = vision_definitions.kQVGA
 colorSpace = vision_definitions.kRGBColorSpace
 fps = 10
