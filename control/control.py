@@ -177,9 +177,11 @@ if __name__ == "__main__":
 	t1 = threading.Thread(target=Action.Listen)
 	t2 = threading.Thread(target=Info.Listen)
 	t3 = threading.Thread(target=Info.Broadcast)
+	t4 = threading.Thread(target=Action.Localize)
 	t1.start()
 	t2.start()
 	t3.start()
+	t4.start()
 
 	try:
 		while True:
@@ -191,3 +193,4 @@ if __name__ == "__main__":
 		t1.join()
 		t2.join()
 		t3.join()
+		t4.join()
