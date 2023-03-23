@@ -64,6 +64,10 @@ def main():
 				Action.Request("Point", {"info": hand_info})
 				while not Action.IsDone("Get", "Point"):
 					pass
+				Action.Request("ALAudioPlayer", {
+					"file": "what_is_your_qn.mp3",
+					"length": 2.5
+					})
 			Info.Send("TriggerListen")
 
 			student_done = Info.Request("StudentDone")
