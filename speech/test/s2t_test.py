@@ -1,4 +1,6 @@
-from speech.pkg.speech2text import *
+import sys
+sys.path.append("..") 
+from pkg.speech2text import *
 
 filename = "6241-61943-0027.flac"
 
