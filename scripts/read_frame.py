@@ -18,6 +18,7 @@ while True:
 	im = Image.frombytes("RGB", (imgWidth, imgHeight), array)
 	frame = np.array(im)[:,:,::-1] # convert to BGR
 	frame = cv2.resize(frame, (640,480), interpolation=cv2.INTER_AREA)
+	cv2.line(frame, (320,0), (320, 480), (255,0,0), 2)
 	cv2.imshow("img", frame)
 	key = cv2.waitKey(1) & 0xFF
 	if key == ord('q'):
