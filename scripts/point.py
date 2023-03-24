@@ -1,8 +1,11 @@
-from naoqi import ALProxy
-import os
-tracker = ALProxy("ALTracker", os.environ["NAO_IP"], 9559)
-frame = 0 # Torso=0, World=1, Robot=2
-max_speed = 0.5
-tracker.pointAt("LArm", [1, 0.7, 0.3], frame, max_speed)
+# coding: utf-8
+import PepperAPI
+from PepperAPI import Action, Info
+from api.msg import CVInfo
 
-
+PepperAPI.init("master")
+msg = CVInfo()
+msg.x, msg.y, msg.w, msg.h = 740, 0, 0, 0
+msg.frame_width, msg.frame_height = 1280, 720
+msg.score = -1
+Action.Request("Point", {"info": msg})
