@@ -204,7 +204,7 @@ def nlp_main():
 						slide = instance.slideNo
 
 				# get conversations relvant to the query
-				convoContext = pine.queryPinecone(Q.question, vdb, "conversation") 
+				convoContext = pine.queryPinecone(Q.question, vdb, "conversation", title) 
 				# generate the salience and anticipation
 				conversation.getSalience(convoContext)
 				conversation.getAnticipation()
