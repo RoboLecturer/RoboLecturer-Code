@@ -6,7 +6,7 @@ import os
 TEST_DUMMY = True
 
 # Globals
-ROBOT_IP = os.environ["NAO_IP"]
+ROBOT_IP = "192.168.0.100" if "NAO_IP" not in os.environ else os.environ["NAO_IP"]
 ROBOT_PORT = 9559
 PEPPER_USER = "nao"
 PEPPER_PASSWORD = "BioARTLab123"
