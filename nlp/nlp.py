@@ -24,6 +24,7 @@ LOOP_COUNT = 0
 class_description = {}
 Slide_instances = []
 list_of_quizes = []
+lecture_title = ""
 list_of_questions = [] # store questions for post-evaluation (higher-order/lower-order)
 
 class covnHistory:
@@ -111,7 +112,7 @@ class Slide:
 
 def nlp_main():
 
-	global list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes, list_of_questions
+	global lecture_title, list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes, list_of_questions
 
 	vdb = pine.init_pinecone()
 	
