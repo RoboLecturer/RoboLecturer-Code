@@ -6,7 +6,11 @@ import threading, time
 no_questions_counter = 0
 no_questions_threshold = 3
 
+loop_count = 0
 def main():
+
+	global loop_count
+	loop_count += 1
 
 	global no_questions_counter, no_questions_threshold
 
@@ -15,15 +19,19 @@ def main():
 	# ========= STATE: Start =========
 	Info.Send("State", {"Start":"1"})
 
-	# Send signal to Web to increment slide
-	Info.Send("ChangeSlide", {"cmd":"increment|0"})
+	if loop_count != 1:
+		# Send signal to Web to increment slide
+		Info.Send("ChangeSlide", {"cmd":"increment|0"})
 
 	# Wait for Pepper to finish delivering slides
 	Action.IsDone("Reset", "ALAudioPlayer")
 	while not Action.IsDone("Get", "ALAudioPlayer"):
 		pass
 	time.sleep(2)
-	Action.Request("ALAudioPlayer", {"file": "do_u_have_qns.wav"})
+	Action.Request("ALAudioPlayer", {
+		"file": "do_u_have_qns.mp3",
+		"length": 1.992
+		})
 	
 	# Then tell CV to start detecting for raised hands
 	Info.Send("TriggerHandDetection")
@@ -31,7 +39,6 @@ def main():
 
 	# ========= STATE: AnyQuestions =========
 	resetState("Start")
-	# raw_input()
 
 	# Wait for state update from CV
 	state = Info.Request("State", {"name":"AnyQuestions"})
@@ -45,30 +52,45 @@ def main():
 
 		# Store hands info in list
 		hands_info_list = Info.Request("RaisedHandInfo")
+		pointed = False
 		
 		# Start QnA loop
-		for i in range(len(hands_info_list)):
+		while True:
 			# Point, then send trigger_listen to Speech
-			hand_info = hands_info_list[i]
-			Action.IsDone("Reset", "Point")
-			Action.Request("Point", {"info": hand_info})
-			while not Action.IsDone("Get", "Point"):
-				pass
+			if not pointed:
+				pointed = True
+				hand_info = hands_info_list[0]
+				Action.IsDone("Reset", "Point")
+				Action.Request("Point", {"info": hand_info})
+				while not Action.IsDone("Get", "Point"):
+					pass
+				Action.Request("ALAudioPlayer", {
+					"file": "what_is_your_qn.mp3",
+					"length": 2.5
+					})
 			Info.Send("TriggerListen")
 
-			# Wait for answer to be finished playing
-			Action.IsDone("Reset", "ALAudioPlayer")
-			while not Action.IsDone("Get", "ALAudioPlayer"):
-				pass
+			student_done = Info.Request("StudentDone")
+			if not student_done:
 
-			# When it's the last hand, update the state 
-			if i == (len(hands_info_list) - 1):
+				# Wait for answer to be finished playing
+				Action.IsDone("Reset", "ALAudioPlayer")
+				while not Action.IsDone("Get", "ALAudioPlayer"):
+					pass
+
+			else:
+				hands_info_list.pop(0)
+				pointed = False
+				print("Moving onto next student. %d students left." % len(hands_info_list))
+
+			if not len(hands_info_list):
 				Info.Send("State", {"AnyQuestions":"NoHandsRaised", "print":False})
+				time.sleep(1)
+				break
 			else:
 				Info.Send("State", {"AnyQuestions":"HandsRaised", "print":False})
 
-
-	# If no hands detected, or When QnA loop ends, proceed
+		# If no hands detected, or When QnA loop ends, proceed
 
 
 	# ========= STATE: NoiseLevel =========
@@ -93,7 +115,7 @@ def main():
 
 	# If inattentive, trigger joke (NLP) or trigger quiz (Web)
 	if state == "NotAttentive":
-		signal = Info.Send("TriggerJokeOrQuiz")
+		signal = Info.Send("TriggerJokeOrQuiz", {"force":"quiz"})
 
 		# If trigger_joke, play audio from Speech
 		if signal == "joke":
@@ -118,7 +140,8 @@ def main():
 	if no_questions_counter >= no_questions_threshold:
 		no_questions_counter = 0
 		Info.Send("State", {"NoQuestionsLoop": "CounterReached"})
-		signal = Info.Send("TriggerJokeOrQuiz")
+		signal = Info.Send("TriggerJokeOrQuiz", {"force":"quiz"})
+		# signal = Info.Send("TriggerJokeOrQuiz")
 		if signal == "joke":
 			Action.IsDone("Reset", "ALAudioPlayer")
 			while not Action.IsDone("Get", "ALAudioPlayer"):
@@ -154,9 +177,11 @@ if __name__ == "__main__":
 	t1 = threading.Thread(target=Action.Listen)
 	t2 = threading.Thread(target=Info.Listen)
 	t3 = threading.Thread(target=Info.Broadcast)
+	t4 = threading.Thread(target=Action.Localize)
 	t1.start()
 	t2.start()
 	t3.start()
+	t4.start()
 
 	try:
 		while True:
@@ -168,3 +193,4 @@ if __name__ == "__main__":
 		t1.join()
 		t2.join()
 		t3.join()
+		t4.join()

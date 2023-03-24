@@ -78,7 +78,18 @@ For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLec
 
 **Note**: This API is only for sending/receiving info between Pepper and your module, or between your module and other modules. For CV, Web and Speech modules that require communication with your camera, mic or web browser, please set that up individually.
   
-## 4. FAQs
+## 4. TESTING
+During testing, remember to do the following tasks before starting:
+- Network
+  1. Turn off Buster's Phone WIFI and enable hotspot
+  2. Re-set MASTER IP to the correct address
+  3. Re-set MODULE IP to the correct address
+  4. Connect to TP-Link
+  5. Check connection through TP-Link - ```ping googlle.com```
+- Pull the latest version of the Repo (if you are using Docker)
+- source .bashrc and catkin_ws/devel/setup.bash
+
+## 5. FAQs
 - **ERROR: Unable to communicate with master!** when running ROS commands
   1. Is a ```roscore``` running?
   2. If the line ```source /opt/ros/noetic/setup.bash``` is not in your ```~/.bashrc```, run it, then add it to your ```~/.bashrc``` so you can avoid having to run it everytime you open a terminal.
