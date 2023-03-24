@@ -79,7 +79,8 @@ def getEmbedding(content):
     ).decode()
 
     model = 'text-embedding-ada-002'
-    text  = [x['text'] for x in content]
+    # text  = [x['text'] for x in content]
+    text = content 
 
     try:
         response = openai.Embedding.create(
