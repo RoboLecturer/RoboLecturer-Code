@@ -44,9 +44,9 @@ def runS2T(index):
         print("Say something!")
         if source.stream is None:
             print("NONE")
-        mic_input = r.listen(source, 10, 3)
+        mic_input = r.listen(source, 35, 3)
         print("done listening")
-        #text = Sphinx(mic_input)
+        # text = whisper(mic_input)
         text = GSR(mic_input)
     return text
 # print(runS2T(0))

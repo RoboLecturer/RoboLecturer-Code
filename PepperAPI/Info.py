@@ -495,7 +495,7 @@ def Listen():
 
 	return
 
-change_slide = "dummy|0"
+change_slide = "control|0"
 trigger_quiz = 0
 # Continuously publish. Used for Control to Web
 def Broadcast():
@@ -504,8 +504,8 @@ def Broadcast():
 		global change_slide
 		while event.is_set():
 			change_slide_publisher.publish(change_slide)
-			if "dummy" not in change_slide:
-				change_slide = "dummy|0"
+			if "control" not in change_slide:
+				change_slide = "control|0"
 			time.sleep(1)
 
 	def publish_trigger_quiz():

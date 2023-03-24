@@ -55,7 +55,7 @@ def Shush(limit,timel):
         time.sleep(0.3)
     return False
         
-# print(Shush(70, 10))
+# print(Shush(58, 10))
 # stream.stop_stream()
 # stream.close()
 
