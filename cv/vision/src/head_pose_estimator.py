@@ -63,7 +63,7 @@ def engagement_from_landmarks(landmarks, frame, w, h):
 
             p_nose = np.array([x_nose, y_nose])
             p_nose_norm = np.divide(p_nose, np.divide(h, w))
-            similarity_nose = 1.0/np.cosh(0.001 * p_nose_norm[0]) * 1.0/np.cosh(0.001 * p_nose_norm[1])
+            similarity_nose = 1.0/np.cosh(0.002 * p_nose_norm[0]) * 1.0/np.cosh(0.002 * p_nose_norm[1])
 
             return similarity_nose
 

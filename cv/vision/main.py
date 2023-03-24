@@ -50,7 +50,7 @@ check_requirements(exclude=("tensorboard", "pycocotools", "thop"))
 def set_up_camera():
     camera = cv2.VideoCapture("/dev/video6")
     camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc("H", "J", "P", "G"))
-    camera.set(3, 1080)
+    camera.set(3, 1280)
     camera.set(4, 720)
     return camera
 
@@ -63,25 +63,24 @@ def get_camera_input(camera):
 def face_engagement_detection(face_model, frame, opt, imgsz, stride, engagement_record=[0]):
     # get faces
     faces = detect(opt, frame, face_model, imgsz, stride) # YoloV7
-    faces = np.array(faces)
 
     # display boxes around faces
     if len(faces) != 0: # if a face was detected.
         for (x1, y1, x2, y2) in faces[:, 0:4]:
-            x_centre = (x1 + x2) / 2
-            y_centre = (y1 + y2) / 2
+            w = (x2 - x1)
+            h = (y2 - y1)
             #cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
             # Computing landmarks of a detected face and computing an engagement score
             landmark_results_detected = faces[:, 4:]
-            engagement = engagement_from_landmarks(landmark_results_detected, frame, x_centre, y_centre)
+            engagement = engagement_from_landmarks(landmark_results_detected, frame, w, h)
             engagement_record.append(engagement)
         
     return frame, engagement_record
 
 
 def hand_detector(model, frame): # Commented out the parts that killed the terminal.
-    knuckle_idx = [1, 5, 9, 13, 17]
-    fingertip_idx = [4, 8, 12, 16, 20]
+    knuckle_idx = [5, 9, 13, 17]
+    fingertip_idx = [8, 12, 16, 20]
     dist_fingers = np.array([])
     result = model.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     if result.multi_hand_landmarks:
@@ -111,9 +110,10 @@ def hand_detector(model, frame): # Commented out the parts that killed the termi
 
             metric = np.mean(dist_fingers)
             #print(f"Metric: {metric}")
-            if metric < 0.535:
+            if metric < 0.48:
                 hand_landmarks = np.vstack([hand_landmarks, np.array([x_base, y_base])])
-        
+                frame = cv2.putText(frame, f"Question!", org=(int(30), int(30)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
+                cv2.circle(frame, (x_base,y_base), 5, (255,0,0), 3)
         return hand_landmarks[1:]
 
     return np.array([0, 0])
@@ -121,32 +121,66 @@ def hand_detector(model, frame): # Commented out the parts that killed the termi
 
 def send_to_pepper(hand_data):
     for data in hand_data:
-        dic_data = {"bounding_box": (data[0], data[1], 100, 100),
-                "frame_res": (1080, 720),
+        dic_data = {"bounding_box": (data[0], data[1], 0, 0),
+                "frame_res": (1280, 720),
                 "confidence_score": -1}
         Info.Send("RaisedHandInfo", dic_data)
     return
 
 
-def main(camera, face_detect_model, mp_hand_model, landmark_predictor, opt, imgsz, stride):
+def main(camera, face_detect_model, mp_hand_model, opt, imgsz, stride):
     hands = np.array([0, 0])
+    hand_dict = {}
     # main loop
     while True:
         Info.Request("State", {"name": "Start"})
         Info.Request("TriggerHandDetection")
 
         start = time.time()
+        hands = np.array([0, 0])
         while True:
             frame = get_camera_input(camera)
             coordinates = hand_detector(mp_hand_model, frame)
             end = time.time()
-            if end - start > 10:
+            if end - start > 6:
+                #cv2.destroyAllWindows()
                 break
 
-        hands = np.vstack([hands, coordinates])
+            #for hand in coordinates:
+            #    hand_str = hand.tostring()
+            #    if hand_str not in hand_dict:
+            #        hand_dict[hand_str] = 1
+            #    else:
+            #        for hand_key in hand_dict.keys():
+            #            hand_key_int = np.frombuffer(hand_key, dtype=int)
+            #            difference = abs(hand_key_int - hand)
+            #            if (np.less_equal(difference, 20)).sum() == 2:
+                            #print(hand_key_int)
+                            #print(hand)
+            #                hand_dict[hand_key] += 1
+            #            else:
+            #                hand_dict[hand_str] += 1
+            
+            cv2.imshow("Frame", frame)
+            cv2.waitKey(1) 
+        
+        #for k,v in hand_dict.items():
+        #    if v > 10:
+        #        print(np.frombuffer(k, dtype=int), v)
+        if coordinates.ndim > 1:
+           # for coord in coordinates:
+           #     if coord[0] == 0 and coord[1] == 0:
+           #         continue
+           #     if coord.tostring() in hand_dict:
+           #         print("1",coord)
+           #         if hand_dict[coord.tostring()] > 10:
+            hands = np.vstack([hands, coordinates])
+           #              print("2",hands)
+
         hands = reject_points(hands, threshold=20)
         hands = np.unique(hands, axis=0)
-        
+        #print("3",hands) 
+        hands = hands[1:]
         num_hands = len(hands)
         if num_hands == 0:
             Info.Send("State", {"AnyQuestions": "NoHandsRaised"})
@@ -166,10 +200,24 @@ def main(camera, face_detect_model, mp_hand_model, landmark_predictor, opt, imgs
             continue
 
         # Start checking the engagement/attentiveness of the class
-        frame2, engagement_list = face_engagement_detection(face_detect_model, frame, opt, imgsz, stride)
-        mean_engagement = np.mean(np.array(engagement_list))
+        start = time.time()
+        #c = 0
+        while True:
+            frame = get_camera_input(camera)
+            frame2, engagement_list = face_engagement_detection(face_detect_model, frame, opt, imgsz, stride)
+           # print(f"Done: {c}")
+            end = time.time()
+            #c += 1
+            if end - start > 10:
+                cv2.destroyAllWindows()
+                break
+            cv2.imshow("Frame", frame)
+            cv2.waitKey(1)
 
-        if mean_engagement < 0.5: # if the mean engagement is below the threshold, send the non-attention alert.
+        mean_engagement = np.mean(np.array(engagement_list))
+        print(f"Measured engagement of the class: {mean_engagement:.3f}")
+
+        if mean_engagement < 0.45: # if the mean engagement is below the threshold, send the non-attention alert.
             Info.Send("State", {"Attentiveness": "NotAttentive"})
             continue
 
@@ -184,11 +232,12 @@ def main(camera, face_detect_model, mp_hand_model, landmark_predictor, opt, imgs
 if __name__ == "__main__":
     # Initialising the connection.
     PepperAPI.init("cv_node")
-    print("API Initialised")
     # Setting up the camera and pretrained models.
     camera = set_up_camera()
     yolo_face_model, imgsz, stride = config_net(opt=opt)
     hand_model = mp.solutions.hands.Hands(model_complexity=0, max_num_hands=15, min_detection_confidence=0.1)
     main(camera, yolo_face_model, hand_model, opt, imgsz, stride)
+
+
 
 

@@ -24,10 +24,10 @@ open_hands   = []
 
 # functions
 def set_up_camera():
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture("/dev/video6")
     camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc("M", "J", "P", "G"))
-    camera.set(3, 640)
-    camera.set(4, 640)
+    camera.set(3, 1080)
+    camera.set(4, 720)
     return camera
 
 def get_camera_input(camera):

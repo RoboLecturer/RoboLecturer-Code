@@ -50,9 +50,9 @@ check_requirements(exclude=("tensorboard", "pycocotools", "thop"))
 
 # functions
 def set_up_camera():
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture("/dev/video6")
     camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc("M", "J", "P", "G"))
-    camera.set(3, 1080)
+    camera.set(3, 1280)
     camera.set(4, 720)
     return camera
 
@@ -78,6 +78,8 @@ def face_engagement_detection(face_model, frame, opt, imgsz, stride, engagement_
             engagement = engagement_from_landmarks(landmark_results_detected, frame, w, h)
             engagement_record.append(engagement)
             cv2.putText(frame, f"Engagement:  {engagement:.3f}", org=(int(x1), int(y1) - 5), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 255, 0), thickness=2, lineType=2)
+            cv2.line(frame, (540,0), (540,720), (255,0,0), 3)
+            cv2.line(frame, (640,0), (640,720), (0,255,0), 3)
 
     return frame, engagement_record
 
@@ -113,12 +115,11 @@ def hand_detector(model, frame): # Commented out the parts that killed the termi
                     dist_fingers = np.append(dist_fingers, dist_proportion)
 
             metric = np.mean(dist_fingers)
-            #print(f"Metric: {metric}")
-            if metric < 0.54:
+            print(f"Metric: {metric}")
+            if metric < 0.48:
                 hand_landmarks = np.vstack([hand_landmarks, np.array([x_base, y_base])])
-                cv2.putText(frame, f"Question!", org=(int(30), int(30)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
-
-        
+                cv2.putText(frame, f"Question!", org=(int(x_base), int(y_base)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
+                       
         return hand_landmarks[1:]
 
     return np.array([0, 0])
@@ -126,8 +127,8 @@ def hand_detector(model, frame): # Commented out the parts that killed the termi
 
 def send_to_pepper(hand_data):
     for data in hand_data:
-        dic_data = {"bounding_box": (data[0], data[1], 100, 100),
-                "frame_res": (1080, 720),
+        dic_data = {"bounding_box": (data[0], data[1], 0, 0),
+                "frame_res": (1280, 720),
                 "confidence_score": -1}
         Info.Send("NumHands", {"value": 1})
         Info.Send("RaisedHandInfo", dic_data)
@@ -140,48 +141,59 @@ def main(camera, test_model, mp_hand_model, opt, imgsz, stride):
     # main loop
     #while True:
     #    start = time.time()
+    start = time.time()
     while True:
+        hands = np.array([0, 0])
         frame  = get_camera_input(camera)
         coordinates = hand_detector(mp_hand_model, frame)
-
-        if coordinates.shape[0] == 2:
+        if coordinates.ndim > 1:
             hands = np.vstack([hands, coordinates])
 
         hands = reject_points(hands, threshold=20)
         hands = np.unique(hands, axis=0)
 
-            #for hand in hands:
-            #    hand_str = hand.tostring()
-            #    if hand_str not in hand_dict:
-            #        hand_dict[hand_str] = 1
-            #    else:
-            #        for hand_key in hand_dict.keys():
-            #            hand_key_int = np.frombuffer(hand_key, dtype=int)
-            #            difference = abs(hand_key_int - hand)
-            #            if (np.less_equal(difference, 20)).sum() == 2:
-            #                hand_dict[hand_key] += 1
-                        
-            #            else:
-            #                hand_dict[hand_str] += 1
+        for hand in hands:
+            hand_str = hand.tostring()
+            if hand_str not in hand_dict:
+                hand_dict[hand_str] = 1
+            else:
+                for hand_key in hand_dict.keys():
+                    hand_key_int = np.frombuffer(hand_key, dtype=int)
+                    difference = abs(hand_key_int - hand)
+                    if (np.less_equal(difference, 20)).sum() == 2:
+                        hand_dict[hand_key] += 1
+                    else:
+                        hand_dict[hand_str] += 1
 
             #end = time.time()
             #if end - start > 10:
             #    break
-
-
-        frame2, engagement_list = face_engagement_detection(test_model, frame, opt, imgsz, stride)
-        mean_engagement = np.mean(np.array(engagement_list))
+        #start = time.time()
+        #while True:
+        #    frame = get_camera_input(camera)
+        #frame2, engagement_list = face_engagement_detection(test_model, frame, opt, imgsz, stride)
+        #    print(f"Time elapsed: {time.time() - start}")
+        #    end = time.time()
+        #    if end - start > 15:
+        #        break
+        #mean_engagement = np.mean(np.array(engagement_list))
+        #print(f"Measured engagement of the class: {mean_engagement:.3f}")
         hands = np.array([0, 0])
         k = cv2.waitKey(30) 
         if k == 27: # press 'ESC' to quit
             break
-        cv2.imshow("video", frame2)
-        
-    print("Sending...") 
-   # send_to_pepper(closed_hands)
-    print("Sent")
+        print(frame.shape)
+        cv2.line(frame, (540,0), (540,720), (255,0,0), 3)
+        cv2.line(frame, (640,0), (640,720), (0,255,0), 3)
+        cv2.imshow("video", frame)
 
-    print("FINISHED")
+        #return mean_engagement
+        
+   # print("Sending...") 
+   # send_to_pepper(closed_hands)
+   # print("Sent")
+
+   # print("FINISHED")
         
 
 if __name__ == "__main__":
@@ -190,7 +202,9 @@ if __name__ == "__main__":
     # Setting up pre-trained models and camera.
     camera = set_up_camera()
     yolo_face_model, imgsz, stride = config_net(opt=opt)
-    hand_model = mp.solutions.hands.Hands(model_complexity=0, max_num_hands=15, min_detection_confidence=0.1, min_tracking_confidence=0.1)
+    hand_model = mp.solutions.hands.Hands(model_complexity=1, max_num_hands=15, min_detection_confidence=0.25, min_tracking_confidence=0.1)
     # Running the main detection script.
     main(camera, yolo_face_model, hand_model, opt, imgsz, stride)
+
+
 
