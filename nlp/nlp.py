@@ -194,92 +194,92 @@ def nlp_main():
 		else: 
 			Info.Send("StudentDone", {"value":0})
       
-      if Q.main_type == "related":
-        for instance in Slide_instances:
-          if instance.title == Q.sub_type:
-            # scriptContent = instance.scriptContent
-            title = instance.title
-            slide = instance.slideNo
+		if Q.main_type == "related":
+			for instance in Slide_instances:
+				if instance.title == Q.sub_type:
+					# scriptContent = instance.scriptContent
+					title = instance.title
+					slide = instance.slideNo
 
-        # get conversations relvant to the query
-        convoContext = pine.queryPinecone(Q.question, vdb, "conversation") 
-        # generate the salience and anticipation
-        conversation.getSalience(convoContext)
-        conversation.getAnticipation()
-        # generate the content context
-        contentContext = pine.queryPinecone(Q.question, vdb, "textbook", title) # script namesapce includes lecture slides and textbook contents
-        lectureScript = pine.queryPinecone(Q.Question, vdb, "script", title)
-        conversation.update(contentContext, lectureScript) # update the convo history with the salience, anticipation and content  
+			# get conversations relvant to the query
+			convoContext = pine.queryPinecone(Q.question, vdb, "conversation") 
+			# generate the salience and anticipation
+			conversation.getSalience(convoContext)
+			conversation.getAnticipation()
+			# generate the content context
+			contentContext = pine.queryPinecone(Q.question, vdb, "textbook", title) # script namesapce includes lecture slides and textbook contents
+			lectureScript = pine.queryPinecone(Q.Question, vdb, "script", title)
+			conversation.update(contentContext, lectureScript) # update the convo history with the salience, anticipation and content  
 
-        # generate answer from received question then send to Speech
-        Q.answer = qa.answerGen(Q.question, conversation.history, 0)
+			# generate answer from received question then send to Speech
+			Q.answer = qa.answerGen(Q.question, conversation.history, 0)
 
-        # create QnA metadata for storage in Pinecone
-        metadata = pine.createConvoMetadata(title, f"{Q.question}", f"{Q.answer}") 
-        pine.populatePinecone(f"{Q.question}, {Q.answer}", "conversation", metadata, vdb)
+			# create QnA metadata for storage in Pinecone
+			metadata = pine.createConvoMetadata(title, f"{Q.question}", f"{Q.answer}") 
+			pine.populatePinecone(f"{Q.question}, {Q.answer}", "conversation", metadata, vdb)
 
-        response = f"{Q.answer}.. Does that answer your question?"
-        Info.Send("Answer", {"text": response})
-        # request slide change after sending text to Speech Processing module as text->speech takes time
-        Info.Request("ChangeSlide", {"cmd":f"{slide}"})
+			response = f"{Q.answer}.. Does that answer your question?"
+			Info.Send("Answer", {"text": response})
+			# request slide change after sending text to Speech Processing module as text->speech takes time
+			Info.Request("ChangeSlide", {"cmd":f"{slide}"})
 
-        # append question to list for post-evaluation
-        list_of_questions.append(Q.question + "\n")
+			# append question to list for post-evaluation
+			list_of_questions.append(Q.question + "\n")
 
 
-      elif Q.main_type == "operational":
-        # if the quesiton is operational, check the command type
-        if Q.subtype == "increase speech volume":
-          Action.Request("ChangeVolume", {"cmd":"up"})
-          response = "Got it, I'll speak louder"
-          Info.Send("Answer", {"text": response})
+		elif Q.main_type == "operational":
+			# if the quesiton is operational, check the command type
+			if Q.subtype == "increase speech volume":
+				Action.Request("ChangeVolume", {"cmd":"up"})
+				response = "Got it, I'll speak louder"
+				Info.Send("Answer", {"text": response})
 
-        elif Q.subtype == "decrease speech volume":
-          Action.Request("ChangeVolume", {"cmd":"down"})
-          response = "Got it, I'll speak quieter"
-          Info.Send("Answer", {"text": response})
-        # TODO: ADD the rest of the operational call when they are implemented
+			elif Q.subtype == "decrease speech volume":
+				Action.Request("ChangeVolume", {"cmd":"down"})
+				response = "Got it, I'll speak quieter"
+				Info.Send("Answer", {"text": response})
+				# TODO: ADD the rest of the operational call when they are implemented
 
-        elif Q.sub_type == "decrease speech volume":
-          Action.Request("ChangeVolume", {"cmd":"down"})
-          response = "Got it, I'll speak quieter"
-          Info.Send("Answer", {"text": response})
-        # TODO: ADD the rest of the operational call when they are implemented
+			elif Q.sub_type == "decrease speech volume":
+				Action.Request("ChangeVolume", {"cmd":"down"})
+				response = "Got it, I'll speak quieter"
+				Info.Send("Answer", {"text": response})
+				# TODO: ADD the rest of the operational call when they are implemented
 
-        elif Q.sub_type == "increase speech speed":
-          response = "Got it, I'll speed up"
-          Info.Send("Answer", {"test": response})
+			elif Q.sub_type == "increase speech speed":
+				response = "Got it, I'll speed up"
+				Info.Send("Answer", {"test": response})
 
-        elif Q.sub_type == "decrease speech speed":
-          response = "Got it, I'll slow down"
-          Info.Send("Answer", {"test": response})
+			elif Q.sub_type == "decrease speech speed":
+				response = "Got it, I'll slow down"
+				Info.Send("Answer", {"test": response})
 
-        elif Q.sub_type == "go to next slide":
-          Info.Request("ChangeSlide", {"cmd": "increment|0"})
-          response = "Got it, I'll go to the next slide"
-          Info.Send("Answer", {"text": response})
+			elif Q.sub_type == "go to next slide":
+				Info.Request("ChangeSlide", {"cmd": "increment|0"})
+				response = "Got it, I'll go to the next slide"
+				Info.Send("Answer", {"text": response})
 
-        elif Q.sub_type == "go to previous slide":
-          Info.Request("ChangeSlide", {"cmd": "decrement|0"})
-          response = "Got it, I'll go to the previous slide"
-          Info.Send("Answer", {"text": response})
+			elif Q.sub_type == "go to previous slide":
+				Info.Request("ChangeSlide", {"cmd": "decrement|0"})
+				response = "Got it, I'll go to the previous slide"
+				Info.Send("Answer", {"text": response})
 
-        elif Q.sub_type == "go to specific slide number":
-          # how do we extract the slide number that they want?
-          # TODO: how to get the specific slide
-          slide_no = 5
-          Info.Request("ChangeSlide", {"cmd": f"goto|{slide_no}"})
-          response = "Got it, I'll go to that slide"
-          Info.Send("Answer", {"text": response})
+			elif Q.sub_type == "go to specific slide number":
+				# how do we extract the slide number that they want?
+				# TODO: how to get the specific slide
+				slide_no = 5
+				Info.Request("ChangeSlide", {"cmd": f"goto|{slide_no}"})
+				response = "Got it, I'll go to that slide"
+				Info.Send("Answer", {"text": response})
 
-      elif Q.main_type == "no question" or Q.main_type == "non-coherent":
-        # don't do anything
-        Info.Send("Answer", {"text": "I didn't get that. Can you please repeat the question?"})
+		elif Q.main_type == "no question" or Q.main_type == "non-coherent":
+			# don't do anything
+			Info.Send("Answer", {"text": "I didn't get that. Can you please repeat the question?"})
 
-      else:
-        # if question is non-relevant then respond as such
-        response = "I don't think your question relates to the content. Should we move on, or do you have a relevant question?"
-        Info.Send("Answer", {"text": response})
+		else:
+			# if question is non-relevant then respond as such
+			response = "I don't think your question relates to the content. Should we move on, or do you have a relevant question?"
+			Info.Send("Answer", {"text": response})
 
 		print("Loop no. " + str(c))
 		c += 1
