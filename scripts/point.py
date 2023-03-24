@@ -1,4 +1,3 @@
-# coding: utf-8
 import PepperAPI
 from PepperAPI import Action, Info
 from api.msg import CVInfo

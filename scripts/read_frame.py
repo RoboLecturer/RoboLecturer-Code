@@ -25,7 +25,7 @@ while True:
 		break
 	if key == ord('p'):
 		cv2.imwrite("grid%d.jpg" % num, frame)
-		num += 1
 		print("Image saved to grid%d.jpg." % num)
+		num += 1
 
 cv2.destroyAllWindows()
