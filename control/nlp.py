@@ -1,8 +1,10 @@
 import PepperAPI
 from PepperAPI import Action, Info
-import random 
+import random
+import numpy as np
 
-# initialise
+INPUT_DONE = False
+
 LOOP_COUNT = 0
 list_of_scripts = []
 
@@ -44,7 +46,10 @@ def nlp_main():
 		# TODO: Classify question
 		question_type = random.choice(["related","operational"])
 
-		student_done = input("Done?")
+		if INPUT_DONE:
+			student_done = int(input("Done (0/1)?"))
+		else:
+			student_done = np.random.randint(2)
 		Info.Send("StudentDone", {"value": student_done})
 		if not student_done:
 

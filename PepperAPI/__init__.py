@@ -1,8 +1,12 @@
 import rospy
 import rosnode
+import os
+
+# set to True if you're doing self testing
+TEST_DUMMY = True
 
 # Globals
-ROBOT_IP = "192.168.0.110"
+ROBOT_IP = os.environ["NAO_IP"]
 ROBOT_PORT = 9559
 PEPPER_USER = "nao"
 PEPPER_PASSWORD = "BioARTLab123"
@@ -46,6 +50,10 @@ VOLUME_TOPIC = "volume"
 # Start node
 def init(node):
 	global node_initiated
+
+	# If doing dummy testing on one machine, node names must be the same
+	if TEST_DUMMY:
+		node = "master"
 
 	# XMLRPC & TCPROS ports to start from 45100 & 45101
 	_xmlrpc, _tcpros = 45100, 45101
