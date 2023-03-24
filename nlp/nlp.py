@@ -177,11 +177,12 @@ def nlp_main():
 
 		# Wait for student's question from Speech
 		Q.question = Info.Request("Question")
-		coherent = qc.is_coherent(Q.question, lecture_title)
+		# coherent = qc.is_coherent(Q.question, lecture_title)
+		coherent = True
 
 		if Q.question == None or Q.question == "" or Q.question == "None":
 			Q.main_type = "no question"
-		elif coherent == True:
+		elif coherent == False:
 			Q.main_type = "non-coherent"
 		else:
 			# Classify question into main type and sub types
