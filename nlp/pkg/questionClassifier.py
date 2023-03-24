@@ -12,6 +12,7 @@
 # import and installations
 # pip install sentence_transformers
 from sentence_transformers import SentenceTransformer, util
+import openai
 
 
 # Define a function to classify questions
@@ -69,3 +70,37 @@ def classify_question(question, class_descriptions):
     else:
         return main_class, sub_class
     
+def is_coherent(query,topic):
+    """call the openai chatGPT api
+    @params: query [string]
+    @reutrns: response [string]
+    """
+    openai.api_key = "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"
+    # create completion
+    completions = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+        messages=[
+                    {"role": "system", "content": f""""
+            you are classifying whether questions or statements make sense or not in the context of the situation.
+            Respond only with the exact word "coherent" if the question or statement makes sense in context and with the word "incoherent"
+            if the question or statement does not make sense in the context.
+           
+            context: you just gave a lecture on {topic} and are asking if people have questions.
+           
+            Coherent statement include statements or questions that make sense, but also operational requests
+            such as speak louder, speak slower, or change the slide are coherent. Also if students use vocal disfluences such as
+            "like", "umm", "ah" etc. in a statement but it is still makes sense semantically, classify it as coherent.
+           
+            """},
+            {"role": "assistant", "content": "Do you have any questions>"},
+                    {"role": "user", "content":"how are stars made?"},
+            {"role": "assistant", "content":"coherent"},
+            {"role": "user", "content":"what does this"},
+            {"role": "assistant", "content":"incoherent"},
+            {"role": "user", "content":f"{query}"},
+                ],
+          temperature = 0,
+          max_tokens = 5
+        )
+    response = completions['choices'][0]['message']['content']
+    return not "incoherent" in response.lower()

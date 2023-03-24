@@ -65,6 +65,8 @@ def nlp_main():
 			# SET SLIDE CLASS
 			# get slide title 
 			title = dg.getTitle(slide)
+			if slide_number == 0:
+				lecture_title=title
 			# set class
 			Slide_instances.append(Slide(slide_number, title, slide, script))
 
@@ -98,9 +100,12 @@ def nlp_main():
 
 		# Wait for student's question from Speech
 		Q.question = Info.Request("Question")
+		coherent = qc.is_coherent(Q.question, lecture_title)
 
 		if Q.question == None or Q.question == "" or Q.question == "None":
 			Q.main_type = "no question"
+		elif coherent == True:
+			Q.main_type = "non-coherent"
 		else:
 			# Classify question into main type and sub types
 			Q.main_type, Q.sub_type = qc.classify_question(Q.question,class_description)
@@ -168,9 +173,10 @@ def nlp_main():
 					response = "Got it, I'll go to that slide"
 					Info.Send("Answer", {"text": response})
 
-			elif Q.main_type == "no question":
+			elif Q.main_type == "no question" or Q.main_type == "non-coherent":
 				# don't do anything
 				Info.Send("Answer", {"text": "I didn't get that. Can you please repeat the question?"})
+
 			else:
 				# if question is non-relevant then respond as such
 				response = "I don't think your question relates to the content. Should we move on, or do you have a relevant question?"
