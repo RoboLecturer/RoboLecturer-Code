@@ -3,6 +3,7 @@
 *.pyc
 control/PepperAPI
 scripts/PepperAPI
+scripts/data
 *.txt
 .DS_Store
 .vscode/
