@@ -11,6 +11,7 @@ import pandas as pd
 import torch
 from sklearn.model_selection import train_test_split
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, AdamW
+import pickle
 
 # Load data from CSV file
 df = pd.read_csv('/content/sample_data/Higher_order_Lower_order.csv')
@@ -75,19 +76,26 @@ for epoch in range(3):
     print(f"Validation Accuracy: {avg_val_accuracy:.2f}")
     print(f"Validation Loss: {avg_val_loss:.2f}")
     model.train()
-
 # Load BERT tokenizer and encode text
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
-text = "What is the difference between velocity and acceleration?"
-encodings = tokenizer(text, truncation=True, padding=True, return_tensors='pt')
+# text = "What is the difference between velocity and acceleration?"
+with open("../higher_order_lower_order.txt") as file:
+    for line in file:
+        text = line.rstrip()
+   
+        
+        encodings = tokenizer(text, truncation=True, padding=True, return_tensors='pt')
 
-# Pass the encodings to the model for inference
-with torch.no_grad():
-    outputs = model(**encodings)
-    logits = outputs.logits
+        # Pass the encodings to the model for inference
+        with torch.no_grad():
+            outputs = model(**encodings)
+            logits = outputs.logits
 
-# Convert logits to probabilities and get the predicted label
-probs = torch.softmax(logits, dim=1)
-pred_label = torch.argmax(probs, dim=1)
+        # Convert logits to probabilities and get the predicted label
+        probs = torch.softmax(logits, dim=1)
+        pred_label = torch.argmax(probs, dim=1)
+
+pickle.dump(pred_label, file)
+file.close()
 
 print(f"Predicted label: {pred_label.item()}")

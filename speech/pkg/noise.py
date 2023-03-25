@@ -8,7 +8,7 @@ import time
 p = pyaudio.PyAudio()
 
 # setting the mic being used to a variable Mic
-MIC = 2
+MIC = 6
 # bit_Size of audio (2 bytes - 16 bits)
 WIDTH = 2
 # getting the default sample rate of the mic being used]                  
@@ -55,7 +55,7 @@ def Shush(limit,timel):
         time.sleep(0.3)
     return False
         
-# print(Shush(70, 10))
+# print(Shush(58, 10))
 # stream.stop_stream()
 # stream.close()
 

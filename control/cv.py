@@ -32,7 +32,7 @@ def cv_main():
 		for (x,y) in hands_info_list:
 			Info.Send("RaisedHandInfo", {
 				"bounding_box": (x,y,100,120),
-				"frame_res": (1920,1080),
+				"frame_res": (1280,720),
 				"confidence_score": -1.0 # send float, if no there'll be an error
 			})
 
@@ -53,6 +53,7 @@ def cv_main():
 	# ========= STATE: Attentiveness =========
 	# TODO: Start attentiveness detection and classify into attentive or inattentive
 	CLASS_IS_ATTENTIVE = random.choice([True, False])
+	CLASS_IS_ATTENTIVE = False
 
 	# If not attentive, update state. Loop restarts after control triggers joke/quiz
 	if not CLASS_IS_ATTENTIVE:
@@ -75,10 +76,12 @@ def cv_main():
 def generate_random_hands_info():
 	lst = []
 	num_hands = random.randint(0,3)
-	for i in range(num_hands):
-		x = random.randint(0, 1920-100)
-		y = random.randint(0, 1080-120)
-		lst.append((x,y))
+	num_hands = 2
+	lst = [[540,50],[740,50]] # left, right
+	# for i in range(num_hands):
+	# 	x = random.randint(0, 1920-100)
+	# 	y = random.randint(0, 1080-120)
+	# 	lst.append((x,y))
 	return lst, num_hands
 
 

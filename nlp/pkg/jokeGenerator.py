@@ -1,7 +1,7 @@
 # This scirpt generates a joke based on different requirements #
 
 #  import packages
-from chat import chat_model
+from pkg.chat import chat_model
 
 # function the generate a joke
 def genJoke(jokeType):
@@ -14,11 +14,11 @@ def genJoke(jokeType):
 
     # define the query depending on the type
     if jokeType == "noiseHigh":
-        query = f"come up with a short, funny joke to retain the concentration of a noisy classroom"
+        query = f"grab the attention of noisy students by telling a funny joke to retain their concentration"
     elif jokeType == "attentionLow":
-        query = f"come up with a short, funny joke to entertain a classrom of students"
+        query = f"grab the attention of uninterested students by telling a funny joke to entertain the classroom"
     else:
-        query = f"come up with a short, funny joke for me to tell my students"
+        query = f"Tell a group of students a funny joke"
 
     # get response to query using selelcted model
     response = chat_model.getResponse(query)

@@ -1,8 +1,14 @@
 import PepperAPI
 from PepperAPI import Action, Info
 import random
-from mutagen.mp3 import MP3
-from mutagen.flac import FLAC
+import os
+
+if not PepperAPI.TEST_DUMMY:
+	from mutagen.mp3 import MP3
+	from mutagen.flac import FLAC
+
+# Set to True if you want to input your own questions
+INPUT_QUESTION = True
 
 LOOP_COUNT = 0
 def speech_main():
@@ -20,12 +26,8 @@ def speech_main():
 	if LOOP_COUNT == 1:
 		script = Info.Request("LectureScript")
 
-	# TODO: convert lecture script to audio and save somewhere in your machine
-	path_to_audio = "/home/user/Downloads/statquest.mp3"
-	audio = MP3(path_to_audio)
-	audio_file_length = audio.info.length
-
-	# Action.Request("ALAudioPlayer", {"file": "output0.wav"})
+	path_to_audio = "/home/user/Downloads/sample.flac"
+	audio_file_length = get_audio_length(path_to_audio)
 	Action.Request("ALAudioPlayer", {
 		"path": path_to_audio,
 		"length": audio_file_length
@@ -42,21 +44,24 @@ def speech_main():
 		# wait for signal from kinematics to start listening to mic
 		Info.Request("TriggerListen")
 
-		# TODO: Listen to mic and process question STT,
-		question = "Why is the sky blue?"
+		if INPUT_QUESTION:
+			question = input("Question: ")
+		else:
+			question = "Why is the sky blue?"
 		# then send STT to NLP
 		Info.Send("Question", {"text": question})
 
-		# Wait for answer from NLP, 
-		answer = Info.Request("Answer")
-		# TODO: convert answer to audio and save somewhere in your machine
-		path_to_audio = "/home/user/sample.flac"
-		audio = FLAC(path_to_audio)
-		audio_file_length = audio.info.length
-		Action.Request("ALAudioPlayer", {
-			"path": path_to_audio,
-			"length": audio_file_length
-			})
+		student_done = Info.Request("StudentDone")
+		if not student_done:
+
+			# Wait for answer from NLP, 
+			answer = Info.Request("Answer")
+			path_to_audio = "/home/user/Downloads/sample.flac"
+			audio_file_length = get_audio_length(path_to_audio)
+			Action.Request("ALAudioPlayer", {
+				"path": path_to_audio,
+				"length": audio_file_length
+				})
 
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 
@@ -64,8 +69,8 @@ def speech_main():
 
 
 	# ========= STATE: NoiseLevel =========
-	# TODO: Start detecting noise and classify into high or low noise level
 	HIGH_NOISE_LEVEL = random.choice([True, False])
+	HIGH_NOISE_LEVEL = False
 
 	# If high noise level, update state.
 	# Control tells NLP to trigger joke/shutup, you receive text,
@@ -78,10 +83,8 @@ def speech_main():
 		else:
 			text = Info.Request("Shutup")
 	
-		# TODO: convert joke/shutup text into audio and save
-		path_to_audio = "/home/user/sample.flac"
-		audio = FLAC(path_to_audio)
-		audio_file_length = audio.info.length
+		path_to_audio = "/home/user/Downloads/sample.flac"
+		audio_file_length = get_audio_length(path_to_audio)
 		Action.Request("ALAudioPlayer", {
 			"path": path_to_audio,
 			"length": audio_file_length
@@ -106,15 +109,13 @@ def speech_main():
 		# If trigger_joke, receive joke from NLP, convert to audio and send to play
 		if signal == "joke":
 			joke = Info.Request("Joke")
-			# TODO: convert joke/shutup text into audio and save
-			path_to_audio = "/home/user/sample.flac"
-			audio = FLAC(path_to_audio)
-			audio_file_length = audio.info.length
+			path_to_audio = "/home/user/Downloads/sample.flac"
+			audio_file_length = get_audio_length(path_to_audio)
 			Action.Request("ALAudioPlayer", {
 				"path": path_to_audio,
 				"length": audio_file_length
 				})
-		
+					
 		# Restart loop after joke is played or if trigger_quiz
 		return
 
@@ -130,19 +131,30 @@ def speech_main():
 		signal = Info.Request("TriggerJokeOrQuiz")
 		if signal == "joke":
 			joke = Info.Request("Joke")
-			# TODO: convert joke/shutup text into audio and save
-			path_to_audio = "/home/user/sample.flac"
-			audio = FLAC(path_to_audio)
-			audio_file_length = audio.info.length
+			path_to_audio = "/home/user/Downloads/sample.flac"
+			audio_file_length = get_audio_length(path_to_audio)
 			Action.Request("ALAudioPlayer", {
 				"path": path_to_audio,
 				"length": audio_file_length
 				})
-		return
+			return
 
 	# Else, restart loop
 	return
 		
+
+def get_audio_length(path_to_audio):
+	audio_file_length = 0
+	if not PepperAPI.TEST_DUMMY and os.path.exists(path_to_audio):
+		filetype = path_to_audio.split(".")[-1]
+		if filetype.lower() == "mp3":
+			audio = MP3(path_to_audio)
+		elif filetype.lower() == "flac":
+			audio = FLAC(path_to_audio)
+		audio_file_length = audio.info.length
+	return audio_file_length
+
+
 
 # =================================================
 

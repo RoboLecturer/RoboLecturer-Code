@@ -12,6 +12,7 @@ from PepperAPI import *
 
 # =========================================================
 # Request for actuator action by Pepper robot
+# Used by subteams
 
 def Request(api_name, api_params={}):
 
@@ -51,15 +52,16 @@ def Request(api_name, api_params={}):
 			filename = soundfile_path.split("/")[-1]
 			pepper_path = PEPPER_AUDIO_PATH + filename
 
-			# Setup SFTP link
-			transport = FastTransport((ROBOT_IP, 22))
-			transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
-			sftp = paramiko.SFTPClient.from_transport(transport)
+			if not TEST_DUMMY:
+				# Setup SFTP link
+				transport = FastTransport((ROBOT_IP, 22))
+				transport.connect(username=PEPPER_USER, password=PEPPER_PASSWORD)
+				sftp = paramiko.SFTPClient.from_transport(transport)
 
-			# Send file
-			sftp.put(soundfile_path, pepper_path, callback=printProgress)
-			sftp.close()
-			transport.close()
+				# Send file
+				sftp.put(soundfile_path, pepper_path, callback=printProgress)
+				sftp.close()
+				transport.close()
 
 		else:
 			filename = api_params["file"]
@@ -102,17 +104,23 @@ def Request(api_name, api_params={}):
 
 # ==============================================================
 # Only to be used by Kinematics module
+# Listen to requests for Pepper controls
 
+D = 0 # Pepper's offset from the world (CV camera) in px
 def Listen():
 
 	# Import NAOqi modules
-	from naoqi import ALProxy, ALBroker
+	if not TEST_DUMMY:
+		from naoqi import ALProxy, ALBroker
+		from .motions import MOTIONS
+		import almath
 
 	# Callback for ALTextToSpeech
 	def tts_callback(msg):
 		tts = ALProxy("ALTextToSpeech", ROBOT_IP, ROBOT_PORT)
 		rospy.loginfo("Pepper ALTextToSpeech: Say %s" % msg.data)
-		tts.say(msg.data)
+		if not TEST_DUMMY:
+			tts.say(msg.data)
 		return IsDone("Set", "ALTextToSpeech")
 
 	# Callback for ALAudioPlayer
@@ -125,24 +133,71 @@ def Listen():
 
 		# Play audio in separate thread
 		rospy.loginfo("Pepper ALAudioPlayer: Play audio %s (%.3fs)" % (audio_file, length))
-		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-		taskId = ap.post.playFile(audio_file)
 
-		# For files pre-uploaded in Pepper, length is not given,
-		# and can be directly gotten because they're WAV files
-		if length < 0:
-			length = ap.getFileLength(taskId)
+		if not TEST_DUMMY:
+			ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+			taskId = ap.post.playFile(audio_file)
 
-		# Delay while file is being played in thread
-		global interrupt # for interrupting playback by sending SIGUSR1
-		tic = time.time()
-		toc = time.time()
-		while (toc - tic) < length and not interrupt:
+			# For files pre-uploaded in Pepper, length is not given,
+			# and can be directly gotten because they're WAV files
+			if length < 0:
+				length = ap.getFileLength(taskId)
+
+			actions_list = []
+			motion = None
+			if length > 10:
+				playing_length = length
+				while playing_length > 2:
+					i = np.random.randint(len(MOTIONS))
+					action = MOTIONS.keys()[i]
+					action_time = MOTIONS[action]
+					playing_length -= action_time + 0.5
+					actions_list.append(action)
+				motion = ALProxy("ALMotion", ROBOT_IP, ROBOT_PORT)
+
+			# Delay while file is being played in thread
+			global interrupt # for interrupting playback by sending SIGUSR1
+			global D, LOCALIZING
+			tic = time.time()
 			toc = time.time()
+			action_counter = 0
+			while (toc - tic) < length and not interrupt:
+				if len(actions_list) and action_counter < len(actions_list):
+					action = actions_list[action_counter]
+					names, times, keys = action()
+					times = [[k * SLOW_DOWN for k in t] for t in times]
+					try:
+						if LOCALIZING and D != 0:
+							chance = np.random.random()
+							if chance > 0.96:
+								direction = -1 if D < 0 else 1
+								motion.setExternalCollisionProtectionEnabled("All", False)
+								motion.move(0, 0.15*direction, 0)
+								time.sleep(np.random.random() * 1.5)
+						motion.move(0,0,0)
+						motion.setExternalCollisionProtectionEnabled("All", True)
+						motion.angleInterpolationBezier(names, times, keys)
+						time.sleep(0.2)
+						action_counter += 1
+					except RuntimeError:
+						motion = ALProxy("ALMotion", ROBOT_IP, ROBOT_PORT)
+				toc = time.time()
 
-		# Stop playback
-		time.sleep(1) # slight buffer
-		ap.stopAll()
+
+			# Stop playback
+			try:
+				ap.stopAll()
+			except:
+				pass
+			
+			posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+			motion = ALProxy("ALMotion", ROBOT_IP, ROBOT_PORT)
+			posture.post.applyPosture("StandInit", 0.7)
+			motion.post.angleInterpolation("HeadPitch", 10.0*almath.TO_RAD, 2.0, True)
+
+		else:
+			time.sleep(2) # slight buffer
+
 		interrupt = False # reset interrupt
 
 		return IsDone("Set", "ALAudioPlayer")
@@ -151,13 +206,16 @@ def Listen():
 	def point_callback(msg):
 		# parse msg
 		x,y,w,h = msg.x, msg.y, msg.w, msg.h
+		w,h = 0,0
 		frame_width = msg.frame_width
 		frame_height = msg.frame_height
+		
+		global D
 
 		# constants
-		Z_UP = 1.0
-		Z_DOWN = 0.7
-		Y_LARM_OUT = 5.0
+		Z_UP = 0.3
+		Z_DOWN = 0
+		Y_LARM_OUT = 0.8
 		Y_LARM_IN = 0
 		Y_RARM_OUT = -Y_LARM_OUT
 		Y_RARM_IN = -Y_LARM_IN
@@ -170,50 +228,52 @@ def Listen():
 			(center_x, center_y, frame_width, frame_height))
 
 		# point parameters
-		max_speed = 0.5
+		EXT = Y_LARM_OUT * D / (mid_width) # extension range for pointing based on x-offset from center
+		print("EXT:", EXT)
+		max_speed = 0.7
 		frame = 0 # Torso=0, World=1, Robot=2
 
 		# point in/out
 		point_x = 1.0 # fixed
 
 		# point left/right
-		if center_x < mid_width:
+		if center_x < mid_width + D:
 			effector = "LArm"
-			point_y = Y_LARM_OUT - (Y_LARM_OUT - Y_LARM_IN) * center_x / mid_width
+			point_y = (Y_LARM_OUT + EXT) - (Y_LARM_OUT + EXT - Y_LARM_IN) / (mid_width + D) * center_x
 		else:
 			effector = "RArm"
-			point_y = Y_RARM_OUT + (Y_RARM_IN - Y_RARM_OUT) * (center_x - mid_width) / mid_width
+			point_y = Y_RARM_IN - (Y_RARM_IN - (Y_RARM_OUT + EXT)) / (mid_width - D) * (center_x - mid_width - D)
 
 		# point up/down
 		point_z = Z_UP - Z_DOWN * center_y / frame_height
 
 		# actuate
-		rospy.loginfo("Pepper ALTracker: Point %s at x=%.2f y=%.2f, z=%.2f" % 
-			(effector, point_x, point_y, point_z))
+		rospy.loginfo("Pepper ALTracker: Point %s at x=%.2f y=%.2f, z=%.2f with offset %d from world center" % 
+			(effector, point_x, point_y, point_z, D))
 
-		# posture.applyPosture("StandInit", 0.5)
-		tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
-		posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
-		ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-
-		tracker.post.lookAt([point_x,point_y,point_z], frame, max_speed, False)
-		tracker.post.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
-		time.sleep(.7) # small delay between pointing and prompting
-		ap.post.playFile(PEPPER_AUDIO_PATH + "what_is_your_qn.wav")
-		time.sleep(2)
+		if not TEST_DUMMY:
+			tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
+			posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+			ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+			posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
+			tracker.post.lookAt([point_x,point_y,point_z], frame, max_speed, False)
+			tracker.post.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
+			time.sleep(.7) # small delay between pointing and prompting
+			posture.post.applyPosture("StandInit", 0.7)
 
 		return IsDone("Set", "Point")
 
 	# Increase/decrease master volume
 	def volume_callback(msg):
-		ad = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
-		vol = ad.getOutputVolume()
-		if msg.data == "up":
-			vol = 100 if vol > 90 else vol+10
-		elif msg.data == "down":
-			vol = 0 if vol < 10 else vol-10
 		rospy.loginfo("Pepper ALAudioDevice: Volume " + msg.data)
-		ad.setOutputVolume(vol)
+		if not TEST_DUMMY:
+			ad = ALProxy("ALAudioDevice", ROBOT_IP, ROBOT_PORT)
+			vol = ad.getOutputVolume()
+			if msg.data == "up":
+				vol = 100 if vol > 90 else vol+10
+			elif msg.data == "down":
+				vol = 0 if vol < 10 else vol-10
+			ad.setOutputVolume(vol)
 		return IsDone("Set", "ChangeVolume")
 	
 
@@ -261,11 +321,12 @@ def Listen():
 		while True:
 			if not kill_threads:
 				continue
-			try:
-				ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-				ap.stopAll()
-			except:
-				pass
+			if not TEST_DUMMY:
+				try:
+					ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
+					ap.stopAll()
+				except:
+					pass
 			event.clear()
 			thread_tts.join()
 			thread_ap.join()
@@ -282,7 +343,7 @@ def Listen():
 
 	return
 
-# Kill Action.Listen()
+# Kill Action.Listen() and Action.Localize()
 kill_threads = False
 def KillThreads():
 	global kill_threads
@@ -290,6 +351,7 @@ def KillThreads():
 
 # ==============================================================
 # Get status action. IsDone=False means action is still running.
+# Used to know when an Action has been completed
 
 action_status_dict = {
 	"ALTextToSpeech": False,
@@ -317,3 +379,70 @@ def signal_handler(sig, frame):
 	interrupt = True
 signal.signal(signal.SIGUSR1, signal_handler)
 interrupt = False
+
+# ==============================================================
+# Localization with ArUco Markers
+
+LOCALIZING = False
+def Localize():
+
+	if TEST_DUMMY:
+		return
+
+	from naoqi import ALProxy
+	import vision_definitions
+	import Image
+	import numpy as np
+	import cv2
+	from .utils import pose_estimation
+
+	global D, LOCALIZING
+
+	def initialize_video_proxy():
+		video = cv2.VideoCapture(0)
+		# video = ALProxy("ALVideoDevice", ROBOT_IP, ROBOT_PORT)
+		# cameraIndex = 0
+		# resolution = vision_definitions.kQVGA
+		# colorSpace = vision_definitions.kRGBColorSpace
+		# fps = 10
+		subscriberID = "subscriberID"
+		# subscriberID = video.subscribeCamera(subscriberID, cameraIndex, resolution, colorSpace, fps)
+		return video, subscriberID
+		
+
+	aruco_dict_type = cv2.aruco.DICT_ARUCO_ORIGINAL
+	k = np.load("data/camera_matrix.npy")
+	d = np.load("data/dist_coeffs.npy")
+
+	video, subscriberID = initialize_video_proxy()
+
+	global kill_threads
+	try:
+		while not kill_threads:
+			try:
+				img = video.getImageRemote(subscriberID)
+				if img is None:
+					LOCALIZING = False
+					continue
+				LOCALIZING = True
+				imgWidth, imgHeight = img[0], img[1]
+				array = img[6]
+				im = Image.frombytes("RGB", (imgWidth, imgHeight), array)
+				frame = np.array(im)[:,:,::-1] # convert to BGR
+				frame = frame.astype(np.uint8)
+				output, Dnew = pose_estimation(frame, (imgWidth,imgHeight), aruco_dict_type, k, d)
+				if Dnew is not None:
+					D = Dnew
+				output = cv2.resize(output, (640,480), cv2.INTER_AREA)
+				cv2.imshow('Estimated Pose', output)
+				key = cv2.waitKey(1) & 0xFF
+				if key == ord('q'):
+					break
+			except RuntimeError:
+				LOCALIZING = False
+				video, subscriberID = initialize_video_proxy()
+	except KeyboardInterrupt:
+		print("KeyboardInterrupt")
+		video.releaseImage(subscriberID)
+		video.unsubscribe(subscriberID)
+		cv2.destroyAllWindows()

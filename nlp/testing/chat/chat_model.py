@@ -1,14 +1,16 @@
 # This script is where the calls to the openai models are
-
 import openai
 
-def getModel():
+
+def getModel(a):
     """get the current model under use
     @returns: model [string]
     """
-    model = "chatgpt"
-    # model = "davinci"
-    return model
+    if a == 1:
+        return "chatgpt"
+    elif a == 2:
+        return "davinci"
+    
 
 def chatGPT(query):
     """call the openai chatGPT api
@@ -20,8 +22,9 @@ def chatGPT(query):
     completions = openai.ChatCompletion.create(
 		    model="gpt-3.5-turbo",
 		    messages=[
-				    {"role": "system", "content": f"{query}"},
-			    ]
+                    {'role': 'user',
+                     'content': f"{query}"}
+            ]
 	    )
     response = completions['choices'][0]['message']['content']
     return response
@@ -48,9 +51,20 @@ def getResponse(query):
     @params: query [string]
     @returns: response [string]
     """
-    model = getModel()
-    if model == "chatgpt":
-        response = chatGPT(query)
-    elif model == "davinci":
-        response = daVinci(query)
+    model = getModel(1)
+    try:
+        if model == "chatgpt":
+            response = chatGPT(query)
+        elif model == "davinci":
+            response = daVinci(query)
+            print("chatGPT failed - Using GPT-3")
+    except:
+        model = getModel(2)
+        if model == "chatgpt":
+            response = chatGPT(query)
+        elif model == "davinci":
+            response = daVinci(query)
+            print("chatGPT failed - Using GPT-3")
+
     return response
+

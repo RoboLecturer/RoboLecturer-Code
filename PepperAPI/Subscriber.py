@@ -1,6 +1,6 @@
 import rospy
 from std_msgs.msg import String
-from sensor_msgs.msg import Image
+# from sensor_msgs.msg import Image
 from api.msg import CVInfo
 
 # Parent subscriber class

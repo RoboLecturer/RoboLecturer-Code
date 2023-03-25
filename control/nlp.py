@@ -1,8 +1,10 @@
 import PepperAPI
 from PepperAPI import Action, Info
-import random 
+import random
+import numpy as np
 
-# initialise
+INPUT_DONE = False
+
 LOOP_COUNT = 0
 list_of_scripts = []
 
@@ -44,19 +46,26 @@ def nlp_main():
 		# TODO: Classify question
 		question_type = random.choice(["related","operational"])
 
-		if question_type == "related":
-			# TODO: For lecture-related questions,
-			# generate answer from received question then send to Speech
-			answer = "Because blue light is scattered the most"
-			Info.Send("Answer", {"text": answer})
-
+		if INPUT_DONE:
+			student_done = int(input("Done (0/1)?"))
 		else:
-			# TODO: For operational questions, 
-			# request for the corresponding action,
-			# then generate response and send to Speech
-			Action.Request("ChangeVolume", {"cmd":"up"})
-			answer = "Got it, I'll speak louder"
-			Info.Send("Answer", {"text": answer})
+			student_done = np.random.randint(2)
+		Info.Send("StudentDone", {"value": student_done})
+		if not student_done:
+
+			if question_type == "related":
+				# TODO: For lecture-related questions,
+				# generate answer from received question then send to Speech
+				answer = "Because blue light is scattered the most"
+				Info.Send("Answer", {"text": answer})
+
+			else:
+				# TODO: For operational questions,
+				# request for the corresponding action,
+				# then generate response and send to Speech
+				Action.Request("ChangeVolume", {"cmd":"up"})
+				answer = "Got it, I'll speak louder"
+				Info.Send("Answer", {"text": answer})
 
 		state = Info.Request("State", {"name":"AnyQuestions", "print":False})
 

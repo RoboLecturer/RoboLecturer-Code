@@ -2,7 +2,7 @@
 
 # import packages
 # import openai
-from chat import chat_model
+from pkg.chat import chat_model
 
 # function to create the descriptions
 def genKeywords(content):
@@ -87,5 +87,6 @@ def initDict():
         "go to previous slide": ["previous slide", "go back"],
         "go to next slide": ["next slide", "advance slide"],
         "go to specific slide number": ["go to slide"],
+        "finished": ["yes", "all good", "thank you", "yep"],
     }
     return class_descriptions

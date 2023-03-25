@@ -1,7 +1,7 @@
 # script for the generation of a lecture script based on recieved lecture slides
 
 # import packages
-from chat import chat_model
+from pkg.chat import chat_model
 from tqdm import tqdm
 ############################################################ 
 
@@ -23,7 +23,7 @@ def genScript(inputText, slideNum):
     if slideNum == 0:
         # join title slide lines together, seperated by a commar 
         inputText = ", ".join(inputText)
-        query = f"introudce the following presentation title page in the style of an excited lecturer: {inputText}"
+        query = f"very shortly introudce the following presentation title page in the style of a lecturer: {inputText}"
         # get response to query using selelcted model
         response = chat_model.getResponse(query)
         
@@ -35,7 +35,7 @@ def genScript(inputText, slideNum):
         # create a single string input with contents seperated by a new line
         inputText = "\n".join(inputText)
 
-        query = f"shortly introduce each of the following points, that are seperated by a new line, as a table of contents to a lecture with these points, in the style of an excited lecturer: {inputText}"
+        query = f"very shortly introduce this table of contents for todays lecture entitled: {inputText}. You don't need to go into detail on each topic, just introduce the titles"
 
         # get response to query using selelcted model
         response = chat_model.getResponse(query)
@@ -45,7 +45,7 @@ def genScript(inputText, slideNum):
     else:
         for line in tqdm(inputText):
             # summarise the bullet point in a few sentences
-            query = f"explain the following point in a single paragraph in the style of an excited lecturer: {line}"
+            query = f"explain the following point in a couple short sentences in the style of a lecturer: {line}"
 
             # get response to query using selelcted model
             response = chat_model.getResponse(query)        

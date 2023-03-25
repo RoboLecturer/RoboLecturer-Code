@@ -1,14 +1,17 @@
 # This script is where the calls to the openai models are
 
 import openai
+import time
 
-def getModel():
+
+def getModel(a):
     """get the current model under use
     @returns: model [string]
     """
-    # model = "chatgpt"
-    model = "davinci"
-    return model
+    if a == 1:
+        return "chatgpt"
+    elif a == 2:
+        return "davinci"
 
 def chatGPT(query):
     """call the openai chatGPT api
@@ -48,9 +51,62 @@ def getResponse(query):
     @params: query [string]
     @returns: response [string]
     """
-    model = getModel()
-    if model == "chatgpt":
-        response = chatGPT(query)
-    elif model == "davinci":
-        response = daVinci(query)
+    model = getModel(1)
+    try:
+        if model == "chatgpt":
+            response = chatGPT(query)
+        elif model == "davinci":
+            response = daVinci(query)
+    except:
+        model = getModel(2)
+        if model == "chatgpt":
+            response = chatGPT(query)
+        elif model == "davinci":
+            response = daVinci(query)
+
     return response
+
+def getEmbedding(content):
+    """Get embedding for query from ada for use with PineCone
+    @params:
+        content: [string] - text and its id
+    @returns:
+        embeds: list|float - list of embedding vectors
+    """
+    content = content.encode(
+        encoding = 'ASCII',
+        errors = 'ignore'
+    ).decode()
+
+    model = 'text-embedding-ada-002'
+    # text  = [x['text'] for x in content]
+    text = content 
+
+    try:
+        response = openai.Embedding.create(
+            input = text,
+            engine = model
+        )
+    except: 
+        done = False
+        while not done:
+            time.sleep(1)
+            try:
+                response = openai.Embedding.create(input=text, engine=model)
+                done = True
+            except:
+                pass
+    # create list of embeddings
+    embeds = [record['embedding'] for record in response['data']]
+
+    return embeds
+
+def flatternConvo(conversation):
+    """flattern a list of conversation elements
+    @params: conversation: list|dict{}|string - list of the conversation strings
+    @returns: convo [string] - single string of the conversation
+    """
+    convo=""
+    for i in conversation:
+        convo += '%s: %s\m' % (i['role'].upper(), i['content'])
+    return convo.strip()
