@@ -112,7 +112,7 @@ def Listen():
 	# Import NAOqi modules
 	if not TEST_DUMMY:
 		from naoqi import ALProxy, ALBroker
-		from .motions import MOTIONS
+		from .motions import MOTIONS, point
 		import almath
 
 	# Callback for ALTextToSpeech
@@ -213,13 +213,13 @@ def Listen():
 		global D
 
 		# constants
-		Z_UP = 0.3
-		Z_DOWN = 0
-		Y_LARM_OUT = 0.8
-		Y_LARM_IN = 0
-		Y_RARM_OUT = -Y_LARM_OUT
-		Y_RARM_IN = -Y_LARM_IN
-
+		PITCH_UP = 20.0
+		PITCH_DOWN = 35.0
+		RROLL_OUT = -24.5
+		RROLL_IN = -6.0
+		LROLL_OUT = -RROLL_OUT
+		LROLL_IN = -RROLL_IN
+	
 		# parameters
 		center_x = x + w//2
 		center_y = y + h//2
@@ -227,39 +227,29 @@ def Listen():
 		rospy.loginfo("Raised hand at (%.0f, %.0f) of (%d, %d)" %
 			(center_x, center_y, frame_width, frame_height))
 
-		# point parameters
-		EXT = Y_LARM_OUT * D / (mid_width) # extension range for pointing based on x-offset from center
-		print("EXT:", EXT)
-		max_speed = 0.7
-		frame = 0 # Torso=0, World=1, Robot=2
-
-		# point in/out
-		point_x = 1.0 # fixed
-
+		# extension range for pointing based on x-offset from center
+		EXT = LROLL_OUT * D / (mid_width) 
+		
 		# point left/right
 		if center_x < mid_width + D:
-			effector = "LArm"
-			point_y = (Y_LARM_OUT + EXT) - (Y_LARM_OUT + EXT - Y_LARM_IN) / (mid_width + D) * center_x
+			effector = "L"
+			shoulder_roll = (LROLL_OUT + EXT) - (LROLL_OUT + EXT - LROLL_IN) / (mid_width + D) * center_x
 		else:
-			effector = "RArm"
-			point_y = Y_RARM_IN - (Y_RARM_IN - (Y_RARM_OUT + EXT)) / (mid_width - D) * (center_x - mid_width - D)
+			effector = "R"
+			shoulder_roll = RROLL_IN - (RROLL_IN - (RROLL_OUT + EXT)) / (mid_width - D) * (center_x - mid_width - D)
 
 		# point up/down
-		point_z = Z_UP - Z_DOWN * center_y / frame_height
+		shoulder_pitch = PITCH_UP + (PITCH_DOWN - PITCH_UP) / frame_height * center_y
 
 		# actuate
-		rospy.loginfo("Pepper ALTracker: Point %s at x=%.2f y=%.2f, z=%.2f with offset %d from world center" % 
-			(effector, point_x, point_y, point_z, D))
+		rospy.loginfo("Pepper ALTracker: Point %s at with pitch=%.2f, roll=%.2f with offset %d from world center" % 
+			(effector+"Arm", shoulder_pitch, shoulder_roll, D))
 
 		if not TEST_DUMMY:
-			tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
-			posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
-			ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-			posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
-			tracker.post.lookAt([point_x,point_y,point_z], frame, max_speed, False)
-			tracker.post.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
-			time.sleep(.7) # small delay between pointing and prompting
-			posture.post.applyPosture("StandInit", 0.7)
+			motion = ALProxy("ALMotion", ROBOT_IP, ROBOT_PORT)
+			names, times, keys = PointTimeline(effector, head_pitch, head_yaw, shoulder_pitch, shoulder_roll)
+			motion.post.angleInterpolationBezier(names, times, keys)
+			time.sleep(0.7)
 
 		return IsDone("Set", "Point")
 
