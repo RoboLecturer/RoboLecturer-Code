@@ -755,30 +755,35 @@ def PointTimeline(effector, head_pitch, head_yaw, shoulder_pitch, shoulder_roll)
 	times = list()
 	keys = list()
 
+	head_pitch = head_pitch * almath.TO_RAD
+	head_yaw = head_yaw * almath.TO_RAD
+	shoulder_pitch = shoulder_pitch * almath.TO_RAD
+	shoulder_roll = shoulder_roll * almath.TO_RAD
+
 	head_pitch_default = 10.0 * almath.TO_RAD
-	head_yaw_default = 1.1 * almath.TO_RAD
+	head_yaw_default = 0.0 * almath.TO_RAD
 	hand_close, hand_open = 0.69, 0.98
-	shoulder_pitch_default = 100.0 * almath.TO_RAD
-	shoulder_roll_default = -6.0 * almath.TO_RAD
+	shoulder_pitch_default = 90.0 * almath.TO_RAD
+	shoulder_roll_default = 8.0 * almath.TO_RAD * (1 if effector == "L" else -1)
 
 	names.append("HeadPitch")
-	times.append([0.56, 0.96, 1.56])
-	keys.append([[head_pitch, [3, -0.2, 0], [3, 0.133333, 0]], [head_pitch, [3, -0.133333, 0], [3, 0.2, 0]], [head_pitch_default, [3, -0.2, 0], [3, 0, 0]]])
+	times.append([0.56, 1.36, 1.76])
+	keys.append([[head_pitch, [3, -0.2, 0], [3, 0.266667, 0]], [head_pitch, [3, -0.266667, 0], [3, 0.133333, 0]], [head_pitch_default, [3, -0.133333, 0], [3, 0, 0]]])
 
 	names.append("HeadYaw")
-	times.append([0.56, 0.96, 1.56])
-	keys.append([[head_yaw, [3, -0.2, 0], [3, 0.133333, 0]], [head_yaw, [3, -0.133333, 0], [3, 0.2, 0]], [head_yaw_default, [3, -0.2, 0], [3, 0, 0]]])
+	times.append([0.56, 1.36, 1.76])
+	keys.append([[head_yaw, [3, -0.2, 0], [3, 0.266667, 0]], [head_yaw, [3, -0.266667, 0], [3, 0.133333, 0]], [head_yaw_default, [3, -0.133333, 0], [3, 0, 0]]])
 
 	names.append(effector + "Hand")
-	times.append([0.56, 0.96, 1.56])
-	keys.append([[hand_open, [3, -0.2, 0], [3, 0.133333, 0]], [hand_open, [3, -0.133333, 0], [3, 0.2, 0]], [hand_close, [3, -0.2, 0], [3, 0, 0]]])
+	times.append([0.56, 1.36, 1.76])
+	keys.append([[hand_open, [3, -0.2, 0], [3, 0.266667, 0]], [hand_open, [3, -0.266667, 0], [3, 0.133333, 0]], [hand_close, [3, -0.133333, 0], [3, 0, 0]]])
 
 	names.append(effector + "ShoulderPitch")
-	times.append([0.56, 0.96, 1.56])
-	keys.append([[shoulder_pitch, [3, -0.2, 0], [3, 0.133333, 0]], [shoulder_pitch, [3, -0.133333, 0], [3, 0.2, 0]], [shoulder_pitch_default, [3, -0.2, 0], [3, 0, 0]]])
+	times.append([0.56, 1.36, 1.76])
+	keys.append([[shoulder_pitch, [3, -0.2, 0], [3, 0.266667, 0]], [shoulder_pitch, [3, -0.266667, 0], [3, 0.133333, 0]], [shoulder_pitch_default, [3, -0.133333, 0], [3, 0, 0]]])
 
 	names.append(effector + "ShoulderRoll")
-	times.append([0.56, 0.96, 1.56])
-	keys.append([[shoulder_roll, [3, -0.2, 0], [3, 0.133333, 0]], [shoulder_roll, [3, -0.133333, 0], [3, 0.2, 0]], [shoulder_roll_default, [3, -0.2, 0], [3, 0, 0]]])
+	times.append([0.56, 1.36, 1.76])
+	keys.append([[shoulder_roll, [3, -0.2, 0], [3, 0.266667, 0]], [shoulder_roll, [3, -0.266667, 0], [3, 0.133333, 0]], [shoulder_roll_default, [3, -0.133333, 0], [3, 0, 0]]])
 
 	return names, times, keys

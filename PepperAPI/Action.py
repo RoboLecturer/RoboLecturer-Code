@@ -212,12 +212,16 @@ def Listen():
 		global D
 
 		# constants
-		PITCH_UP = 20.0
-		PITCH_DOWN = 35.0
-		RROLL_OUT = -24.5
-		RROLL_IN = -6.0
-		LROLL_OUT = -RROLL_OUT
-		LROLL_IN = -RROLL_IN
+		HEAD_PITCH_UP = -5.0
+		HEAD_PITCH_DOWN = 10.0
+		HEAD_YAW_IN = 0.0
+		HEAD_YAW_OUT = 45.0 # left
+		SHOULDER_PITCH_UP = 15.0
+		SHOULDER_PITCH_DOWN = 35.0
+		LSHOULDER_ROLL_OUT = 60.0
+		LSHOULDER_ROLL_IN = 5.0
+		RSHOULDER_ROLL_OUT = -LSHOULDER_ROLL_OUT
+		RSHOULDER_ROLL_IN = -LSHOULDER_ROLL_IN
 	
 		# parameters
 		center_x = x + w//2
@@ -227,22 +231,26 @@ def Listen():
 			(center_x, center_y, frame_width, frame_height))
 
 		# extension range for pointing based on x-offset from center
-		EXT = LROLL_OUT * D / (mid_width) 
+		ROLL_EXT = LSHOULDER_ROLL_OUT * D / (mid_width)
+		YAW_EXT = HEAD_YAW_OUT * D / (mid_width)
 		
 		# point left/right
 		if center_x < mid_width + D:
 			effector = "L"
-			shoulder_roll = (LROLL_OUT + EXT) - (LROLL_OUT + EXT - LROLL_IN) / (mid_width + D) * center_x
+			shoulder_roll = (LSHOULDER_ROLL_OUT + ROLL_EXT) - (LSHOULDER_ROLL_OUT + ROLL_EXT - LSHOULDER_ROLL_IN) / (mid_width + D) * center_x
+			head_yaw = (HEAD_YAW_OUT + YAW_EXT) - (HEAD_YAW_OUT + YAW_EXT) / (mid_width + D) * center_x
 		else:
 			effector = "R"
-			shoulder_roll = RROLL_IN - (RROLL_IN - (RROLL_OUT + EXT)) / (mid_width - D) * (center_x - mid_width - D)
+			shoulder_roll = RSHOULDER_ROLL_IN - (RSHOULDER_ROLL_IN - (RSHOULDER_ROLL_OUT + ROLL_EXT)) / (mid_width - D) * (center_x - mid_width - D)
+			head_yaw = (YAW_EXT - HEAD_YAW_OUT) / (mid_width - D) * (center_x - mid_width - D)
 
 		# point up/down
-		shoulder_pitch = PITCH_UP + (PITCH_DOWN - PITCH_UP) / frame_height * center_y
+		shoulder_pitch = SHOULDER_PITCH_UP + (SHOULDER_PITCH_DOWN - SHOULDER_PITCH_UP) / frame_height * center_y
+		head_pitch = HEAD_PITCH_UP + (HEAD_PITCH_DOWN - HEAD_PITCH_UP) / frame_height * center_y
 
 		# actuate
-		rospy.loginfo("Pepper ALTracker: Point %s at with pitch=%.2f, roll=%.2f with offset %d from world center" % 
-			(effector+"Arm", shoulder_pitch, shoulder_roll, D))
+		rospy.loginfo("Pepper ALTracker: Point %s at with head_pitch=%.2f, head_yaw=%.2f, shoulder_pitch=%.2f, shoulder_roll=%.2f with offset %d from world center" %
+			(effector+"Arm", head_pitch, head_yaw, shoulder_pitch, shoulder_roll, D))
 
 		if not TEST_DUMMY:
 			motion = ALProxy("ALMotion", ROBOT_IP, ROBOT_PORT)
