@@ -396,14 +396,14 @@ def Localize():
 	global D, LOCALIZING
 
 	def initialize_video_proxy():
-		video = cv2.VideoCapture(0)
-		# video = ALProxy("ALVideoDevice", ROBOT_IP, ROBOT_PORT)
-		# cameraIndex = 0
-		# resolution = vision_definitions.kQVGA
-		# colorSpace = vision_definitions.kRGBColorSpace
-		# fps = 10
 		subscriberID = "subscriberID"
-		# subscriberID = video.subscribeCamera(subscriberID, cameraIndex, resolution, colorSpace, fps)
+		# video = cv2.VideoCapture(0)
+		video = ALProxy("ALVideoDevice", ROBOT_IP, ROBOT_PORT)
+		cameraIndex = 0
+		resolution = vision_definitions.kQVGA
+		colorSpace = vision_definitions.kRGBColorSpace
+		fps = 10
+		subscriberID = video.subscribeCamera(subscriberID, cameraIndex, resolution, colorSpace, fps)
 		return video, subscriberID
 		
 
