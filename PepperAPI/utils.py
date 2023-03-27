@@ -10,7 +10,7 @@ import numpy as np
 # 	25: 140
 # }
 MARKER_DIST = {
-	5: -70,
+	20: -70,
 	10: -0,
 	15: 70
 }
