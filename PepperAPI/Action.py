@@ -112,7 +112,7 @@ def Listen():
 	# Import NAOqi modules
 	if not TEST_DUMMY:
 		from naoqi import ALProxy, ALBroker
-		from .motions import MOTIONS, point
+		from .motions import MOTIONS, ResetPosition, PointTimeline
 		import almath
 
 	# Callback for ALTextToSpeech
@@ -190,10 +190,9 @@ def Listen():
 			except:
 				pass
 			
-			posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
 			motion = ALProxy("ALMotion", ROBOT_IP, ROBOT_PORT)
-			posture.post.applyPosture("StandInit", 0.7)
-			motion.post.angleInterpolation("HeadPitch", 10.0*almath.TO_RAD, 2.0, True)
+			names, times, keys = ResetPosition()
+			motion.angleInterpolationBezier(names, times, keys)
 
 		else:
 			time.sleep(2) # slight buffer
