@@ -112,9 +112,9 @@ class Slide:
 
 def nlp_main():
 
-	global lecture_title, list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes, list_of_questions
+	global lecture_title, list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes, list_of_questions, vdb
 
-	vdb = pine.init_pinecone()
+	# vdb = pine.init_pinecone()
 	
 	conversation = convHistory("I am an AI Teacher and lecturer. I have 5 goals: teach my students the lesson plan I am given, answer their questions to clear up areas of ambiguity, ask them questions to gauge understanding  and quiz them, maintain order in the classroom, and be ultimately helpful.")
 
@@ -124,6 +124,7 @@ def nlp_main():
 	Info.Request("State", {"name":"Start"})
 
 	if LOOP_COUNT == 1: # happens only in the very first loop
+		vdb = pine.init_pinecone()
 
 		# Get all slides from web
 		list_of_slides = Info.Request("Slides")
@@ -165,6 +166,7 @@ def nlp_main():
 		# Info.Send("Quiz", {"text": list_of_quizes})
 
 	if LOOP_COUNT == len(list_of_scripts) + 1:
+		pine.wipePinecone(vdb)
 		sys.exit()
 
 	# ========= STATE: AnyQuestions =========
@@ -207,7 +209,10 @@ def nlp_main():
 				convoContext = pine.queryPinecone(Q.question, vdb, "conversation", title) 
 				# generate the salience and anticipation
 				conversation.getSalience(convoContext)
-				conversation.getAnticipation()
+				if c == 1:
+					pass
+				else: 
+					conversation.getAnticipation()
 				# generate the content context
 				contentContext = pine.queryPinecone(Q.question, vdb, "textbook", title) # script namesapce includes lecture slides and textbook contents
 				lectureScript = pine.queryPinecone(Q.question, vdb, "script", title)
@@ -219,6 +224,9 @@ def nlp_main():
 				# create QnA metadata for storage in Pinecone
 				metadata = pine.createConvoMetadata(title, f"{Q.question}", f"{Q.answer}") 
 				pine.populatePinecone(f"{Q.question}, {Q.answer}", "conversation", metadata, vdb)
+
+				# Update the class descriptions to include conversational subjects
+				class_description = dg.createDescription(f"conversation_{c}",f"{Q.question}, {Q.answer}",class_description)
 
 				response = f"{Q.answer}.. Does that answer your question?"
 				Info.Send("Answer", {"text": response})
