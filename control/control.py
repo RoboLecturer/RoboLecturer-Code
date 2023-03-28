@@ -68,6 +68,8 @@ def main():
 					"file": "what_is_your_qn.mp3",
 					"length": 2.5
 					})
+				time.sleep(2.4)
+
 			Info.Send("TriggerListen")
 
 			student_done = Info.Request("StudentDone")
@@ -126,7 +128,8 @@ def main():
 		# Else if trigger_quiz, wait for take_control from Web
 		elif signal == "quiz":
 			Info.Send("TriggerQuiz")
-			Info.Request("TakeControl")	
+			if not PepperAPI.TEST_DUMMY:
+				Info.Request("TakeControl")
 		
 		# Restart loop after joke is played or quiz ended
 		return
@@ -148,7 +151,8 @@ def main():
 				pass
 		elif signal == "quiz":
 			Info.Send("TriggerQuiz")
-			Info.Request("TakeControl")	
+			if not PepperAPI.TEST_DUMMY:
+				Info.Request("TakeControl")
 		return
 
 	else:

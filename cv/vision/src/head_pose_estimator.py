@@ -2,9 +2,10 @@ import mediapipe as mp
 import cv2
 import numpy as np
 import time
+import random
 
 def landmark_model():
-    return mp.solutions.face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+    return mp.solutions.face_mesh.FaceMesh(max_num_faces=3, min_detection_confidence=0.2, min_tracking_confidence=0.5)
 
 
 def project_landmarks(landmarks, frame, face_2d, face_3d):
@@ -46,11 +47,33 @@ def project_landmarks(landmarks, frame, face_2d, face_3d):
     return 0, 0, 0
 
 
+def engagement_from_landmarks(landmarks, frame, w, h):
+    img_h, img_w, img_c = frame.shape
+    if landmarks.any():
+        for landmark in landmarks:
+            z = random.uniform(-1, 1)
+            for i in range(0, landmarks.shape[1] -1, 2):
+                if i == 6:
+                    x_nose = int(landmark[i])
+                    y_nose = int(landmark[i + 1])
+
+                x = int(landmark[i])
+                y = int(landmark[i + 1])
+                cv2.circle(frame, (x, y), radius=2, color=(0, 255, 0), thickness=2)
+
+            p_nose = np.array([x_nose, y_nose])
+            p_nose_norm = np.divide(p_nose, np.divide(h, w))
+            similarity_nose = 1.0/np.cosh(0.002 * p_nose_norm[0]) * 1.0/np.cosh(0.002 * p_nose_norm[1])
+
+            return similarity_nose
+
+    return 0
+
 
 def compute_engagement_score(x, y, z):
     if x == 0 and y == 0 and z == 0:
         return 0.0
-    return 1.0/(np.cosh(0.12*x)) * 1.0/(np.cosh(0.12*y)) * 1.0/(np.cosh(0.12*z))
+    return 1.0/(np.cosh(0.12*x)) * 1.0/(np.cosh(0.12*y))# * 1.0/(np.cosh(0.12*z))
 
 if __name__ == "__main__":
     mp_face_mesh = mp.solutions.face_mesh
