@@ -70,7 +70,7 @@ def queryPinecone(query, vdb, namespace, title):
         return contexts
     
     elif namespace == "textbook":
-        response == vdb.query(
+        response = vdb.query(
             xq,
             top_k = 5,
             include_metadata = True, 

@@ -1,0 +1,21 @@
+{
+  "quiz_name": "Stars and Galaxies Quiz",
+  "question_count": 3,
+  "questions": [
+    {
+      "prompt": "Which of the following is not a type of galaxy?",
+      "options": ["Elliptical galaxy", "Spiral galaxy", "Irregular galaxy", "Super galaxy", "Lenticular galaxy"],
+      "answer": "Super galaxy"
+    },
+    {
+      "prompt": "What is the closest star to Earth?",
+      "options": ["Alpha Centauri", "Betelgeuse", "Proxima Centauri", "Rigel", "Sirius"],
+      "answer": "Proxima Centauri"
+    },
+    {
+      "prompt": "What is the process by which a star dies?",
+      "options": ["Supernova", "Black hole", "Nebula", "Red giant", "White dwarf"],
+      "answer": "Supernova"
+    }
+  ]
+}
