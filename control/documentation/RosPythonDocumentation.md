@@ -28,7 +28,7 @@ The list of Pepper's APIs can be found [here](http://doc.aldebaran.com/2-5/naoqi
 
 ## 2. ROS Setup
 ### 2.1. Linux and ROS installation
-See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/LinuxSetup.md)** for the full details.
+See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/tree/main/control/documentations/LinuxSetup.md)** for the full details.
 
 ### 2.2. Catkin workspace
 **Note:** if you load and run the [provided image](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh), a sample workspace and package has been created for you.
@@ -75,7 +75,7 @@ export ROS_IP=<your_ip_address>
 3. Navigate to the folder with your main script and run ```python myScript.py```.
 
 ## 3. PepperAPI
-For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/PepperAPI.md)**.
+For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLecturer/RoboLecturer-Code/tree/main/PepperAPI/README.md)**.
 
 **Note**: This API is only for sending/receiving info between Pepper and your module, or between your module and other modules. For CV, Web and Speech modules that require communication with your camera, mic or web browser, please set that up individually.
   
