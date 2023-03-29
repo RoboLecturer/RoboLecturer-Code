@@ -28,7 +28,7 @@ The list of Pepper's APIs can be found [here](http://doc.aldebaran.com/2-5/naoqi
 
 ## 2. ROS Setup
 ### 2.1. Linux and ROS installation
-See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/tree/main/control/documentations/LinuxSetup.md)** for the full details.
+See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/tree/main/control/documentation/LinuxSetup.md)** for the full details.
 
 ### 2.2. Catkin workspace
 **Note:** if you load and run the [provided image](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh), a sample workspace and package has been created for you.
