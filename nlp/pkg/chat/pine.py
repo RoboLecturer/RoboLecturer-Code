@@ -70,7 +70,7 @@ def queryPinecone(query, vdb, namespace, title):
         return contexts
     
     elif namespace == "textbook":
-        response == vdb.query(
+        response = vdb.query(
             xq,
             top_k = 5,
             include_metadata = True, 
@@ -157,3 +157,12 @@ def createConvoMetadata(title, question, answer):
     meta_data.append(metadata)
 
     return meta_data 
+
+def wipePinecone(vdb):
+    """This function wipes the conversation history of the pinecone database as well as the lecture scripts and pre-uploaded textbooks
+    @params: 
+        vdb: The pinecone data base instance
+    """
+    vdb.delete(deleteAll='true', namespace='script')
+    vdb.delete(deleteAll='true', namespace='textbook')
+    vdb.delete(deleteAll='true', namespace='conversation')

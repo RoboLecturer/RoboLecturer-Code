@@ -13,7 +13,7 @@ def genKeywords(content):
             keywords - [list][string] array of keywords
     """
     # set query
-    query = f"give me a list of 5 keywords associated with the following text: {content}" 
+    query = f"give me a list of 5 keyphrases associated with the following text: {content}" 
     # get response to query using selelcted model
     response = chat_model.getResponse(query)
     

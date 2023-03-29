@@ -25,6 +25,7 @@ class_description = {}
 Slide_instances = []
 list_of_quizes = []
 lecture_title = ""
+script_number = 0
 list_of_questions = [] # store questions for post-evaluation (higher-order/lower-order)
 
 class convHistory:
@@ -112,11 +113,11 @@ class Slide:
 
 def nlp_main():
 
-	global lecture_title, list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes, list_of_questions, vdb
+	global lecture_title, list_of_scripts, LOOP_COUNT, Q, class_description, Slide_instances, list_of_quizes, list_of_questions, slide_number
 
-	# vdb = pine.init_pinecone()
-	
-	conversation = convHistory("I am an AI Teacher and lecturer. I have 5 goals: teach my students the lesson plan I am given, answer their questions to clear up areas of ambiguity, ask them questions to gauge understanding  and quiz them, maintain order in the classroom, and be ultimately helpful.")
+	vdb = pine.init_pinecone()
+	title = ""
+	conversation = convHistory("I am an AI Teacher and lecturer. I have the following goals: teach my students the lecture i'm giving on 'an introduction to astonomy', answer their questions to clear up areas of ambiguity, ask them questions to gauge understanding  and quiz them, maintain order in the classroom, and be ultimately helpful.")
 
 	LOOP_COUNT += 1
 	# ========= STATE: Start =========
@@ -124,49 +125,53 @@ def nlp_main():
 	Info.Request("State", {"name":"Start"})
 
 	if LOOP_COUNT == 1: # happens only in the very first loop
-		vdb = pine.init_pinecone()
-
-		# Get all slides from web
-		list_of_slides = Info.Request("Slides")
-		# initialise the class_descriptions dictionary with operational keys
+#
+#		# Get all slides from web
+#		list_of_slides = Info.Request("Slides")
+#		# initialise the class_descriptions dictionary with operational keys
+#		class_description = dg.initDict()
+#		slide_number = 0
+#
+#		# for each slide, generate script and keyword descriptions
+#		for slide in tqdm(list_of_slides):
+#			script = sg.createScript(slide, slide_number)
+#			list_of_scripts.append(script)
+#
+#			# get slide title 
+#			title = dg.getTitle(slide)
+#			if slide_number == 0:
+#				lecture_title=title
+#			# set class
+#			Slide_instances.append(Slide(slide_number, title, slide, script))
+#			# create slide metadata for storage in Pinecone
+#			metadata = pine.createSlideMetadata(slide_number, script, title)
+#			# store slide script and metadata in Pinecone, under namespace "scripts"
+#			pine.populatePinecone(script, "scripts", metadata, vdb)
+#
+#			if slide_number > 0:
+#				# create question classification content classes and keyword descriptions
+#				class_description = dg.createDescription(slide,script,class_description)
+#				# create quiz for this slide
+#				# quiz = qg.quizGen(script)
+#				# url = "http://192.168.0.101:3000/saveQuiz"
+#				# requests.post(url, json = quiz)
+#				# list_of_quizes.append(list_of_quizes, quiz)
+#			slide_number += 1
 		class_description = dg.initDict()
-		slide_number = 0
-
-		# for each slide, generate script and keyword descriptions
-		for slide in tqdm(list_of_slides):
-			script = sg.createScript(slide, slide_number)
-			list_of_scripts.append(script)
-
-			# get slide title 
-			title = dg.getTitle(slide)
-			if slide_number == 0:
-				lecture_title=title
-			# set class
-			Slide_instances.append(Slide(slide_number, title, slide, script))
-			# create slide metadata for storage in Pinecone
-			metadata = pine.createSlideMetadata(slide_number, script, title)
-			# store slide script and metadata in Pinecone, under namespace "scripts"
-			pine.populatePinecone(script, "scripts", metadata, vdb)
-
-			if slide_number > 0:
-				# create question classification content classes and keyword descriptions
-				class_description = dg.createDescription(slide,script,class_description)
-				# create quiz for this slide
-				# quiz = qg.quizGen(script)
-				# url = "http://192.168.0.101:3000/saveQuiz"
-				# requests.post(url, json = quiz)
-				# list_of_quizes.append(list_of_quizes, quiz)
-			slide_number += 1
-
+		lecture_title = "Introduction To Astronomy"
+		Slide_instances.append(Slide(1, "Introduction To Astronomy", "Introduction to Astronomy\n", """Good morning everyone, and thank you for joining me today for an exciting journey to the vast and beautiful universe. Today's topic is "Introduction to Astronomy" where we will explore the mysteries of the cosmos, ranging from the stars and planets to the galaxies and beyond. I'm excited to share with you some fascinating insights and research in the field of astronomy, and to help you appreciate the beauty and wonder of the universe. So, buckle up and get ready for an astronomical experience like never before. Let's dive in!"""))
+		Slide_instances.append(Slide(2, "Overview of the Solar System\n", "Overview of the Solar System\n« The sun: size, structure, and energy production\n« The eight planets and their characteristics\n« Dwarf planets and other objects in the solar system\n« Exploration of the solar system by humans and robots\n", "The Solar System is comprised of eight planets, a few dwarf planets, comets, asteroids, and various other celestial bodies. The system is centered around the Sun, which serves as the gravitational anchor for all of its constituents. Our understanding of the Solar System has developed considerably over the past few centuries, with advances in technology and observations contributing to our knowledge. Today, we will be discussing the sun, which is the closest star to Earth. It has a diameter of 1.4 million kilometers and is primarily composed of hydrogen and helium gas. Through the process of nuclear fusion, the sun produces energy in its core, which is then radiated out in the form of light and heat. There are eight planets in our solar system, starting with the innermost planet Mercury and followed by Venus, Earth, and Mars. These are called the terrestrial planets and are primarily composed of rock or metal. The outer four planets, known as gas giants, include Jupiter, Saturn, Uranus, and Neptune, and are larger and primarily composed of gas and ice. are those that orbit the sun but haven't cleared their orbit of other debris. These objects include Pluto, Ceres, Haumea, Makemake, and Eris. While they have some similarities to planets, they are considered distinct due to their inability to dominate their orbit. has greatly expanded our knowledge and understanding of the cosmos, allowing us to study the geological, atmospheric and planetary composition of numerous celestial bodies. Additionally, the ongoing research and technological advancements have laid the groundwork for potential future space colonisation and resource harvesting. Today we will be discussing the concept of artificial intelligence and its impact on modern society. Specifically, we will delve into the ethical considerations surrounding the development and use of AI, including issues such as algorithmic bias, privacy concerns, and the potential for job displacement. By the end of this lecture, you will have a better understanding of the challenges and opportunities presented by the growing presence of AI in our world."))
+		Slide_instances.append(Slide(3, "Stars and Galaxies\n", "Stars and Galaxies\n« Types of stars and their life cycles\n« Properties of galaxies\n« The Hubble classification system\n« The expansion of the universe\n", "Stars are celestial bodies that emit light and heat due to nuclear reactions taking place in their core. Galaxies, on the other hand, are vast collections of stars, gas, and dust held together by gravity. They come in different shapes and sizes, and our Milky Way is just one of them. There are various types of stars, determined by their temperature, size, and other characteristics. These types include red dwarfs, main sequence stars like the Sun, and massive giants and supergiants. Each type of star has a unique life cycle that is determined by its mass and core composition, ranging from relatively short-lived stars that burn brightly and die in spectacular supernova explosions, to long-lived stars that gradually cool and shrink as they exhaust their fuel. Properties of galaxies refer to the characteristics and attributes of these vast cosmic structures, which can range from their size, shape, brightness, and color, to their composition, age, and motion. By studying the properties of galaxies, astronomers can gain insights into the origins, evolution, and diversity of the Universe. The Hubble classification system is a scheme used by astronomers to categorize galaxies based on their appearance. It divides galaxies into three broad categories: elliptical, spiral, and irregular, with each category further subdivided based on additional characteristics such as the shape of their spiral arms or the presence of a central bar. This system is named after the American astronomer Edwin Hubble who developed it in the 1920s. The expansion of the universe is the phenomenon of galaxies and other celestial bodies moving away from each other. This can be observed through the redshift of light from distant objects and is believed to be caused by the overall increase in the amount of space between objects over time. Scientists theorize that this expansion began with the Big Bang and is continuing to occur at an accelerated rate. Today we will be discussing the role of artificial intelligence in the healthcare industry. We will explore how machine learning algorithms are being used to improve patient outcomes, reduce costs and increase efficiency."))
+		slide_number = 3
 		# Send entrie lecture content to the Speech Processing module for pre-processing
 		Info.Send("NumScripts", {"value": slide_number})
-		for script in list_of_scripts:
-			Info.Send("LectureScript", {"text": script})
+		for script in Slide_instances:
+			class_description = dg.createDescription(script.slideContent,script.scriptContent,class_description)
+			Info.Send("LectureScript", {"text": script.scriptContent})
 		# Send entire quiz list to web
 		# Info.Send("Quiz", {"text": list_of_quizes})
 
-	if LOOP_COUNT == len(list_of_scripts) + 1:
-		pine.wipePinecone(vdb)
+	if LOOP_COUNT == slide_number + 1:
 		sys.exit()
 
 	# ========= STATE: AnyQuestions =========
@@ -209,10 +214,7 @@ def nlp_main():
 				convoContext = pine.queryPinecone(Q.question, vdb, "conversation", title) 
 				# generate the salience and anticipation
 				conversation.getSalience(convoContext)
-				if c == 1:
-					pass
-				else: 
-					conversation.getAnticipation()
+				conversation.getAnticipation()
 				# generate the content context
 				contentContext = pine.queryPinecone(Q.question, vdb, "textbook", title) # script namesapce includes lecture slides and textbook contents
 				lectureScript = pine.queryPinecone(Q.question, vdb, "script", title)
@@ -225,13 +227,10 @@ def nlp_main():
 				metadata = pine.createConvoMetadata(title, f"{Q.question}", f"{Q.answer}") 
 				pine.populatePinecone(f"{Q.question}, {Q.answer}", "conversation", metadata, vdb)
 
-				# Update the class descriptions to include conversational subjects
-				class_description = dg.createDescription(f"conversation_{c}",f"{Q.question}, {Q.answer}",class_description)
-
 				response = f"{Q.answer}.. Does that answer your question?"
 				Info.Send("Answer", {"text": response})
 				# request slide change after sending text to Speech Processing module as text->speech takes time
-				Info.Request("ChangeSlide", {"cmd":f"{slide}"})
+				# Info.Request("ChangeSlide", {"cmd":f"{slide}"})
 
 				# append question to list for post-evaluation
 				list_of_questions.append(Q.question + "\n")
