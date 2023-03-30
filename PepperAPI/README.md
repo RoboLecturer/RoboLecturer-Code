@@ -1,5 +1,7 @@
 # PepperAPI Documentation
-The three functions are:
+This Python package is essentially a wrapper for all ROS publishing and subscribing.
+
+The three main functions are:
 - **```Action.Request(name, params)```**: Request for Pepper to perform an action
 - **```Info.Request(name, params)```**: Request to receive data from other modules or from Pepper
 - **```Info.Send(name, params)```**: Request to send data to other modules
