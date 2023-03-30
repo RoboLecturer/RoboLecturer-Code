@@ -24,8 +24,8 @@
         </div>
         <div v-if="!quizInitiated" class="container">
           <div class="usernameWrapper">
-          <p class="username" v-for="(user, index) in users" :key="index">{{ user["Username"] }}</p>
-        </div>
+            <p class="username" v-for="(user, index) in users" :key="index">{{ user["Username"] }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -64,8 +64,8 @@ Vue.registerHooks(["beforeRouteLeave"]);
 export default class Quiz extends Vue {
   api_url: any;
   ws_url: any;
-  ros_ws_url:any;
-  ip_address:any;
+  ros_ws_url: any;
+  ip_address: any;
   $cookies: any;
   $http: any;
   questions = [];
@@ -92,7 +92,7 @@ export default class Quiz extends Vue {
     "#1ddee8",
     "#1de83f",
   ];
-  webSocket:any = null;
+  webSocket: any = null;
   rosInterface!: RosInterface;
   statusText = "";
   users = [];
@@ -134,6 +134,8 @@ export default class Quiz extends Vue {
     if (resp.status == 200) {
       console.log(resp.data);
       this.leaderboard = resp.data;
+      let winner = this.leaderboard[0]["Username"]
+      this.webSocket.send("Winner|"+winner);
       this.quizOver = true;
     } else {
       console.log(resp);
@@ -142,7 +144,7 @@ export default class Quiz extends Vue {
 
   async fetchQuiz(): Promise<void> {
     let resp = await this.$http.get(`${this.api_url}/quiz`, {
-      params: { name: "test" },
+      params: { name: "quiz" },
     });
 
     if (resp.status == 200) {
@@ -159,7 +161,7 @@ export default class Quiz extends Vue {
     this.quizStarted = false;
     this.showResults = false;
     this.quizInitiated = true;
-    this.webSocket.send("start quiz")
+    this.webSocket.send("start quiz");
     this.rosInterface.publishStartQuiz({ data: "1" }); //starts 5 second timer on all clients
     if (this.questionIndex > 0) {
       this.statusText = "Next question in...";
@@ -185,7 +187,7 @@ export default class Quiz extends Vue {
   incrementQuestion(): void {
     if (this.questionIndex != this.questions.length - 1) {
       this.rosInterface.publishNextQuestion({ data: "data" });
-      this.webSocket.send("next question")
+      this.webSocket.send("next question");
       this.questionIndex++;
       this.startQuiz();
     } else {
@@ -240,15 +242,15 @@ export default class Quiz extends Vue {
   }
 
   connect(): void {
-    this.webSocket =  new WebSocket(this.ws_url);
-    this.webSocket.onmessage = (event:any) => {
+    this.webSocket = new WebSocket(this.ws_url);
+    this.webSocket.onmessage = (event: any) => {
       console.log(event);
     };
   }
 
   mounted(): void {
     this.statusText = `Go to http://${this.ip_address}:8080 to join...`;
-    this.connect()
+    this.connect();
     this.rosInterface = new RosInterface(this.ros_ws_url);
     this.rosInterface.connect();
     // console.log(this.$cookies.get("quizCookie"));
@@ -293,20 +295,18 @@ export default class Quiz extends Vue {
     this.fetchQuiz();
     setInterval(this.getUsersInLobby, 2000);
   }
-
 }
 </script>
 
 <style scoped>
-
-.usernameWrapper{
-  display:flex;
+.usernameWrapper {
+  display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
-  width:100%;
+  width: 100%;
 }
 .username {
-  width:30%;
+  width: 30%;
   font-size: 20px;
   font-weight: 600;
 }

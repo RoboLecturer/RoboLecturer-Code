@@ -14,11 +14,11 @@ import {
   resetLobby,
   getLeaderboard,
 } from "../controller/dbController.js";
-// "../pepperweb/public/uploadedPDFs/ICL_EEE_CVPR_Part2.pdf"
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     if (file.fieldname === "pdf") {
-      cb(null, "../pepperweb/public/uploadedPDFs");
+      cb(null, "../pepperweb/public/");
     } else if (file.fieldname === "quiz") {
       cb(null, "uploadedQuiz/");
     } else {

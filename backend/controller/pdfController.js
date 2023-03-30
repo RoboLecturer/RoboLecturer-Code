@@ -6,11 +6,10 @@ import path from "path";
 import axios from 'axios';
 // import {RosInterface} from "../../pepperweb/interface/ros.ts"
 export function parsePDF(req, res) {
-  
-  // const filepath = req.body.filepath
-  const filepath = "uploadedPDFs/test1.pdf"
-  console.log("Parsing PDF file: " + filepath)
-
+  console.log(req.body)
+  const filepath = req.body.filepath
+  // console.log("Parsing PDF file: " + filepath)
+  // console.log(filepath)
   // check if file exists
   if (!fs.existsSync(filepath)) {
     res.json({message: "Error, file does not exist" }) 
@@ -43,6 +42,7 @@ export function parsePDF(req, res) {
       const ros = connectROS()
   
       publishNumSlides(pdfName,content.length,ros)
+      
       for (let i = 1; i <content.length+1; i++) {
         // iterate by filename
         const imgName = outputDirectory+"/untitled."+i+".png"

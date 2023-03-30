@@ -7,7 +7,7 @@ import { createWorker } from "tesseract.js";
 export function connectROS(){
 var ros = new ROSLIB.Ros({
 // url : 'ws://localhost:9000'
-url : 'ws://192.168.0.107:9000'
+url : 'ws://192.168.0.101:9000'
 });
 
 ros.on('connection', function() {

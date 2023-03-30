@@ -12,7 +12,7 @@ import "material-icons/iconfont/material-icons.css";
 const app = createApp(App);
 app.use(VueCookies).use(store).use(router).mount("#app");
 app.config.globalProperties.$http = axios;
-let ip_address = "192.168.0.107"
+let ip_address = "192.168.0.101"
 app.config.globalProperties.ws_url = `ws://${ip_address}:443`
 app.config.globalProperties.ros_ws_url = `ws://${ip_address}:9000`
 app.config.globalProperties.api_url = `http://${ip_address}:3000`;

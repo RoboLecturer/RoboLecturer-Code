@@ -1,0 +1,39 @@
+{
+  "quiz_name": "Stars and Galaxies Quiz",
+  "question_count": 3,
+  "questions": [
+    {
+      "prompt": "What is the nearest star to Earth?",
+      "options": [
+        "Alpha Centauri A",
+        "Sirius",
+        "Proxima Centauri",
+        "Betelgeuse",
+        "Pollux"
+      ],
+      "answer": "Proxima Centauri"
+    },
+    {
+      "prompt": "What type of galaxy is the Milky Way classified as?",
+      "options": [
+        "Elliptical",
+        "Irregular",
+        "Spiral",
+        "Lenticular",
+        "Ring"
+      ],
+      "answer": "Spiral"
+    },
+    {
+      "prompt": "What is the name of the process that powers the Sun and other stars?",
+      "options": [
+        "Nuclear fusion",
+        "Nuclear fission",
+        "Electromagnetic radiation",
+        "Gravitational contraction",
+        "Dark energy conversion"
+      ],
+      "answer": "Nuclear fusion"
+    }
+  ]
+}

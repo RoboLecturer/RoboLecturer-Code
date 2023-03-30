@@ -17,7 +17,7 @@
       </div>
     </div>
     <!-- IF TIMER WINDOW OPEN and JOINED LOBBY: SHOW QUESTIONS -->
-    <div class="container">
+    <div class="container" v-if="!showQuizWinner">
       <div v-if="timerWindowOpen && joinedLobby" class="column">
         <h1 class="row s3 l3 m3">{{ questions[questionIndex]["prompt"] }}</h1>
         <div class="options row s9 l9 m9">
@@ -29,13 +29,20 @@
             @click="captureAnswer(option)"
           >
             <div class="card-content">{{ option }}</div>
-          </div> 
+          </div>
         </div>
       </div>
     </div>
-    <div class="usercount" v-if="quizStarted">
-      <h5><i class="material-icons left">quiz</i>{{questionCountText}}</h5>
+    <div class="congrats" v-if="showQuizWinner&&joinedLobby">
+      <h1 class="row s3 l3 m3">Congratulations {{ winner }}!</h1>
     </div>
+    <div class="usercount" v-if="quizStarted && !showQuizWinner" >
+      <h5><i class="material-icons left">quiz</i>{{ questionCountText }}</h5>
+    </div>
+  </div>
+  <div class="correctIncorrectImage" v-if="showUserResult && !showQuizWinner">
+    <img class="resultImage" :src="resultImgSrc" alt="" />
+    <h5>{{ answeredCorrectly ? "Correct!" : "Incorrect." }}</h5>
   </div>
 </template>
 
@@ -50,7 +57,7 @@ export default class Home extends Vue {
   $http: any;
   api_url: any;
   ws_url: any;
-  ros_ws_url:any;
+  ros_ws_url: any;
   statusText = "Join the lobby";
   ros: any = null;
   connected = false;
@@ -75,9 +82,21 @@ export default class Home extends Vue {
   studentId = -1;
   answerIndex = -1;
   webSocket: any = null;
+  answeredCorrectly: boolean = false;
+  showUserResult: boolean = false;
+  winner = "";
+  showQuizWinner: boolean = false;
 
-  get questionCountText(){
-    return this.questionIndex+1 + " of " + this.questions.length;
+  get questionCountText() {
+    return this.questionIndex + 1 + " of " + this.questions.length;
+  }
+
+  get resultImgSrc() {
+    return this.answeredCorrectly ? "assets/correct.png" : "assets/incorrect.png";
+  }
+
+  showWinner(){
+    console.log(this.winner);
   }
 
   resetAnimation(): void {
@@ -104,6 +123,7 @@ export default class Home extends Vue {
   }
 
   onQuizTriggered(): void {
+    this.showUserResult = false;
     clearInterval(this.startTimerInterval);
     if (this.joinedLobby) {
       this.startTimer = 5;
@@ -117,7 +137,11 @@ export default class Home extends Vue {
             this.timerWindowOpen = true;
             this.quizInitiated = false;
             this.resetAnimation();
-            setTimeout(() => null, 8000);
+            setTimeout(() => {
+              setTimeout(() => {
+                this.showUserResult = true;
+              }, 2000);
+            }, 8000);
           }
         }, 1000);
       }
@@ -133,7 +157,6 @@ export default class Home extends Vue {
 
   onNextQuestion(): void {
     console.log("Next question");
-    // clearInterval(this.startTimerInterval);
     if (this.questionIndex != this.questions.length - 1) {
       this.timerWindowOpen = false;
       this.questionIndex++;
@@ -149,6 +172,8 @@ export default class Home extends Vue {
     this.quizInitiated = false;
     this.timerWindowOpen = false;
     this.lobbyClosed = false;
+    this.showUserResult = false;
+    this.showQuizWinner = false;
     this.questionIndex = 0;
   }
 
@@ -164,8 +189,10 @@ export default class Home extends Vue {
       }
     });
     if (answer == correctAnswer) {
+      this.answeredCorrectly = true;
       this.storeResult(true, 100, index);
     } else {
+      this.answeredCorrectly = false;
       this.storeResult(false, 100, index);
     }
   }
@@ -198,7 +225,7 @@ export default class Home extends Vue {
 
   async fetchQuiz(): Promise<void> {
     let resp = await this.$http.get(`${this.api_url}/quiz`, {
-      params: { name: "test" },
+      params: { name: "quiz" },
     });
 
     if (resp.status == 200) {
@@ -241,58 +268,13 @@ export default class Home extends Vue {
           break;
 
         default:
+          if (event.data.includes("Winner|")) {
+            this.winner = event.data.replace("Winner|","");
+            this.showQuizWinner = true;
+          }
           break;
       }
     };
-
-    // this.ros = new ROSLIB.Ros({
-    //   url: this.ws_url,
-    // });
-
-    // this.ros.on("connection", () => {
-    //   this.connected = true;
-    //   console.log("Home Connected!");
-    // });
-
-    // this.ros.on("error", (error: any) => {
-    //   console.log("Error connecting to websocket server: ", error);
-    // });
-
-    // this.ros.on("close", () => {
-    //   this.connected = false;
-    //   console.log("Connection to websocket server closed.");
-    // });
-
-    // this.quiz_listener = new ROSLIB.Topic({
-    //   ros: this.ros,
-    //   name: "/start_quiz",
-    //   messageType: "std_msgs/String",
-    // });
-    // this.quiz_listener.subscribe(this.onQuizTriggered);
-    // console.log(this.quiz_listener);
-    // this.quiz_listener.waitForReconnect = true;
-    // this.quiz_listener.latch = true;
-    // this.quiz_listener.queue_length = 10;
-    // this.question_listener = new ROSLIB.Topic({
-    //   ros: this.ros,
-    //   name: "/next_question",
-    //   messageType: "std_msgs/String",
-    // });
-    // this.question_listener.subscribe(this.onNextQuestion);
-
-    // this.quiz_over_listener = new ROSLIB.Topic({
-    //   ros: this.ros,
-    //   name: "/take_control_forwarder",
-    //   messageType: "std_msgs/String",
-    // });
-    // this.quiz_over_listener.subscribe(this.onQuizOver);
-
-    // this.change_slide_listener = new ROSLIB.Topic({
-    //   ros: this.ros,
-    //   name: "/change_slide",
-    //   messageType: "std_msgs/String",
-    // });
-    // this.change_slide_listener.subscribe(this.onChangeSlide);
   }
 
   mounted(): void {
@@ -313,7 +295,21 @@ export default class Home extends Vue {
 </script>
 
 <style scoped>
+.congrats{
+  padding-top:200px;
+}
+.resultImage {
+  width: 60px;
+  height: 60px;
+}
 
+.correctIncorrectImage {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 50px;
+  right: 30px;
+}
 .usercount {
   display: flex;
   flex-direction: row;

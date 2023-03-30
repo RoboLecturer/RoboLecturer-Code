@@ -1,7 +1,7 @@
 <template>
   <div class="slide">
     <pdf
-      src="ICL_EEE_CVPR_Part2.pdf"
+      src="AstronomyPresentation.pdf"
       :page="currentPage"
       scale.sync="page-width"
       :resize="true"
@@ -51,10 +51,10 @@ export default class Slides extends Vue {
   }
 
   onChangeSlide(msg: any): void {
+    console.log(msg.data);
     var split = msg.data.split("|");
     var action = split[0];
     var value = Number.parseInt(split[1]);
-    console.log(msg.data);
     this.changePage(action, value);
   }
 

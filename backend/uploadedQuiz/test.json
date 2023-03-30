@@ -4,23 +4,13 @@
     "questions":[
        {
           "prompt":"what is x?",
-          "answer":"Option x",
+          "answer":"x",
           "options":[
-             "Option x",
-             "Option a",
-             "Option b",
-             "Option c"
+             "x",
+             "a",
+             "b",
+             "c"
           ]
-       },
-       {
-         "prompt":"what is y?",
-         "answer":"Option y",
-         "options":[
-            "Option y",
-            "Option a",
-            "Option b",
-            "Option c"
-         ]
-      }
+       }
     ]
  }

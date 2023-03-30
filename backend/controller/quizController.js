@@ -19,7 +19,7 @@ export function saveQuiz(req, res){
 
 
   const quiz = req.body;
-  const title = quiz.quiz_name;
+  const title = "quiz";
   
     fs.writeFile(`uploadedQuiz/${title}.json`,  JSON.stringify(quiz), (err) => {
       if (err) {
