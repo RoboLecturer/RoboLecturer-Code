@@ -8,7 +8,7 @@ import PepperAPI
 from PepperAPI import Action, Info
 import pkg.text2speech as t2s
 import pkg.speech2text as s2t
-import pkg.noise as nd
+import pkg.SAD as nd
 import os
 import time
 from tqdm import tqdm
