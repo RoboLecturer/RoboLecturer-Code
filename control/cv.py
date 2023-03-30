@@ -2,6 +2,9 @@ import PepperAPI
 from PepperAPI import Info
 import random
 
+# Set to True if you want to input your own number of hands (0-2)
+INPUT_HANDS = True
+
 def cv_main():
 
 	# ========= STATE: Start =========
@@ -74,14 +77,20 @@ def cv_main():
 
 # TODO: This function just generates dummy info and can be deleted
 def generate_random_hands_info():
+	global INPUT_HANDS
 	lst = []
-	num_hands = random.randint(0,3)
-	num_hands = 2
-	lst = [[540,50],[740,50]] # left, right
-	# for i in range(num_hands):
-	# 	x = random.randint(0, 1920-100)
-	# 	y = random.randint(0, 1080-120)
-	# 	lst.append((x,y))
+	if INPUT_HANDS:
+		num_hands = int(input("Number of hands (0-2): "))
+		if num_hands == 1:
+			lst = [[540,50]] # left
+		elif num_hands == 2:
+			lst = [[540,50],[740,50]] # left, right
+	else:
+		num_hands = random.randint(0,3)
+		for i in range(num_hands):
+			x = random.randint(0, 1280)
+			y = random.randint(0, 720)
+			lst.append((x,y))
 	return lst, num_hands
 
 
