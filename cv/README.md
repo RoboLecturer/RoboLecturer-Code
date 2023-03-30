@@ -17,6 +17,7 @@ All of these components have been integrated into the ```main.py``` script that 
 - [Hand Raise Detection](#Hand-Raise-Detection)
 - [Engagement](#Engagement)
 - [Contributions](#Contributions)
+- [References](#References)
 
 
 ## Camera-Setup
@@ -181,5 +182,7 @@ The contributions of this module was distributed the following way:
 - MattG-bci - Integration of the CV module with the rest of the system, engagement measurement and hand raise detection.
 
 
+## References
 
+[1] - https://github.com/derronqi/yolov7-face 
 
