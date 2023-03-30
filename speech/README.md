@@ -16,7 +16,7 @@ Folder structure:
 
 ## Pre-requisites
 
-Download the reqiured packages:
+Download the required packages:
 
 ```
 pip install SpeechRecognition pyaudio openai
