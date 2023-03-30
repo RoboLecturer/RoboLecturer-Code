@@ -21,7 +21,7 @@ Folder structure:
 - Ubuntu 16 (for ROS Kinetic)
 - ROS Kinetic
 - Python 2.7
-- [NaoQi Python SDK 2.5.10 (an older version is used as Pepper's software is not updated)](https://www.aldebaran.com/en/support/pepper-naoqi-2-9/downloads-softwares)
+- [NaoQi Python SDK 2.5.10](https://www.aldebaran.com/en/support/pepper-naoqi-2-9/downloads-softwares)(an older version is used as Pepper's software is not updated)
 - OpenCV (```pip install opencv-python```) for ArUco detection and pose estimation
 
 ## Usage
