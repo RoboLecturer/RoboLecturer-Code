@@ -3,7 +3,7 @@
 Folder structure:
 
 - **```pkg/speech2text.py```**: Speech-to-Text functions to transcribe student questions
-- **```pkg/text2speech.py```**: Text-to-Speech functions to generate RoboLecturers voice
+- **```pkg/text2speech.py```**: Text-to-Speech functions to generate RoboLecturer's voice
 - **```pkg/SAD.py```**: Sound Amplitude Detection for background noise level evaluation
 - **```test/```**: Testing results and scripts for the speech module
 - **```speech.py```**: Main speech script
