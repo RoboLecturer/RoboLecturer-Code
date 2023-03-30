@@ -19,7 +19,7 @@ Folder structure:
 
 ## Pre-requisites
 - Ubuntu 16 (for ROS Kinetic)
-- ROS Kinetic
+- ROS Kinetic (an older version is required for the ROS compatibility with Pepper)
 - Python 2.7
 - [NaoQi Python SDK 2.5.10](https://www.aldebaran.com/en/support/pepper-naoqi-2-9/downloads-softwares)(an older version is used as Pepper's software is not updated)
 - OpenCV (```pip install opencv-python```) for ArUco detection and pose estimation
