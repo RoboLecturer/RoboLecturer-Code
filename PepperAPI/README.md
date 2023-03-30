@@ -39,6 +39,7 @@ if __name__ == "__main__":
 
 ## APIs
 ### Web
+The Web APIs are used by the dummy script as the actual Web module uses Javascript instead of Python and thus doesn't use the PepperAPI.
 #### Send
 - **```Info.Send("NumSlides", {"value": numberOfSlides})```**: Send number of slides to NLP before publishing slides text
   - **params** (*Dict*) : Number of slides to be provided as *Int* to key ```value```
