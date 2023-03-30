@@ -69,7 +69,6 @@ def face_engagement_detection(face_model, frame, opt, imgsz, stride, engagement_
         for (x1, y1, x2, y2) in faces[:, 0:4]:
             w = (x2 - x1)
             h = (y2 - y1)
-            #cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
             # Computing landmarks of a detected face and computing an engagement score
             landmark_results_detected = faces[:, 4:]
             engagement = engagement_from_landmarks(landmark_results_detected, frame, w, h)
@@ -109,7 +108,6 @@ def hand_detector(model, frame): # Commented out the parts that killed the termi
                     dist_fingers = np.append(dist_fingers, dist_proportion)
 
             metric = np.mean(dist_fingers)
-            #print(f"Metric: {metric}")
             if metric < 0.48:
                 hand_landmarks = np.vstack([hand_landmarks, np.array([x_base, y_base])])
                 frame = cv2.putText(frame, f"Question!", org=(int(30), int(30)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=2, lineType=2)
@@ -143,43 +141,16 @@ def main(camera, face_detect_model, mp_hand_model, opt, imgsz, stride):
             coordinates = hand_detector(mp_hand_model, frame)
             end = time.time()
             if end - start > 6:
-                #cv2.destroyAllWindows()
                 break
-
-            #for hand in coordinates:
-            #    hand_str = hand.tostring()
-            #    if hand_str not in hand_dict:
-            #        hand_dict[hand_str] = 1
-            #    else:
-            #        for hand_key in hand_dict.keys():
-            #            hand_key_int = np.frombuffer(hand_key, dtype=int)
-            #            difference = abs(hand_key_int - hand)
-            #            if (np.less_equal(difference, 20)).sum() == 2:
-                            #print(hand_key_int)
-                            #print(hand)
-            #                hand_dict[hand_key] += 1
-            #            else:
-            #                hand_dict[hand_str] += 1
             
             cv2.imshow("Frame", frame)
             cv2.waitKey(1) 
         
-        #for k,v in hand_dict.items():
-        #    if v > 10:
-        #        print(np.frombuffer(k, dtype=int), v)
         if coordinates.ndim > 1:
-           # for coord in coordinates:
-           #     if coord[0] == 0 and coord[1] == 0:
-           #         continue
-           #     if coord.tostring() in hand_dict:
-           #         print("1",coord)
-           #         if hand_dict[coord.tostring()] > 10:
             hands = np.vstack([hands, coordinates])
-           #              print("2",hands)
 
         hands = reject_points(hands, threshold=20)
         hands = np.unique(hands, axis=0)
-        #print("3",hands) 
         hands = hands[1:]
         num_hands = len(hands)
         if num_hands == 0:
@@ -201,13 +172,10 @@ def main(camera, face_detect_model, mp_hand_model, opt, imgsz, stride):
 
         # Start checking the engagement/attentiveness of the class
         start = time.time()
-        #c = 0
         while True:
             frame = get_camera_input(camera)
             frame2, engagement_list = face_engagement_detection(face_detect_model, frame, opt, imgsz, stride)
-           # print(f"Done: {c}")
             end = time.time()
-            #c += 1
             if end - start > 10:
                 cv2.destroyAllWindows()
                 break
