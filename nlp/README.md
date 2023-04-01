@@ -4,6 +4,15 @@ The three overall functionalities are:
 - **```questionClassifier```**: Classify the question into its relevant main and sub stypes. 
 - **```questionAnswer```**: Answer a questions using engineered prompt and chatGPT completion. 
 
+# SET-UP
+First time users must update the import path to use their Openai and Pinecone API keys
+```
+import sys
+sys.path.append('/your/path/here/')
+from <file> import <api_key>
+```
+
+
 ## Contents
 - [Openai API](#openai)
 - [Pinecone Database](#pinecone)
@@ -24,7 +33,7 @@ For each creation, the openai API is used to query gpt-3.5-turbo using an engine
 ```
 Import Openai
 
-openai.api_key = "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"
+openai.api_key = <api_key>
 # create completion
 completions = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",

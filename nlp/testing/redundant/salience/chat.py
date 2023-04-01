@@ -7,7 +7,9 @@ import re
 from time import time,sleep
 from uuid import uuid4
 import datetime
-
+import sys
+sys.path.append('/Users/busterblackledge/')
+from keys import openai_API_key
 
 def open_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as infile:
@@ -90,7 +92,7 @@ def flatten_convo(conversation):
 
 if __name__ == '__main__':
     convo_length = 30
-    openai.api_key = "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"
+    openai.api_key = openai_API_key
     conversation = list()
     conversation.append({'role': 'system', 'content': 'I am an AI Teacher and lecturer. I have 5 goals: teach my students the lesson plan I am given, answer their questions to clear up areas of ambiguity, ask them questions to gauge understanding  and quiz them, maintain order in the classroom, and be ultimately helpful.'})
     while True:

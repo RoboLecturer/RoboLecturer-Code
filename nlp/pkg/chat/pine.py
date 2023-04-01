@@ -5,11 +5,14 @@ import time
 import uuid
 from pkg.chat import chat_model
 # import time
+import sys
+sys.path.append('/Users/busterblackledge/')
+from keys import pinecone_API_key
 
 def init_pinecone():
     """initiate the pinecone database"""
     pinecone.init(
-		api_key = "8973578e-4fed-4fff-8a8d-5eaf1d2d4032",
+		api_key = pinecone_API_key,
 		environment = "us-central1-gcp"
 	)
     indexName = "pepper-memory"

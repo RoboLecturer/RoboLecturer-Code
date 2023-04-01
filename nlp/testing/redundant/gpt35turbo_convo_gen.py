@@ -1,8 +1,10 @@
 import openai 
 import time
+import sys
+sys.path.append('/Users/busterblackledge/')
+from keys import openai_API_key
 
-
-openai.api_key = "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"
+openai.api_key = openai_API_key
 
 
 
