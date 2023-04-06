@@ -112,7 +112,7 @@ def Listen():
 	# Import NAOqi modules
 	if not TEST_DUMMY:
 		from naoqi import ALProxy, ALBroker
-		from .motions import MOTIONS
+		from .motions import MOTIONS, ResetPosition, PointTimeline
 		import almath
 
 	# Callback for ALTextToSpeech
@@ -190,10 +190,9 @@ def Listen():
 			except:
 				pass
 			
-			posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
 			motion = ALProxy("ALMotion", ROBOT_IP, ROBOT_PORT)
-			posture.post.applyPosture("StandInit", 0.7)
-			motion.post.angleInterpolation("HeadPitch", 10.0*almath.TO_RAD, 2.0, True)
+			names, times, keys = ResetPosition()
+			motion.angleInterpolationBezier(names, times, keys)
 
 		else:
 			time.sleep(2) # slight buffer
@@ -213,13 +212,17 @@ def Listen():
 		global D
 
 		# constants
-		Z_UP = 0.3
-		Z_DOWN = 0
-		Y_LARM_OUT = 0.8
-		Y_LARM_IN = 0
-		Y_RARM_OUT = -Y_LARM_OUT
-		Y_RARM_IN = -Y_LARM_IN
-
+		HEAD_PITCH_UP = -5.0
+		HEAD_PITCH_DOWN = 10.0
+		HEAD_YAW_IN = 0.0
+		HEAD_YAW_OUT = 45.0 # left
+		SHOULDER_PITCH_UP = 15.0
+		SHOULDER_PITCH_DOWN = 35.0
+		LSHOULDER_ROLL_OUT = 60.0
+		LSHOULDER_ROLL_IN = 5.0
+		RSHOULDER_ROLL_OUT = -LSHOULDER_ROLL_OUT
+		RSHOULDER_ROLL_IN = -LSHOULDER_ROLL_IN
+	
 		# parameters
 		center_x = x + w//2
 		center_y = y + h//2
@@ -227,39 +230,33 @@ def Listen():
 		rospy.loginfo("Raised hand at (%.0f, %.0f) of (%d, %d)" %
 			(center_x, center_y, frame_width, frame_height))
 
-		# point parameters
-		EXT = Y_LARM_OUT * D / (mid_width) # extension range for pointing based on x-offset from center
-		print("EXT:", EXT)
-		max_speed = 0.7
-		frame = 0 # Torso=0, World=1, Robot=2
-
-		# point in/out
-		point_x = 1.0 # fixed
-
+		# extension range for pointing based on x-offset from center
+		ROLL_EXT = LSHOULDER_ROLL_OUT * D / (mid_width)
+		YAW_EXT = HEAD_YAW_OUT * D / (mid_width)
+		
 		# point left/right
 		if center_x < mid_width + D:
-			effector = "LArm"
-			point_y = (Y_LARM_OUT + EXT) - (Y_LARM_OUT + EXT - Y_LARM_IN) / (mid_width + D) * center_x
+			effector = "L"
+			shoulder_roll = (LSHOULDER_ROLL_OUT + ROLL_EXT) - (LSHOULDER_ROLL_OUT + ROLL_EXT - LSHOULDER_ROLL_IN) / (mid_width + D) * center_x
+			head_yaw = (HEAD_YAW_OUT + YAW_EXT) - (HEAD_YAW_OUT + YAW_EXT) / (mid_width + D) * center_x
 		else:
-			effector = "RArm"
-			point_y = Y_RARM_IN - (Y_RARM_IN - (Y_RARM_OUT + EXT)) / (mid_width - D) * (center_x - mid_width - D)
+			effector = "R"
+			shoulder_roll = RSHOULDER_ROLL_IN - (RSHOULDER_ROLL_IN - (RSHOULDER_ROLL_OUT + ROLL_EXT)) / (mid_width - D) * (center_x - mid_width - D)
+			head_yaw = (YAW_EXT - HEAD_YAW_OUT) / (mid_width - D) * (center_x - mid_width - D)
 
 		# point up/down
-		point_z = Z_UP - Z_DOWN * center_y / frame_height
+		shoulder_pitch = SHOULDER_PITCH_UP + (SHOULDER_PITCH_DOWN - SHOULDER_PITCH_UP) / frame_height * center_y
+		head_pitch = HEAD_PITCH_UP + (HEAD_PITCH_DOWN - HEAD_PITCH_UP) / frame_height * center_y
 
 		# actuate
-		rospy.loginfo("Pepper ALTracker: Point %s at x=%.2f y=%.2f, z=%.2f with offset %d from world center" % 
-			(effector, point_x, point_y, point_z, D))
+		rospy.loginfo("Pepper ALTracker: Point %s at with head_pitch=%.2f, head_yaw=%.2f, shoulder_pitch=%.2f, shoulder_roll=%.2f with offset %d from world center" %
+			(effector+"Arm", head_pitch, head_yaw, shoulder_pitch, shoulder_roll, D))
 
 		if not TEST_DUMMY:
-			tracker = ALProxy("ALTracker", ROBOT_IP, ROBOT_PORT)
-			posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
-			ap = ALProxy("ALAudioPlayer", ROBOT_IP, ROBOT_PORT)
-			posture = ALProxy("ALRobotPosture", ROBOT_IP, ROBOT_PORT)
-			tracker.post.lookAt([point_x,point_y,point_z], frame, max_speed, False)
-			tracker.post.pointAt(effector, [point_x,point_y,point_z], frame, max_speed)
-			time.sleep(.7) # small delay between pointing and prompting
-			posture.post.applyPosture("StandInit", 0.7)
+			motion = ALProxy("ALMotion", ROBOT_IP, ROBOT_PORT)
+			names, times, keys = PointTimeline(effector, head_pitch, head_yaw, shoulder_pitch, shoulder_roll)
+			motion.post.angleInterpolationBezier(names, times, keys)
+			time.sleep(0.7)
 
 		return IsDone("Set", "Point")
 
@@ -399,14 +396,14 @@ def Localize():
 	global D, LOCALIZING
 
 	def initialize_video_proxy():
-		video = cv2.VideoCapture(0)
-		# video = ALProxy("ALVideoDevice", ROBOT_IP, ROBOT_PORT)
-		# cameraIndex = 0
-		# resolution = vision_definitions.kQVGA
-		# colorSpace = vision_definitions.kRGBColorSpace
-		# fps = 10
 		subscriberID = "subscriberID"
-		# subscriberID = video.subscribeCamera(subscriberID, cameraIndex, resolution, colorSpace, fps)
+		# video = cv2.VideoCapture(0)
+		video = ALProxy("ALVideoDevice", ROBOT_IP, ROBOT_PORT)
+		cameraIndex = 0
+		resolution = vision_definitions.kQVGA
+		colorSpace = vision_definitions.kRGBColorSpace
+		fps = 10
+		subscriberID = video.subscribeCamera(subscriberID, cameraIndex, resolution, colorSpace, fps)
 		return video, subscriberID
 		
 

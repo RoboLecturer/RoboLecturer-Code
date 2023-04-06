@@ -1,3 +1,5 @@
+import almath
+
 SLOW_DOWN = 1.2
 
 def BothHandsBumpWithBump():
@@ -670,3 +672,118 @@ MOTIONS = {
 for k,v in MOTIONS.items():
 	MOTIONS[k] = v * SLOW_DOWN
 
+
+def ResetPosition():
+
+	names = list()
+	times = list()
+	keys = list()
+
+	names.append("HeadPitch")
+	times.append([0.36])
+	keys.append([[5.0*almath.TO_RAD, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("HeadYaw")
+	times.append([0.36])
+	keys.append([[0, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("HipPitch")
+	times.append([0.36])
+	keys.append([[-0.0357291, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("HipRoll")
+	times.append([0.36])
+	keys.append([[-3.5003e-07, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("KneePitch")
+	times.append([0.36])
+	keys.append([[-0.0110562, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("LElbowRoll")
+	times.append([0.36])
+	keys.append([[-0.522044, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("LElbowYaw")
+	times.append([0.36])
+	keys.append([[-1.20944, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("LHand")
+	times.append([0.36])
+	keys.append([[0.69, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("LShoulderPitch")
+	times.append([0.36])
+	keys.append([[1.5708, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("LShoulderRoll")
+	times.append([0.36])
+	keys.append([[0.139626, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("LWristYaw")
+	times.append([0.36])
+	keys.append([[-0.107463, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("RElbowRoll")
+	times.append([0.36])
+	keys.append([[0.517194, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("RElbowYaw")
+	times.append([0.36])
+	keys.append([[1.21753, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("RHand")
+	times.append([0.36])
+	keys.append([[0.69, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("RShoulderPitch")
+	times.append([0.36])
+	keys.append([[1.5708, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("RShoulderRoll")
+	times.append([0.36])
+	keys.append([[-0.139626, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("RWristYaw")
+	times.append([0.36])
+	keys.append([[0.116639, [3, -0.133333, 0], [3, 0, 0]]])
+
+	return names, times, keys
+
+
+def PointTimeline(effector, head_pitch, head_yaw, shoulder_pitch, shoulder_roll):
+	names = list()
+	times = list()
+	keys = list()
+
+	head_pitch = head_pitch * almath.TO_RAD
+	head_yaw = head_yaw * almath.TO_RAD
+	shoulder_pitch = shoulder_pitch * almath.TO_RAD
+	shoulder_roll = shoulder_roll * almath.TO_RAD
+
+	head_pitch_default = 10.0 * almath.TO_RAD
+	head_yaw_default = 0.0 * almath.TO_RAD
+	hand_close, hand_open = 0.69, 0.98
+	shoulder_pitch_default = 90.0 * almath.TO_RAD
+	shoulder_roll_default = 8.0 * almath.TO_RAD * (1 if effector == "L" else -1)
+
+	names.append("HeadPitch")
+	times.append([0.56, 1.36, 1.76])
+	keys.append([[head_pitch, [3, -0.2, 0], [3, 0.266667, 0]], [head_pitch, [3, -0.266667, 0], [3, 0.133333, 0]], [head_pitch_default, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append("HeadYaw")
+	times.append([0.56, 1.36, 1.76])
+	keys.append([[head_yaw, [3, -0.2, 0], [3, 0.266667, 0]], [head_yaw, [3, -0.266667, 0], [3, 0.133333, 0]], [head_yaw_default, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append(effector + "Hand")
+	times.append([0.56, 1.36, 1.76])
+	keys.append([[hand_open, [3, -0.2, 0], [3, 0.266667, 0]], [hand_open, [3, -0.266667, 0], [3, 0.133333, 0]], [hand_close, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append(effector + "ShoulderPitch")
+	times.append([0.56, 1.36, 1.76])
+	keys.append([[shoulder_pitch, [3, -0.2, 0], [3, 0.266667, 0]], [shoulder_pitch, [3, -0.266667, 0], [3, 0.133333, 0]], [shoulder_pitch_default, [3, -0.133333, 0], [3, 0, 0]]])
+
+	names.append(effector + "ShoulderRoll")
+	times.append([0.56, 1.36, 1.76])
+	keys.append([[shoulder_roll, [3, -0.2, 0], [3, 0.266667, 0]], [shoulder_roll, [3, -0.266667, 0], [3, 0.133333, 0]], [shoulder_roll_default, [3, -0.133333, 0], [3, 0, 0]]])
+
+	return names, times, keys

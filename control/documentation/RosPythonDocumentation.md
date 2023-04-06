@@ -1,13 +1,14 @@
 # ROS - Python Documentation
 ## Contents
 1. [Overview](#1-overview)
-2. [Setup](#2-setup)
+2. [ROS Setup](#2-ros-setup)
    1. [Linux and ROS installation](#21-linux-and-ros-installation)
-   2. [Setting up your workspace](#22-setting-up-your-workspace)
+   2. [Catkin workspace](#22-catkin-workspace)
    3. [Setting ROS variables](#23-setting-ros-variables)
    4. [Running your scripts](#24-running-your-scripts)
 3. [PepperAPI](#3-pepperapi)
-4. [FAQs](#4-faqs)
+4. [Testing](#4-testing)
+5. [FAQs](#5-faqs)
 
 ## 1. Overview
 Install your version of ROS. ROS Noetic (Ubuntu 20.04) is recommended since it supports Python 3 officially. The default Python version for Ubuntu 20.04 is Python 3.8, but it should support Python 3.10 (see [here](https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/) to install). For Docker users, a sample image is hosted [here](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh). It's basically the ros-noetic-desktop-full image with some helpful tools installed and a sample workspace and package.
@@ -27,7 +28,7 @@ The list of Pepper's APIs can be found [here](http://doc.aldebaran.com/2-5/naoqi
 
 ## 2. ROS Setup
 ### 2.1. Linux and ROS installation
-See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/LinuxSetup.md)** for the full details.
+See **[LinuxSetup.md](https://github.com/RoboLecturer/RoboLecturer-Code/tree/main/control/documentation/LinuxSetup.md)** for the full details.
 
 ### 2.2. Catkin workspace
 **Note:** if you load and run the [provided image](https://imperiallondon-my.sharepoint.com/:f:/g/personal/rcc22_ic_ac_uk/ErFCcfyKCCNFlZ81R5T2wsMBZ_YBO-EgddnCDjM6Fsgfiw?e=irSsJh), a sample workspace and package has been created for you.
@@ -74,20 +75,20 @@ export ROS_IP=<your_ip_address>
 3. Navigate to the folder with your main script and run ```python myScript.py```.
 
 ## 3. PepperAPI
-For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLecturer/RoboLecturer-Code/blob/api/PepperAPI.md)**.
+For the full documentation, refer to **[PepperAPI.md](https://github.com/RoboLecturer/RoboLecturer-Code/tree/main/PepperAPI/README.md)**.
 
 **Note**: This API is only for sending/receiving info between Pepper and your module, or between your module and other modules. For CV, Web and Speech modules that require communication with your camera, mic or web browser, please set that up individually.
   
-## 4. TESTING
+## 4. Testing
 During testing, remember to do the following tasks before starting:
 - Network
-  1. Turn off Buster's Phone WIFI and enable hotspot
-  2. Re-set MASTER IP to the correct address
-  3. Re-set MODULE IP to the correct address
+  1. Turn off Buster's Phone WIFI and enable hotspot.
+  2. Re-set MASTER IP to the correct address - ```export ROS_MASTER_URI=http://192.168.0.XXX:11311```
+  3. Re-set MODULE IP to the correct address - ```export ROS_IP=<your_ip>```
   4. Connect to TP-Link
-  5. Check connection through TP-Link - ```ping googlle.com```
-- Pull the latest version of the Repo (if you are using Docker)
-- source .bashrc and catkin_ws/devel/setup.bash
+  5. Check connection through TP-Link - ```ping google.com```
+- Pull the latest version of the Repo (if you are using Docker).
+- Run ```source .bashrc``` and ```source ~/catkin_ws/devel/setup.bash```.
 
 ## 5. FAQs
 - **ERROR: Unable to communicate with master!** when running ROS commands

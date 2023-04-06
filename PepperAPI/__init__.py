@@ -3,7 +3,7 @@ import rosnode
 import os
 
 # set to True if you're doing self testing
-TEST_DUMMY = True
+TEST_DUMMY = False
 
 # Globals
 ROBOT_IP = "192.168.0.100" if "NAO_IP" not in os.environ else os.environ["NAO_IP"]

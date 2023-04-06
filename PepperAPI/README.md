@@ -1,5 +1,7 @@
 # PepperAPI Documentation
-The three functions are:
+This Python package is essentially a wrapper for all ROS publishing and subscribing.
+
+The three main functions are:
 - **```Action.Request(name, params)```**: Request for Pepper to perform an action
 - **```Info.Request(name, params)```**: Request to receive data from other modules or from Pepper
 - **```Info.Send(name, params)```**: Request to send data to other modules
@@ -37,6 +39,7 @@ if __name__ == "__main__":
 
 ## APIs
 ### Web
+The Web APIs are used by the dummy script as the actual Web module uses Javascript instead of Python and thus doesn't use the PepperAPI.
 #### Send
 - **```Info.Send("NumSlides", {"value": numberOfSlides})```**: Send number of slides to NLP before publishing slides text
   - **params** (*Dict*) : Number of slides to be provided as *Int* to key ```value```
@@ -45,10 +48,6 @@ if __name__ == "__main__":
   - **params** (*Dict*) : Slides text to be provided as *String* to key ```text```
 
 - **```Info.Send("TakeControl")```**: Send signal ("1") to Control module to take back control after quiz has finished
-  
-#### Receive
-- **```Info.Request("ChangeSlide")```**: Receive command for changing slide (increment/decrement/goto)
-  - **return** (*String*) : Change slide command (increment|0, decrement|0 or goto|n)
 
 ___
 ### CV
@@ -85,6 +84,8 @@ ___
 
 - **```Info.Send("Joke", {"text": myText})```**: Send joke text to Speech module
   - **params** (*Dict*) : Joke text to be provided as *String* to key ```text```
+
+- **```Info.Send("StudentDone", {"value": 0/1})```**: Send status of QnA conversation. "0" indicates that the student is not done asking questions, and "1" indicates that the student is done, often induced by replying "yes" when the robot asks "Does that answer your question?"
 
 - **```Action.Request("ChangeVolume", {"cmd": "up"/"down"})```**: Request for volume to be increased/decreased
   - **params** (*Dict*) : Desired action "up"/"down" to be provided as *String* to key ```cmd```
@@ -127,6 +128,8 @@ ___
 - **```Info.Request("Answer")```**: Receive QnA answer text from NLP module
   - **return** (*String*) : Answer text
 
+- **```Info.Request("StudentDone")```**: Receive status (*boolean*) of QnA conversation for that student. "True" indicates that the student is done asking questions, and the loop can proceed to the next student.
+
 - **```Info.Request("TriggerListen")```**: Receive signal ("1") to start listening to mic input
 
 ___
@@ -145,9 +148,12 @@ ___
 ### Control
 #### Send
 - **```Info.Send("TriggerJokeOrQuiz")```**: Send signal ("joke"/"quiz") to NLP & Web module to trigger joke or quiz when loop counter reaches threshold
+
 - **```Info.Send("TriggerJokeOrShutup")```**: Send signal ("joke"/"quiz") to NLP module to trigger joke/shutup when loop counter reaches threshold
+
 - **```Info.Send("ChangeSlide", {"cmd": changeSlideCommand})```**: Send command to change slide - ```"increment|0"``` to increment the slide, ```"decrement|0"``` to decrement the slide and ```"goto|<slide_num>"``` to go to a slide num
   - **params** (*Dict*) : Command be provided as *String* to key ```cmd```
+
 - **```Info.Send("State", params)```**: Update state
   - **params** (*Dict*) : 
     - key ```<state_name>```: *String* New state value
