@@ -3,6 +3,10 @@
 # import packages
 import openai
 from tqdm import tqdm
+import sys
+sys.path.append('/Users/busterblackledge/')
+from keys import openai_API_key
+
 ############################################################ 
 # TODO: create code to deal with the title 
 # for the title page... take all the text and use a good prompt to get a simple explination return
@@ -31,7 +35,7 @@ def genScript(inputText):
     script = ""
 
     # set-up the API key
-    openai.api_key = "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"
+    openai.api_key = openai_API_key
 
     # Is the incoming slide the table of contents?
     if inputText[0].lower() == "table of contents":

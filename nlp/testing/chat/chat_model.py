@@ -1,6 +1,8 @@
 # This script is where the calls to the openai models are
 import openai
-
+import sys
+sys.path.append('/Users/busterblackledge')
+from keys import openai_API_key
 
 def getModel(a):
     """get the current model under use
@@ -17,7 +19,7 @@ def chatGPT(query):
     @params: query [string]
     @reutrns: response [string]
     """
-    openai.api_key = "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"
+    openai.api_key = openai_API_key
     # create completion
     completions = openai.ChatCompletion.create(
 		    model="gpt-3.5-turbo",
@@ -34,7 +36,7 @@ def daVinci(query):
     @params: query [string]
     @returns: response [string]
     """
-    openai.api_key = "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"
+    openai.api_key = openai_API_key
     # create completion
     completions = openai.Completion.create(
 		engine = "text-davinci-003",

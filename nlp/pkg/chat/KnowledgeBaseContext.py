@@ -5,7 +5,9 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 import tiktoken
 import pinecone
-
+import sys
+sys.path.append('/Users/busterblackledge/')
+from keys import openai_API_key, pinecone_API_key
 
 
 def KnowledgeBaseToPinecone(url,topic):
@@ -14,8 +16,8 @@ def KnowledgeBaseToPinecone(url,topic):
     """
 
     index_name = 'pepper-memory'
-    OPENAI_API_KEY = "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"
-    PINECONE_API_KEY = "8973578e-4fed-4fff-8a8d-5eaf1d2d4032"
+    OPENAI_API_KEY = openai_API_key
+    PINECONE_API_KEY = pinecone_API_key
     PINECONE_API_ENV = "us-central1-gcp"
     pinecone.init(
     api_key=PINECONE_API_KEY,
