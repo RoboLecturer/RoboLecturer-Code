@@ -109,10 +109,12 @@ def Request(api_name, api_params={}):
 D = 0 # Pepper's offset from the world (CV camera) in px
 def Listen():
 
+	import numpy as np
+
 	# Import NAOqi modules
 	if not TEST_DUMMY:
 		from naoqi import ALProxy, ALBroker
-		from .motions import MOTIONS, ResetPosition, PointTimeline
+		from .motions import MOTIONS, SLOW_DOWN, ResetPosition, PointTimeline
 		import almath
 
 	# Callback for ALTextToSpeech
