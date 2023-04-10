@@ -20,7 +20,7 @@ RoboLecturer's lectures are carried out in four main steps according to the flow
 
 **1. Lecture deliverance**: RoboLecturer delivers the lecture script for the current slide, engaging arm and hand movements to appear more natural.
 <p align="center">
-  <a href="https://user-images.githubusercontent.com/76771375/230804854-d28d2e5d-a292-4f30-9d59-a1f7dd6a69f4.mp4"><img src="./images/lecture.gif" alt="Flowchart" width="500px"></a>
+  <a href="https://user-images.githubusercontent.com/76771375/230871638-44939e1c-361f-4c4d-aec7-6ebd138a5cf4.mp4"><img src="./images/lecture.gif" alt="Flowchart" width="500px"></a>
   <br>
   <sup>(click for sound)</sup>
 </p>
