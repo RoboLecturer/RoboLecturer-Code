@@ -1,5 +1,4 @@
 # RoboLecturer
-## Overview
 This project is part of the Human-Centred Robotics module at Imperial College London's Department of Electrical Engineering.
 
 This project develops RoboLecturer, a robot designed to deliver lectures to a small class of students using slides uploaded by the lecturer. Using Softbank Robotics' Pepper robot, several sub-modules were developed and integrated to allow RoboLecturer to:
